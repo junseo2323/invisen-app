@@ -3,7 +3,7 @@
   <header style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 24px 0;">
     <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 6px;">
       <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.01em;">현장</h1>
-      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">인천공항 제1여객터미널</span>
+      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{siteName}}</span>
     </div>
     <a href="#/sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
       <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
@@ -15,15 +15,15 @@
     <section aria-label="현장 요약" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #13171c; box-shadow: inset 0 1px 0 #ffffff12;">
       <div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 20px;">
         <span style="font-size: 13px; line-height: 18px; color: #a9b1bb;">근무 중</span>
-        <span style="font-size: 18px; line-height: 26px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">24</span>명</span>
+        <span style="font-size: 18px; line-height: 26px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">{{working}}</span>명</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; border-left: 1px solid #1c2127;">
         <span style="font-size: 13px; line-height: 18px; color: #a9b1bb;">주의</span>
-        <span style="font-size: 18px; line-height: 26px; font-weight: 700; color: #ffbe1a;">5구역</span>
+        <span style="font-size: 18px; line-height: 26px; font-weight: 700; color: {{cautionColor}};">{{cautionZone}}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; border-left: 1px solid #1c2127;">
         <span style="font-size: 13px; line-height: 18px; color: #a9b1bb;">PM10</span>
-        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 18px; line-height: 26px; font-weight: 600;">41</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 18px; line-height: 26px; font-weight: 600;">{{pm10}}</span>
       </div>
     </section>
 
@@ -126,14 +126,8 @@
           <text x="430.7" y="338" text-anchor="middle" font-size="11" fill="#848e9a" font-family="IBM Plex Mono, monospace">100 m</text>
         </svg>
 
-        <div aria-hidden="true" style="position: absolute; left: 11.5%; top: 72.3%; width: 0px; height: 0px;"><span style="position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span></div>
-        <div aria-hidden="true" style="position: absolute; left: 36.7%; top: 57.6%; width: 0px; height: 0px;"><span style="position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span></div>
-        <div aria-hidden="true" style="position: absolute; left: 50%; top: 51.2%; width: 0px; height: 0px;"><span style="position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span></div>
-        <div aria-hidden="true" style="position: absolute; left: 61%; top: 37.6%; width: 0px; height: 0px;"><span style="position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span></div>
-        <div aria-hidden="true" style="position: absolute; left: 66.8%; top: 63.3%; width: 0px; height: 0px;"><span style="position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span></div>
-        <div aria-hidden="true" style="position: absolute; left: 85.8%; top: 38.3%; width: 0px; height: 0px;"><span style="position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span></div>
 
-        <sc-for list="{{team}}" as="t" hint-placeholder-count="7">
+        <sc-for list="{{mapTeam}}" as="t" hint-placeholder-count="7">
           <div aria-hidden="true" style="position: absolute; left: {{t.x}}%; top: {{t.y}}%; width: 0px; height: 0px;">
             <sc-if value="{{t.sel}}" hint-placeholder-val="{{ false }}">
               <span style="position: absolute; left: -12px; top: -12px; width: 24px; height: 24px; box-sizing: border-box; border: 2px solid #2bd8f0; background: #0d2e35; transform: rotate(45deg);"></span>
@@ -142,17 +136,18 @@
           </div>
         </sc-for>
 
-        <div aria-hidden="true" style="position: absolute; left: 24.3%; top: 55.7%; width: 0px; height: 0px;">
+        <sc-if value="{{me.has}}">
+        <div aria-hidden="true" style="position: absolute; left: {{me.x}}%; top: {{me.y}}%; width: 0px; height: 0px;">
           <span style="position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; box-sizing: border-box; border: 2px solid #2bd8f0; background: #0d2e35; transform: rotate(45deg);"></span>
           <span style="position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; background: #2bd8f0; transform: rotate(45deg);"></span>
           <span style="position: absolute; left: 18px; top: -9px; padding: 0 6px; background: #0b0e12; font-size: 12px; line-height: 18px; font-weight: 700; color: #2bd8f0;">나</span>
         </div>
+        </sc-if>
       </div>
 
       <div style="display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; line-height: 20px; color: #a9b1bb;">
         <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 8px; height: 8px; background: #2bd8f0; transform: rotate(45deg);"></span>나</span>
         <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 8px; height: 8px; background: #e3e7eb; transform: rotate(45deg);"></span>우리 팀</span>
-        <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #5f6975; transform: rotate(45deg);"></span>다른 작업자</span>
         <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 5px; height: 10px; background: #e3e7eb;"></span>비상구</span>
         <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 14px; height: 0; border-top: 2px solid #848e9a;"></span>분류기</span>
         <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 4px; height: 12px; background: #3f4852;"></span>적재대</span>
@@ -162,7 +157,7 @@
     <section style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px;">
       <div style="display: flex; align-items: baseline; justify-content: space-between;">
         <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">우리 팀</h2>
-        <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">7</span>명</span>
+        <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">{{teamCount}}</span>명</span>
       </div>
       <div style="display: flex; flex-direction: column; padding: 8px 0; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12;">
         <sc-for list="{{team}}" as="t" hint-placeholder-count="7">
@@ -173,8 +168,8 @@
               <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{t.zone}} · {{t.dist}}</span>
             </span>
             <sc-if value="{{t.caution}}" hint-placeholder-val="{{ false }}">
-              <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: #2e2306; color: #ffbe1a; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
-                <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: #3f4852;"></span><span style="width: 7px; height: 5px; background: #ffbe1a;"></span><span style="width: 7px; height: 5px; background: #3f4852;"></span></span>주의
+              <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: {{t.b.soft}}; color: {{t.b.color}}; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
+                <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: {{t.b.s1}};"></span><span style="width: 7px; height: 5px; background: {{t.b.s2}};"></span><span style="width: 7px; height: 5px; background: {{t.b.s3}};"></span></span>{{t.b.word}}
               </span>
             </sc-if>
           </button>
@@ -184,15 +179,18 @@
 
     <section style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px;">
       <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">현장 공지</h2>
+      <sc-for list="{{notices}}" as="n">
       <div style="display: flex; align-items: center; gap: 16px; padding: 20px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12;">
         <span style="width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #070a0d;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1z"></path><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"></path></svg>
         </span>
         <span style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
-          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">5구역 집진기를 점검하고 있어요</span>
-          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">14:00–16:00 · 관제실</span>
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{n.title}}</span>
+          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{n.detail}}</span>
         </span>
       </div>
+      </sc-for>
+      <sc-if value="{{noNotices}}"><p style="margin: 0; font-size: 14px; line-height: 22px; color: #a9b1bb;">지금은 공지가 없어요</p></sc-if>
     </section>
 
   </main>

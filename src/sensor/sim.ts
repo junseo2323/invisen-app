@@ -1,0 +1,69 @@
+// Simulated sensor for the browser and the iOS simulator (no Bluetooth there).
+// ?sim=caution / ?sim=danger in the URL (or localStorage 'invisen.sim') picks a scenario.
+import type { SensorDriver, SensorReading } from './types';
+
+const DEVICES = [
+  { deviceId: 'sim-0142', id: 'IVS-P10-0142', rssi: -48, battery: 92 },
+  { deviceId: 'sim-0157', id: 'IVS-P10-0157', rssi: -81, battery: 64 },
+];
+
+function scenario(): 'safe' | 'caution' | 'danger' {
+  const fromUrl = new URLSearchParams(location.search).get('sim') ?? location.hash.match(/[?&]sim=(\w+)/)?.[1];
+  let v: string | null | undefined = fromUrl;
+  try {
+    if (fromUrl) localStorage.setItem('invisen.sim', fromUrl);
+    v = v ?? localStorage.getItem('invisen.sim');
+  } catch {
+    /* storage blocked */
+  }
+  return v === 'caution' || v === 'danger' ? v : 'safe';
+}
+
+let timer: number | undefined;
+let onDisconnect: (() => void) | null = null;
+
+export const simDriver: SensorDriver = {
+  kind: 'sim',
+  async ensureReady() {
+    return true;
+  },
+  async scan(onFound, ms = 1500) {
+    for (const d of DEVICES) {
+      await new Promise((r) => setTimeout(r, ms / 3));
+      onFound({ ...d });
+    }
+  },
+  async stopScan() {},
+  async connect(deviceId, h) {
+    await new Promise((r) => setTimeout(r, 600));
+    const dev = DEVICES.find((d) => d.deviceId === deviceId) ?? DEVICES[0];
+    onDisconnect = h.onDisconnect;
+    h.onBattery(dev.battery);
+    const base = { safe: 38, caution: 86, danger: 164 }[scenario()];
+    const emit = () => {
+      const t = Date.now();
+      const noise = Math.sin(t / 7000) * 3 + (Math.random() - 0.5) * 2;
+      const r: SensorReading = {
+        ts: t,
+        pm10: Math.max(1, Math.round(base + noise)),
+        pm25: Math.max(1, Math.round(base * 0.55 + noise / 2)),
+        co: Math.round((6 + Math.max(0, Math.sin(t / 45_000)) * 8) * 10) / 10,
+        temp: 24.6,
+        humidity: 48,
+      };
+      h.onReading(r);
+    };
+    emit();
+    clearInterval(timer);
+    timer = window.setInterval(emit, 5000);
+  },
+  async disconnect() {
+    clearInterval(timer);
+    onDisconnect = null;
+  },
+};
+
+export const simulateDisconnect = () => {
+  clearInterval(timer);
+  onDisconnect?.();
+};

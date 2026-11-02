@@ -14,7 +14,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const src = join(root, 'design');
-const out = join(root, 'src/screens/markup');
+// The app's markup in src/screens/markup is now data-bound by hand ({{holes}}),
+// so by default this writes to design/imported/ for diffing. --overwrite replaces the app markup.
+const out = process.argv.includes('--overwrite') ? join(root, 'src/screens/markup') : join(root, 'design/imported');
 mkdirSync(out, { recursive: true });
 
 export const routeOf = (file) => file.replace(/\.dc\.html$/, '').toLowerCase();

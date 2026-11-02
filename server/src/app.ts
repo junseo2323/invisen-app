@@ -34,7 +34,7 @@ export async function buildApp(opts: { logger?: boolean } = {}) {
 
   app.get('/api/health', async () => {
     await one('select 1');
-    return { ok: true };
+    return { ok: true, version: process.env.GIT_SHA ?? 'dev' };
   });
 
   await app.register(authRoutes);

@@ -1,0 +1,47 @@
+# Production stack on the server: PostgreSQL + API. nginx (on the host) serves the
+# web app and proxies /api to 127.0.0.1:3000. Managed by /usr/local/bin/invisen-deploy.
+name: invisen
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: invisen
+      POSTGRES_USER: invisen
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in /etc/invisen/compose.env}
+      TZ: Asia/Seoul
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U invisen -d invisen"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks: [internal]
+
+  api:
+    build:
+      context: ../server
+      args:
+        GIT_SHA: ${GIT_SHA:-dev} # deployed commit, shown at /api/health
+    image: invisen-api:latest
+    restart: unless-stopped
+    env_file: [/etc/invisen/api.env]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://invisen:${POSTGRES_PASSWORD}@db:5432/invisen
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000" # host nginx only; never public
+    networks: [internal, egress]
+
+volumes:
+  pgdata:
+
+networks:
+  internal:
+    internal: true # db has no internet access and no published port
+  egress: {}

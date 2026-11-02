@@ -28,6 +28,8 @@ const config: CapacitorConfig = {
     : undefined,
   plugins: {
     StatusBar: { style: 'DARK', overlaysWebView: true },
+    PushNotifications: { presentationOptions: ['banner', 'sound', 'list'] },
+    LocalNotifications: { iconColor: '#2bd8f0' },
   },
 };
 

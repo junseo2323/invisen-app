@@ -50,6 +50,7 @@ export async function siteRoutes(app: FastifyInstance) {
       working: working?.n ?? 0,
       cautionZone: worst?.name ?? null,
       pm10: working?.avg == null ? null : Math.round(working.avg),
+      me: { x: me?.map_x ?? null, y: me?.map_y ?? null },
       team: team
         .map((t) => ({
           id: t.id,

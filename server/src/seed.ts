@@ -1,4 +1,5 @@
 // Seeds the design's sample site/workers/sensors.  npm run seed [-- --demo]
+//   --me    see below
 //   --demo  also generates today's readings/events for 김현수 and recent readings for
 //           the team, so every screen has data (local development / showcase only).
 // Phone numbers other than 김현수's (from the design) are placeholders (010-0000-00xx).
@@ -8,6 +9,9 @@ import { config } from './config.js';
 import { dayStart } from './exposure.js';
 
 const demo = process.argv.includes('--demo');
+// --me "이름:01012345678"  → that person takes 김현수's place (so you can log in on a real server)
+const meArg = process.argv[process.argv.indexOf('--me') + 1];
+const [meName, mePhone] = process.argv.includes('--me') && meArg ? meArg.split(':') : ['김현수', '01024813307'];
 const MIN = 60_000;
 
 async function main() {
@@ -39,7 +43,7 @@ async function main() {
       )).rows[0].id;
 
     const boss = await worker({ no: 'M-03-0001', name: '박정민', phone: '01000000001', role: 'manager', zone: z3, x: 30, y: 40 });
-    const me = await worker({ no: 'W-03-0218', name: '김현수', phone: '01024813307', manager: boss, zone: z3, zones: [z3, z5], spot: 'C-12', x: 27.5, y: 50 });
+    const me = await worker({ no: 'W-03-0218', name: meName, phone: mePhone.replace(/\D/g, ''), manager: boss, zone: z3, zones: [z3, z5], spot: 'C-12', x: 27.5, y: 50 });
     const team = [
       ['W-03-0221', '이도윤', z3, 19.9, 49.6, 'safe'],
       ['W-03-0224', '최서연', z3, 11.9, 63.1, 'safe'],

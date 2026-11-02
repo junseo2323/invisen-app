@@ -3,7 +3,7 @@
   <header style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 24px 0;">
     <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 6px;">
       <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.01em;">오늘 노출량</h1>
-      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">11월 2일 월요일 · 주간 A조</span>
+      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{dateLine}}</span>
     </div>
     <a href="#/sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
       <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
@@ -15,14 +15,14 @@
     <section style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 18px;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding-right: 16px;">
         <span style="font-size: 15px; line-height: 22px; color: #a9b1bb;">누적 노출량</span>
-        <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: #0e2a1c; color: #34c77b; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
-          <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: #34c77b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span></span>안전
+        <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: {{badge.soft}}; color: {{badge.color}}; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
+          <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: {{badge.s1}};"></span><span style="width: 7px; height: 5px; background: {{badge.s2}};"></span><span style="width: 7px; height: 5px; background: {{badge.s3}};"></span></span>{{badge.word}}
         </span>
       </div>
-      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.04em;">41%</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.04em;">{{percent}}%</span>
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div style="position: relative; height: 8px; background: #070a0d;">
-          <div style="width: 34.2%; height: 8px; background: #e3e7eb;"></div>
+          <div style="width: {{gauge}}%; height: 8px; background: {{gaugeColor}};"></div>
           <div aria-hidden="true" style="position: absolute; left: 66.7%; top: -4px; width: 2px; height: 16px; background: #ffbe1a;"></div>
           <div aria-hidden="true" style="position: absolute; left: 83.3%; top: -4px; width: 2px; height: 16px; background: #ff5a4a;"></div>
         </div>
@@ -34,11 +34,11 @@
       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 16px; border-top: 1px solid #1c2127;">
         <div style="display: flex; flex-direction: column;">
           <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">평균</span>
-          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600;">41 <span style="font-size: 13px; font-weight: 500; color: #a9b1bb;">µg/m³</span></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600;">{{average}} <span style="font-size: 13px; font-weight: 500; color: #a9b1bb;">µg/m³</span></span>
         </div>
         <div style="display: flex; flex-direction: column;">
           <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">권고치</span>
-          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600;">100 <span style="font-size: 13px; font-weight: 500; color: #a9b1bb;">µg/m³</span></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600;">{{limit}} <span style="font-size: 13px; font-weight: 500; color: #a9b1bb;">µg/m³</span></span>
         </div>
       </div>
     </section>
@@ -46,21 +46,21 @@
     <section aria-label="오늘 요약" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
       <div style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 20px 24px; display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">근무</span>
-        <span style="font-size: 20px; line-height: 28px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">7</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">32</span>분</span>
+        <span style="font-size: 20px; line-height: 28px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">{{worked.h}}</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">{{worked.m}}</span>분</span>
       </div>
       <div style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 20px 24px; display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">교대까지</span>
-        <span style="font-size: 20px; line-height: 28px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">28</span>분</span>
+        <span style="font-size: 20px; line-height: 28px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">{{left}}</span>{{leftUnit}}</span>
       </div>
       <div style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 20px 24px; display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">최고</span>
-        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 20px; line-height: 28px; font-weight: 600;">112</span>
-        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">11:24</span> · 5구역</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 20px; line-height: 28px; font-weight: 600;">{{peak.value}}</span>
+        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">{{peak.time}}</span>{{peak.zone}}</span>
       </div>
       <a href="#/log" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 20px 24px; display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: #e3e7eb;">
         <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">알림</span>
-        <span style="font-size: 20px; line-height: 28px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">2</span>건</span>
-        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">주의 1 · 위험 1</span>
+        <span style="font-size: 20px; line-height: 28px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">{{alerts.total}}</span>건</span>
+        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">주의 {{alerts.caution}} · 위험 {{alerts.danger}}</span>
       </a>
     </section>
 
@@ -69,12 +69,12 @@
         <h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 700;">시간대별</h2>
         <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">PM10 · 30분 단위</span>
       </div>
-      <div role="img" aria-label="07시부터 지금까지 30분 단위 PM10 농도. 11시 30분에 112로 가장 높았고, 지금은 38입니다." style="position: relative; height: 176px; padding-top: 16px; box-sizing: border-box;">
+      <div role="img" aria-label="{{seriesLabel}}" style="position: relative; height: 176px; padding-top: 16px; box-sizing: border-box;">
         <div aria-hidden="true" style="position: absolute; left: 0; right: 30px; bottom: 133.3px; border-top: 1px dashed #ff5a4a;"></div>
         <div aria-hidden="true" style="position: absolute; right: 0; bottom: 126px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 14px; font-weight: 500; color: #ff5a4a;">100</div>
         <div aria-hidden="true" style="position: absolute; left: 0; right: 30px; bottom: 106.7px; border-top: 1px dashed #ffbe1a;"></div>
         <div aria-hidden="true" style="position: absolute; right: 0; bottom: 100px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 14px; font-weight: 500; color: #ffbe1a;">80</div>
-        <div style="position: absolute; left: 0; right: 30px; bottom: 0; height: 160px; display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 4px; align-items: end;">
+        <div style="position: absolute; left: 0; right: 30px; bottom: 0; height: 160px; display: grid; grid-template-columns: repeat({{barCount}}, minmax(0, 1fr)); gap: 4px; align-items: end;">
           <sc-for list="{{bars}}" as="b" hint-placeholder-count="15">
             <div style="position: relative; height: {{b.h}}px; background: {{b.c}};">
               <sc-if value="{{b.now}}" hint-placeholder-val="{{ false }}">
@@ -84,12 +84,8 @@
           </sc-for>
         </div>
       </div>
-      <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 4px; margin-right: 30px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
-        <span style="grid-column: 1 / span 3;">07</span>
-        <span style="grid-column: 5 / span 3;">09</span>
-        <span style="grid-column: 9 / span 3;">11</span>
-        <span style="grid-column: 13 / span 2;">13</span>
-        <span style="grid-column: 15; color: #2bd8f0; white-space: nowrap; justify-self: center;">지금</span>
+      <div aria-hidden="true" style="display: grid; grid-template-columns: repeat({{barCount}}, minmax(0, 1fr)); gap: 4px; margin-right: 30px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
+        <sc-for list="{{axis}}" as="a"><span style="grid-column: {{a.col}}; color: {{a.color}}; white-space: nowrap;">{{a.label}}</span></sc-for>
       </div>
       <div style="display: flex; gap: 16px; font-size: 13px; line-height: 20px; color: #a9b1bb;">
         <span style="display: flex; align-items: center; gap: 6px;"><span aria-hidden="true" style="width: 8px; height: 8px; background: #ffbe1a;"></span>주의</span>
@@ -99,35 +95,24 @@
 
     <section style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
       <h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 700;">구역별 체류</h2>
+      <sc-for list="{{zones}}" as="z">
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">3구역</span>
-          <span style="font-size: 14px; line-height: 20px;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">4</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">10</span>분</span>
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{z.name}}</span>
+          <span style="font-size: 14px; line-height: 20px;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">{{z.h}}</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">{{z.m}}</span>분</span>
         </div>
-        <div style="height: 6px; background: #070a0d;"><div style="width: 55%; height: 6px; background: #a9b1bb;"></div></div>
+        <div style="height: 6px; background: #070a0d;"><div style="width: {{z.width}}%; height: 6px; background: #a9b1bb;"></div></div>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">5구역</span>
-          <span style="font-size: 14px; line-height: 20px;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">1</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">50</span>분</span>
-        </div>
-        <div style="height: 6px; background: #070a0d;"><div style="width: 24%; height: 6px; background: #a9b1bb;"></div></div>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">휴게실</span>
-          <span style="font-size: 14px; line-height: 20px;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">1</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">2</span>분</span>
-        </div>
-        <div style="height: 6px; background: #070a0d;"><div style="width: 14%; height: 6px; background: #a9b1bb;"></div></div>
-      </div>
+      </sc-for>
+      <sc-if value="{{noZones}}"><p style="margin: 0; font-size: 14px; line-height: 22px; color: #a9b1bb;">아직 기록이 없어요</p></sc-if>
     </section>
 
     <section style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
       <div style="display: flex; align-items: baseline; justify-content: space-between;">
         <h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 700;">최근 7일</h2>
-        <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">평균 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; color: #e3e7eb;">47%</span></span>
+        <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">평균 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; color: #e3e7eb;">{{weekAvg}}</span></span>
       </div>
-      <div role="img" aria-label="최근 7일 누적 노출량. 화 36%, 수 44%, 목 81% 주의, 금 39%, 토 휴무, 일 38%, 오늘 41%." style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; align-items: end; height: 128px;">
+      <div role="img" aria-label="{{weekLabel}}" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; align-items: end; height: 128px;">
         <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
           <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
             <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: {{d.tc}};">{{d.v}}</span>

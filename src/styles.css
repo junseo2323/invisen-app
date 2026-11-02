@@ -1,6 +1,14 @@
 /* App shell around the design's artboard markup. Screen visuals live inline in
    src/screens/markup (copied from the design); this file only adapts the 390×844
    artboards to a real device: safe areas, full-height screens, sticky tab bar. */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --surface: #f3f5f7;
+  --ink: #13171c;
+  --ink-muted: #5f6975;
+  --signal: #0a8da3;
+}
+
 :root {
   color-scheme: dark;
   --surface: #0b0e12;

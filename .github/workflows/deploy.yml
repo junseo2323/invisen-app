@@ -1,0 +1,80 @@
+name: Deploy
+
+# main 에서 CI 가 통과하면 그 커밋을 production 브랜치로 옮긴다.
+# 서버(invisen-deploy.timer)는 production 브랜치를 1분마다 확인해서 새 커밋을 받아 배포한다.
+# 서버로 들어가는 SSH 가 필요 없다 (eney.cloud 는 SSH 를 특정 IP 에만 열 수 있고, Actions 러너 IP 는 매번 바뀜).
+#
+# 수동 배포/되돌리기: Actions › Deploy › Run workflow 에서 커밋 SHA·태그·브랜치를 넣으면 그걸로 production 을 옮긴다.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 배포할 커밋 SHA / 태그 / 브랜치 (비우면 main 최신)
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Promote to production
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve commit
+        id: target
+        env:
+          EVENT: ${{ github.event_name }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          INPUT_REF: ${{ inputs.ref }}
+        run: |
+          if [ "$EVENT" = "workflow_run" ]; then
+            sha="$RUN_SHA"
+          else
+            ref="${INPUT_REF:-origin/main}"
+            git rev-parse --verify --quiet "$ref^{commit}" >/dev/null || ref="origin/$ref"
+            sha="$(git rev-parse --verify "$ref^{commit}")"
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "배포 대상: \`${sha}\` — $(git log -1 --format=%s "$sha")" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Move production branch
+        env:
+          SHA: ${{ steps.target.outputs.sha }}
+        run: git push --force origin "$SHA:refs/heads/production"
+
+      # Repository variable PRODUCTION_URL (예: https://app.example.com) 을 넣어두면
+      # 서버가 실제로 새 버전을 띄웠는지 /api/health 의 version 으로 확인한다.
+      - name: Wait for the server to pick it up
+        if: vars.PRODUCTION_URL != ''
+        env:
+          URL: ${{ vars.PRODUCTION_URL }}
+          SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          for _ in $(seq 1 60); do
+            v="$(curl -fsS "$URL/api/health" | jq -r .version || true)"
+            if [ "$v" = "$SHA" ]; then
+              echo "서버 배포 확인: $SHA" | tee -a "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "15분 안에 서버가 새 버전을 띄우지 못했어요 (지금: ${v:-응답 없음}). 서버에서 sudo invisen-admin status 를 확인하세요." | tee -a "$GITHUB_STEP_SUMMARY"
+          exit 1

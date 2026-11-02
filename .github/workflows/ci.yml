@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+    tags-ignore: ['**']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Web app (typecheck + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  server:
+    name: API (typecheck + tests on PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: invisen
+          POSTGRES_PASSWORD: invisen
+          POSTGRES_DB: invisen_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U invisen -d invisen_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    defaults:
+      run:
+        working-directory: server
+    env:
+      DATABASE_URL_TEST: postgres://invisen:invisen@localhost:5432/invisen_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  deploy-files:
+    name: Deploy files (Docker image, compose, setup script)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build --build-arg GIT_SHA=${{ github.sha }} -t invisen-api:ci server
+      - name: Validate compose file
+        run: |
+          sudo mkdir -p /etc/invisen && sudo touch /etc/invisen/api.env
+          POSTGRES_PASSWORD=ci docker compose -f deploy/compose.yml config --quiet
+      - name: Lint setup script
+        run: shellcheck -S warning deploy/setup.sh

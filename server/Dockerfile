@@ -9,7 +9,8 @@ COPY test ./test
 RUN npm run build && npm prune --omit=dev
 
 FROM node:22-alpine
-ENV NODE_ENV=production TZ=Asia/Seoul
+ARG GIT_SHA=dev
+ENV NODE_ENV=production TZ=Asia/Seoul GIT_SHA=$GIT_SHA
 RUN apk add --no-cache tzdata
 WORKDIR /app
 COPY --from=build /app/node_modules ./node_modules

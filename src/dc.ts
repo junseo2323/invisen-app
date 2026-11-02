@@ -12,6 +12,11 @@ interface HandledElement extends Element {
 }
 
 const HOLE = /\{\{\s*([^}]+?)\s*\}\}/g;
+
+/** Optional rewrite of every rendered attribute value (used for the light theme). */
+let attrTransform: ((value: string) => string) | null = null;
+export const setAttrTransform = (fn: ((value: string) => string) | null) => (attrTransform = fn);
+const tx = (v: string) => (attrTransform ? attrTransform(v) : v);
 const WHOLE_HOLE = /^\{\{\s*([^}]+?)\s*\}\}$/;
 
 function lookup(scope: Vals, path: string): unknown {
@@ -83,7 +88,15 @@ function renderNode(node: Node, scope: Vals, into: Node) {
       if (typeof fn === 'function') handlers[name.slice(2)] = fn as (ev: Event) => void;
       continue;
     }
-    out.setAttribute(name, interpolate(scope, attr.value));
+    // A whole-hole attribute that resolves to false/null/undefined is left off
+    // (so disabled="{{busy}}" works); aria-* keep the literal "true"/"false".
+    if (!name.startsWith('aria-') && WHOLE_HOLE.test(attr.value)) {
+      const v = resolve(scope, attr.value);
+      if (v === false || v == null) continue;
+      out.setAttribute(name, v === true ? '' : tx(String(v)));
+      continue;
+    }
+    out.setAttribute(name, tx(interpolate(scope, attr.value)));
   }
   if (Object.keys(handlers).length) bind(out, handlers);
 
@@ -123,6 +136,11 @@ function morphNode(a: Node, b: Node) {
   }
   for (const attr of Array.from(eb.attributes)) {
     if (ea.getAttribute(attr.name) !== attr.value) ea.setAttribute(attr.name, attr.value);
+  }
+  // Keep an input's live value in step with state, except while the user is typing in it.
+  if (ea instanceof HTMLInputElement && eb.hasAttribute('value') && document.activeElement !== ea) {
+    const v = eb.getAttribute('value') ?? '';
+    if (ea.value !== v) ea.value = v;
   }
   bind(ea, eb.__h ?? {});
   morphChildren(ea, eb);

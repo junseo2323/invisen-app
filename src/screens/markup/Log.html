@@ -3,7 +3,7 @@
   <header style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 24px 0;">
     <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 6px;">
       <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.01em;">기록</h1>
-      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">11월 2일 월요일</span>
+      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{dateLabel}}</span>
     </div>
     <a href="#/sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
       <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
@@ -37,12 +37,13 @@
         </div>
       </div>
     </sc-for>
+    <sc-if value="{{empty}}"><p style="margin: 0; padding: 14px 0; font-size: 15px; line-height: 22px; color: #a9b1bb;">{{emptyText}}</p></sc-if>
 
     <h2 style="margin: 0; padding: 20px 0 8px; font-size: 14px; line-height: 22px; font-weight: 600; color: #a9b1bb;">어제</h2>
     <button type="button" style="display: flex; align-items: center; gap: 16px; padding: 20px 24px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; text-align: left; cursor: pointer;">
       <span style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
-        <span style="font-size: 16px; line-height: 22px; font-weight: 600;">누적 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">38%</span> · 안전</span>
-        <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">알림 없음 · 기록 6건</span>
+        <span style="font-size: 16px; line-height: 22px; font-weight: 600;">누적 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">{{y.percent}}</span> · {{y.word}}</span>
+        <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{y.detail}}</span>
       </span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
     </button>

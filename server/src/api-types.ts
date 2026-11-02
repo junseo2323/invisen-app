@@ -101,6 +101,7 @@ export interface Site {
   working: number;
   cautionZone: string | null;
   pm10: number | null;
+  me: { x: number | null; y: number | null };
   team: TeamMember[];
   notices: { id: number; title: string; detail: string | null }[];
 }
