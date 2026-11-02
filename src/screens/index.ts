@@ -29,7 +29,7 @@ export interface ScreenDef {
 // Route = artboard file name, lower-cased (Home-Caution.dc.html -> #/home-caution).
 export const screens: Record<string, ScreenDef> = {
   main: { title: '시작', markup: Main, logic: StaticScreen, access: 'public' },
-  'login-phone': { title: '휴대폰 인증', markup: LoginPhone, logic: L.LoginPhone, access: 'public' },
+  'login-phone': { title: '등록 코드', markup: LoginPhone, logic: L.LoginPhone, access: 'public' },
   'login-profile': { title: '소속 확인', markup: LoginProfile, logic: L.LoginProfile, access: 'onboarding' },
   'login-sensor': { title: '센서 연결', markup: LoginSensor, logic: L.LoginSensor, access: 'onboarding' },
   'login-wear': { title: '착용과 권한', markup: LoginWear, logic: L.LoginWear, access: 'onboarding' },

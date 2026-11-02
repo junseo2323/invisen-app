@@ -3,15 +3,16 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 
 process.env.DATABASE_URL = process.env.DATABASE_URL_TEST ?? 'postgres://invisen:invisen@localhost:5432/invisen_test';
-process.env.OTP_DEV_CODE = '123456';
 process.env.NODE_ENV = 'test';
 
 const { pool } = await import('../src/db.js');
 const { migrate } = await import('../src/migrate.js');
 const { buildApp } = await import('../src/app.js');
+const { issueInvite } = await import('../src/invites.js');
 type App = Awaited<ReturnType<typeof buildApp>>;
 let app: App;
 let token = '';
+let managerToken = '';
 
 const call = async (method: string, url: string, body?: unknown, auth = true) => {
   const res = await app.inject({
@@ -44,21 +45,51 @@ after(async () => {
   await pool.end();
 });
 
-test('otp login', async () => {
-  assert.equal((await call('POST', '/api/auth/otp', { phone: '010-2481-3307' }, false)).status, 200);
-  assert.equal((await call('POST', '/api/auth/otp', { phone: '01024813307' }, false)).status, 429, 'resend is throttled');
-  assert.equal((await call('POST', '/api/auth/verify', { phone: '01024813307', code: '000000' }, false)).body.error, 'invalid_code');
-  const ok = await call('POST', '/api/auth/verify', { phone: '01024813307', code: '123456' }, false);
+test('invite code login', async () => {
+  const { code } = await issueInvite(2, null);
+  const wrong = code === '000000' ? '111111' : '000000';
+  assert.equal((await call('POST', '/api/auth/login', { phone: '010-2481-3307', code: wrong }, false)).body.error, 'invalid_code');
+  const ok = await call('POST', '/api/auth/login', { phone: '010-2481-3307', code }, false);
   assert.equal(ok.status, 200);
   assert.equal(ok.body.me.name, '김현수');
   token = ok.body.token;
-  // the code is single-use
-  assert.equal((await call('POST', '/api/auth/verify', { phone: '01024813307', code: '123456' }, false)).status, 400);
+  // single use
+  assert.equal((await call('POST', '/api/auth/login', { phone: '01024813307', code }, false)).body.error, 'expired');
 });
 
-test('unregistered numbers get the same response and cannot log in', async () => {
-  assert.equal((await call('POST', '/api/auth/otp', { phone: '01099999999' }, false)).status, 200);
-  assert.equal((await call('POST', '/api/auth/verify', { phone: '01099999999', code: '123456' }, false)).status, 400);
+test('a code locks after 5 wrong tries and a new code replaces the old one', async () => {
+  const first = await issueInvite(3, null);
+  const { code } = await issueInvite(3, null); // revokes `first`
+  if (first.code !== code) {
+    assert.equal((await call('POST', '/api/auth/login', { phone: '01000000002', code: first.code }, false)).status, 400);
+  }
+  const bad = code === '999999' ? '999998' : '999999';
+  let last = 0;
+  for (let i = 0; i < 5; i++) last = (await call('POST', '/api/auth/login', { phone: '01000000002', code: bad }, false)).status;
+  assert.equal(last, 429);
+  assert.equal((await call('POST', '/api/auth/login', { phone: '01000000002', code }, false)).body.error, 'locked');
+});
+
+test('unregistered numbers get the same answer as a wrong code', async () => {
+  const r = await call('POST', '/api/auth/login', { phone: '01099999999', code: '123456' }, false);
+  assert.equal(r.status, 400);
+  assert.equal(r.body.error, 'invalid_code');
+});
+
+test('managers issue invite codes for their own site only', async () => {
+  const workerTry = await call('POST', '/api/admin/invites', { workerId: 3 });
+  assert.equal(workerTry.status, 403);
+  const m = await issueInvite(1, null);
+  managerToken = (await call('POST', '/api/auth/login', { phone: '01000000001', code: m.code }, false)).body.token;
+  const saved = token;
+  token = managerToken;
+  const inv = await call('POST', '/api/admin/invites', { phone: '010-0000-0002', ttlHours: 24 });
+  assert.equal(inv.status, 200);
+  assert.match(inv.body.code, /^\d{6}$/);
+  assert.equal(inv.body.worker.name, '이도윤');
+  assert.equal((await call('POST', '/api/admin/invites', { workerId: 999 })).status, 404);
+  token = saved;
+  assert.equal((await call('POST', '/api/auth/login', { phone: '01000000002', code: inv.body.code }, false)).status, 200);
 });
 
 test('auth is required', async () => {

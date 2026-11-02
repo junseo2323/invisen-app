@@ -163,13 +163,8 @@ fi
 if [[ ! -f /etc/invisen/api.env ]]; then
   cat >/etc/invisen/api.env <<CONF
 # invisen API 설정. 바꾼 뒤: sudo invisen-admin restart
-OTP_SECRET=$(openssl rand -hex 32)
+INVITE_SECRET=$(openssl rand -hex 32)
 CORS_ORIGINS=capacitor://localhost
-# 인증 문자: console = 서버 로그에만 출력(문자 안 감). 실제 발송은 nhncloud + 아래 키.
-SMS_PROVIDER=console
-NHN_SMS_APP_KEY=
-NHN_SMS_SECRET_KEY=
-NHN_SMS_SENDER=
 # APNs (반장 푸시). .p8 내용을 한 줄로: APNS_KEY=-----BEGIN PRIVATE KEY-----\nMIG...\n-----END PRIVATE KEY-----
 APNS_KEY_ID=
 APNS_TEAM_ID=
@@ -260,14 +255,14 @@ case "${1:-help}" in
   seed)     shift; "${COMPOSE[@]}" exec api node dist/src/seed.js "$@";;
   psql)     "${COMPOSE[@]}" exec db psql -U invisen invisen;;
   backup)   /usr/local/bin/invisen-backup;;
-  otp)      "${COMPOSE[@]}" logs --since 10m api | grep -o '\[sms:console\].*' | tail -5;;
+  invite)   shift; "${COMPOSE[@]}" exec api node dist/src/invite.js "$@";;
   *) cat <<'HELP'
 사용법: sudo invisen-admin <명령>
   status                 컨테이너 / 자동 배포 상태
   logs [줄수]            API 로그 보기
   restart                API 재시작 (/etc/invisen/api.env 를 바꾼 뒤)
-  seed --me "이름:010…"  샘플 현장·구역·센서 + 내 계정 만들기 (DB 가 비어 있을 때만)
-  otp                    최근 인증번호 보기 (SMS_PROVIDER=console 일 때)
+  seed --me "이름:010…"  샘플 현장·구역·센서 + 내 계정 만들기 (DB 가 비어 있을 때만, 등록 코드 출력)
+  invite 010… [시간]     작업자 로그인용 등록 코드 발급 (기본 72시간, 한 번만 사용)
   psql                   DB 콘솔
   backup                 지금 DB 백업
 HELP
@@ -371,7 +366,7 @@ echo "  자동 배포:  production 브랜치를 1분마다 확인 (systemctl lis
 echo "  관리:       sudo invisen-admin help"
 echo
 echo "  처음이라면 내 계정 만들기:  sudo invisen-admin seed --me \"이름:010XXXXXXXX\""
-echo "  인증 문자는 SMS 설정 전까지 실제로 발송되지 않아요. 인증번호 보기: sudo invisen-admin otp"
+echo "  다른 작업자 등록 코드:      sudo invisen-admin invite 010XXXXXXXX  (관리자 대시보드가 생기면 거기서 발급)"
 echo
 echo "  eney.cloud 콘솔의 [네트워크 › 방화벽 정책] 에서 22(내 IP만), 80, 443 인바운드가 열려 있어야 해요."
 }

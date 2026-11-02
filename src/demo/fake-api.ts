@@ -48,11 +48,8 @@ function live() {
 }
 
 export const demoApi = {
-  async requestOtp(_phone: string): Promise<T.OtpResponse> {
-    return wait({ ttlSec: 180, resendSec: 30 });
-  },
-  async verify(phone: string, code: string): Promise<T.VerifyResponse> {
-    if (code !== '000000') throw new ApiError(400, 'invalid_code', '인증번호가 맞지 않아요. 데모에서는 000000 이에요.');
+  async login(phone: string, code: string): Promise<T.LoginResponse> {
+    if (code !== '000000') throw new ApiError(400, 'invalid_code', '등록 코드가 맞지 않아요. 데모에서는 000000 이에요.');
     void phone;
     return wait({ token: 'demo', me });
   },

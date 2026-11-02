@@ -33,14 +33,14 @@ cd server && npm install && cp .env.example .env && npm run seed -- --demo && np
 npm install && npm run dev
 ```
 
-http://localhost:5173 → 시작하기 → `010-2481-3307`, 인증번호 `000000` (개발용 고정값, `OTP_DEV_CODE`).
+http://localhost:5173 → 시작하기 → `010-2481-3307`, 등록 코드 `000000` (개발용 고정값, `DEV_LOGIN_CODE`).
 브라우저에는 블루투스가 없어서 시뮬레이터 센서가 붙습니다. 주소에 `?sim=caution` / `?sim=danger` 를 붙이면 주의·위험 상황을 재현합니다.
 
 테스트: `cd server && npm test` (로컬 `invisen_test` DB 또는 `DATABASE_URL_TEST`).
 
 ### 데모 빌드
 
-서버 없이 샘플 데이터 + 가상 센서로 도는 버전입니다 (인증번호 `000000`, 화면 아래 `데모` 스위치로 안전·주의·위험 전환).
+서버 없이 샘플 데이터 + 가상 센서로 도는 버전입니다 (등록 코드 `000000`, 화면 아래 `데모` 스위치로 안전·주의·위험 전환).
 
 ```bash
 npm run build:demo
@@ -52,7 +52,7 @@ npm run build:demo
 
 | 단계 | 화면 | 하는 일 |
 |---|---|---|
-| 로그인 | 01 시작 → 02 휴대폰 인증 | 문자 인증번호(iOS 자동 입력 지원) → 세션 토큰 |
+| 로그인 | 01 시작 → 02 등록 코드 | 휴대폰 번호 + 반장이 발급한 일회용 6자리 등록 코드 → 세션 토큰(30일) |
 | 온보딩 | 03 소속 확인 → 04 센서 연결 → 05 착용·권한 | 등록 정보 확인, BLE 스캔/QR 로 센서 페어링, 블루투스·알림·위치 권한 |
 | 홈 | 06 홈(안전) / 12 홈(주의) | 실시간 PM10, 오늘 누적, 교대까지 남은 시간. 상태에 따라 화면이 바뀜 |
 | 위험 | 13 위험 알림 | 권고치 100% 이상이면 자동으로 뜸 + 진동 + 알림, 반장·관제실에 푸시/웹훅 |
@@ -125,21 +125,26 @@ curl -fsSL https://raw.githubusercontent.com/junseo2323/invisen-app/main/deploy/
 |---|---|
 | 보안 | 자동 보안 업데이트, SSH 키 로그인만, ufw(22·80·443), fail2ban, 커널 네트워크 설정 |
 | 구성 | nginx(웹앱 + `/api` 프록시, 보안 헤더) → API 컨테이너(127.0.0.1:3000) → PostgreSQL 컨테이너(내부망 전용) |
-| 비밀값 | `/etc/invisen/compose.env`(DB 비밀번호), `/etc/invisen/api.env`(OTP 비밀, SMS·APNs·웹훅) — 처음 실행 때 무작위 생성, root 만 읽기 |
+| 비밀값 | `/etc/invisen/compose.env`(DB 비밀번호), `/etc/invisen/api.env`(등록 코드 비밀, APNs·웹훅) — 처음 실행 때 무작위 생성, root 만 읽기 |
 | HTTPS | Let's Encrypt(webroot), HTTP→HTTPS, HTTP/2, HSTS, 자동 갱신 |
 | 배포 | `invisen-deploy.timer` 가 1분마다 `production` 브랜치 확인 → 웹 빌드 → API/DB 갱신(마이그레이션) → 헬스체크 통과 시 교체. 실패하면 이전 버전 유지 |
 | 백업 | 매일 03:30 `pg_dump` → `/var/backups/invisen` (14일 보관) |
 
-처음 설치 후 내 계정 만들기 (샘플 현장·구역·센서 + 내 번호로 로그인할 계정):
+처음 설치 후 내 계정 만들기 (샘플 현장·구역·센서 + 내 번호로 로그인할 계정, 등록 코드가 출력됨):
 
 ```bash
 sudo invisen-admin seed --me "이름:010XXXXXXXX"
 ```
 
-인증 문자는 `SMS_PROVIDER=console` 인 동안 실제로 발송되지 않고 서버 로그에만 남습니다. 확인: `sudo invisen-admin otp`.
-실제 발송은 `/etc/invisen/api.env` 에 NHN Cloud SMS 키를 넣고 `SMS_PROVIDER=nhncloud` → `sudo invisen-admin restart`.
+### 로그인 (등록 코드)
 
-관리: `sudo invisen-admin status | logs | restart | otp | psql | backup`
+문자 인증 대신, 반장이 작업자별로 일회용 6자리 등록 코드를 발급하고 작업자는 휴대폰 번호 + 코드로 로그인합니다.
+코드는 72시간 유효, 한 번만 쓸 수 있고, 5번 틀리면 잠깁니다. 새로 발급하면 이전 코드는 무효가 됩니다.
+
+- 관리자 대시보드에서: `POST /api/admin/invites` `{ "phone": "010…" }` 또는 `{ "workerId": 3 }` (반장 계정 세션 필요, 같은 현장 작업자만)
+- 대시보드가 생기기 전 / 첫 반장 계정: `sudo invisen-admin invite 010XXXXXXXX`
+
+관리: `sudo invisen-admin status | logs | restart | invite | psql | backup`
 
 ## CI/CD
 
@@ -164,6 +169,6 @@ push ─▶ CI (웹 빌드 · API 테스트(PostgreSQL) · Docker 이미지 · c
 
 - 센서 BLE 프로토콜은 임시값 (위 참고)
 - 작업자 위치(구역·지도 좌표)는 서버 DB 값을 그대로 씁니다. 실내 측위(비콘 등)와 연동하는 부분이 아직 없습니다
-- 관리자 화면 없음: 작업자·센서·공지는 `invisen-admin seed` 또는 DB 에 직접 넣어야 합니다
+- 관리자 대시보드 없음: 등록 코드 발급 API 는 준비됨. 작업자·센서·공지 관리는 아직 `invisen-admin` 또는 DB 직접
 - 앱이 완전히 종료돼 있으면 측정이 멈춥니다(웹뷰 기반 한계). 백그라운드 BLE 는 켜 두었지만 iOS 가 앱을 오래 멈추면 업로드가 지연될 수 있습니다
 - 실기기 테스트 전: Xcode 빌드, 푸시, BLE, QR 은 이 환경(리눅스)에서 실행해보지 못했습니다

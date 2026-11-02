@@ -1,81 +1,40 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { randomInt, timingSafeEqual } from 'node:crypto';
 import { one, q } from '../db.js';
-import { config } from '../config.js';
 import { HttpError, parse, sha256, normalizePhone, createSession, requireAuth, bearer } from '../http.js';
-import { sms } from '../sms.js';
+import { checkInvite } from '../invites.js';
 import { loadMe } from '../queries.js';
-import type { OtpResponse, VerifyResponse } from '../api-types.js';
+import type { LoginResponse } from '../api-types.js';
 
-const phoneSchema = z.object({ phone: z.string().transform(normalizePhone).pipe(z.string().regex(/^01\d{8,9}$/)) });
-const verifySchema = phoneSchema.extend({ code: z.string().regex(/^\d{6}$/) });
+const loginSchema = z.object({
+  phone: z.string().transform(normalizePhone).pipe(z.string().regex(/^01\d{8,9}$/)),
+  code: z.string().regex(/^\d{6}$/),
+});
 
-const otpHash = (phone: string, code: string) => sha256(`${config.otpSecret}:${phone}:${code}`);
+const WRONG = '등록 코드가 맞지 않아요. 번호와 코드를 확인해 주세요.';
 
 export async function authRoutes(app: FastifyInstance) {
   app.post(
-    '/api/auth/otp',
+    '/api/auth/login',
     {
       config: {
         rateLimit: {
-          max: 5,
-          timeWindow: '1 hour',
+          max: 10,
+          timeWindow: '15 minutes',
           hook: 'preHandler',
-          keyGenerator: (req) => `otp:${normalizePhone(String((req.body as { phone?: string })?.phone ?? ''))}`,
+          keyGenerator: (req) => `login:${req.ip}:${normalizePhone(String((req.body as { phone?: string })?.phone ?? ''))}`,
         },
       },
     },
-    async (req): Promise<OtpResponse> => {
-      const { phone } = parse(phoneSchema, req.body);
-      const recent = await one<{ wait: number }>(
-        `select extract(epoch from (sent_at + make_interval(secs => $2) - now()))::int as wait
-           from otp_codes where phone = $1 and sent_at > now() - make_interval(secs => $2)`,
-        [phone, config.otpResendSec],
-      );
-      if (recent) throw new HttpError(429, 'too_soon', `${Math.max(1, recent.wait)}초 뒤에 다시 받을 수 있어요.`);
-
-      const worker = await one('select id from workers where phone = $1 and active', [phone]);
-      // Same response whether or not the number is registered (no account probing).
-      if (worker) {
-        const code = config.otpDevCode ?? String(randomInt(0, 1_000_000)).padStart(6, '0');
-        await q(
-          `insert into otp_codes (phone, code_hash, expires_at, attempts, sent_at)
-           values ($1, $2, now() + make_interval(secs => $3), 0, now())
-           on conflict (phone) do update set code_hash = excluded.code_hash, expires_at = excluded.expires_at, attempts = 0, sent_at = now()`,
-          [phone, otpHash(phone, code), config.otpTtlSec],
-        );
-        await sms.send(phone, `[invisen] 인증번호 ${code} (3분 안에 입력해 주세요)`);
-      } else {
-        await q(
-          `insert into otp_codes (phone, code_hash, expires_at, sent_at) values ($1, '', now(), now())
-           on conflict (phone) do update set code_hash = '', expires_at = now(), sent_at = now()`,
-          [phone],
-        );
-      }
-      return { ttlSec: config.otpTtlSec, resendSec: config.otpResendSec };
-    },
-  );
-
-  app.post(
-    '/api/auth/verify',
-    { config: { rateLimit: { max: 20, timeWindow: '10 minutes' } } },
-    async (req): Promise<VerifyResponse> => {
-      const { phone, code } = parse(verifySchema, req.body);
-      const row = await one<{ code_hash: string; expired: boolean; attempts: number }>(
-        'select code_hash, expires_at < now() as expired, attempts from otp_codes where phone = $1',
-        [phone],
-      );
-      if (!row || !row.code_hash || row.expired) throw new HttpError(400, 'expired', '인증번호가 만료됐어요. 다시 받아주세요.');
-      if (row.attempts >= config.otpMaxAttempts) throw new HttpError(429, 'too_many_attempts', '여러 번 틀렸어요. 인증번호를 다시 받아주세요.');
-      const ok = timingSafeEqual(Buffer.from(row.code_hash), Buffer.from(otpHash(phone, code)));
-      if (!ok) {
-        await q('update otp_codes set attempts = attempts + 1 where phone = $1', [phone]);
-        throw new HttpError(400, 'invalid_code', '인증번호가 맞지 않아요.');
-      }
-      await q('delete from otp_codes where phone = $1', [phone]);
+    async (req): Promise<LoginResponse> => {
+      const { phone, code } = parse(loginSchema, req.body);
       const worker = await one<{ id: number }>('select id from workers where phone = $1 and active', [phone]);
-      if (!worker) throw new HttpError(400, 'invalid_code', '인증번호가 맞지 않아요.');
+      // unknown numbers get the same answer as a wrong code (no account probing)
+      if (!worker) throw new HttpError(400, 'invalid_code', WRONG);
+      const r = await checkInvite(worker.id, code);
+      if (r === 'wrong') throw new HttpError(400, 'invalid_code', WRONG);
+      if (r === 'expired') throw new HttpError(400, 'expired', '쓸 수 있는 등록 코드가 없어요. 반장님께 새 코드를 받아주세요.');
+      if (r === 'locked') throw new HttpError(429, 'locked', '여러 번 틀려서 이 코드는 잠겼어요. 반장님께 새 코드를 받아주세요.');
       const token = await createSession(worker.id);
       return { token, me: await loadMe(worker.id) };
     },

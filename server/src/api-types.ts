@@ -8,21 +8,26 @@ export interface ApiError {
   message: string; // Korean, safe to show
 }
 
-// ---- auth ----
-export interface OtpRequest {
+// ---- auth: phone number + one-time invite code from a manager ----
+export interface LoginRequest {
   phone: string;
+  code: string; // 6 digits
 }
-export interface OtpResponse {
-  ttlSec: number;
-  resendSec: number;
-}
-export interface VerifyRequest {
-  phone: string;
-  code: string;
-}
-export interface VerifyResponse {
+export interface LoginResponse {
   token: string;
   me: Me;
+}
+
+// ---- admin (managers / admin dashboard) ----
+export interface InviteRequest {
+  workerId?: number;
+  phone?: string;
+  ttlHours?: number; // default 72
+}
+export interface InviteResponse {
+  code: string;
+  expiresAt: string;
+  worker: { id: number; name: string; phone: string };
 }
 
 // ---- me ----

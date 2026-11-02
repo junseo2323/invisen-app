@@ -39,8 +39,7 @@ async function req<R>(method: string, path: string, body?: unknown): Promise<R> 
 }
 
 const httpApi = {
-  requestOtp: (phone: string) => req<T.OtpResponse>('POST', '/api/auth/otp', { phone }),
-  verify: (phone: string, code: string) => req<T.VerifyResponse>('POST', '/api/auth/verify', { phone, code }),
+  login: (phone: string, code: string) => req<T.LoginResponse>('POST', '/api/auth/login', { phone, code }),
   logout: () => req<void>('POST', '/api/auth/logout'),
   me: () => req<T.Me>('GET', '/api/me'),
   status: () => req<T.Status>('GET', '/api/me/status'),

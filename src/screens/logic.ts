@@ -84,41 +84,28 @@ abstract class DataScreen<D, S extends Record<string, unknown> = Record<string, 
   }
 }
 
-// ---- 02 휴대폰 인증 ----------------------------------------------------------------
-type PhoneState = { phone: string; sent: boolean; code: string; expiresAt: number; resendAt: number; busy: boolean; error: string; info: string; focused: boolean };
+// ---- 02 휴대폰 번호 + 등록 코드 ----------------------------------------------------------
+// The code is a one-time 6-digit invite code from the manager (admin dashboard / server).
+type PhoneState = { phone: string; code: string; busy: boolean; error: string; info: string; focused: boolean };
+const DEMO = import.meta.env.VITE_DEMO === '1';
+const CODE_HINT = DEMO ? '데모 등록 코드는 000000 이에요.' : '반장님께 받은 6자리 등록 코드를 넣어주세요.';
 
 export class LoginPhone extends Screen<PhoneState> {
-  state: PhoneState = { phone: '', sent: false, code: '', expiresAt: 0, resendAt: 0, busy: false, error: '', info: '', focused: false };
-  private tick?: number;
+  state: PhoneState = { phone: '', code: '', busy: false, error: '', info: CODE_HINT, focused: false };
 
   mounted() {
-    this.tick = window.setInterval(() => this.state.sent && this.setState({}), 1000);
     (document.getElementById('phone') as HTMLInputElement | null)?.focus();
   }
-  unmount() {
-    clearInterval(this.tick);
-  }
 
-  private async send() {
-    const digits = this.state.phone.replace(/\D/g, '');
-    if (!/^01\d{8,9}$/.test(digits)) return this.setState({ error: '휴대폰 번호를 확인해 주세요.' });
-    this.setState({ busy: true, error: '', info: '' });
-    try {
-      const r = await api.requestOtp(digits);
-      const now = Date.now();
-      this.setState({ sent: true, code: '', expiresAt: now + r.ttlSec * 1000, resendAt: now + r.resendSec * 1000, busy: false, info: import.meta.env.VITE_DEMO === '1' ? '데모라서 문자는 가지 않아요. 인증번호 000000 을 넣어주세요.' : '문자로 받은 인증번호 6자리를 입력해 주세요.' });
-      setTimeout(() => (document.getElementById('otp1') as HTMLInputElement | null)?.focus(), 50);
-    } catch (e) {
-      this.setState({ busy: false, error: errText(e) });
-    }
-  }
+  private validPhone = () => /^01\d{8,9}$/.test(this.state.phone.replace(/\D/g, ''));
 
-  private async verify() {
+  private async login() {
     const { phone, code } = this.state;
     if (code.length !== 6 || this.state.busy) return;
+    if (!this.validPhone()) return this.setState({ error: '휴대폰 번호를 확인해 주세요.' });
     this.setState({ busy: true, error: '' });
     try {
-      const r = await api.verify(phone.replace(/\D/g, ''), code);
+      const r = await api.login(phone.replace(/\D/g, ''), code);
       setToken(r.token);
       await app.persist({ token: r.token, onboarded: false });
       app.set({ me: r.me });
@@ -130,41 +117,34 @@ export class LoginPhone extends Screen<PhoneState> {
 
   renderVals() {
     const st = this.state;
-    const now = Date.now();
-    const left = Math.max(0, Math.ceil((st.expiresAt - now) / 1000));
-    const cool = Math.max(0, Math.ceil((st.resendAt - now) / 1000));
     const active = st.focused && st.code.length < 6 ? st.code.length : -1;
-    const verifyDisabled = !st.sent || st.code.length !== 6 || st.busy;
+    const disabled = st.code.length !== 6 || !this.validPhone() || st.busy;
     return {
-      title1: st.sent ? '인증번호를' : '휴대폰 번호를',
+      title1: '등록 코드를',
       title2: '입력해주세요',
       phone: st.phone,
       onPhone: (ev: Event) => this.setState({ phone: (ev.target as HTMLInputElement).value, error: '' }),
-      send: () => void this.send(),
-      sendLabel: !st.sent ? '받기' : cool > 0 ? `${cool}초` : '재전송',
-      sendDisabled: st.busy || cool > 0,
-      sendOpacity: st.busy || cool > 0 ? 0.5 : 1,
-      timer: st.sent ? (left > 0 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : '만료') : '',
       boxes: Array.from({ length: 6 }, (_, i) => ({
         d: st.code[i] ?? '',
         border: i === active ? '2px solid #2bd8f0' : '1px solid #5f6975',
       })),
       code: st.code,
-      codeDisabled: !st.sent,
+      codeDisabled: false,
       onCode: (ev: Event) => {
         const code = (ev.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 6);
         this.setState({ code, error: '' });
-        if (code.length === 6) void this.verify();
+        if (code.length === 6 && this.validPhone()) void this.login();
       },
       onFocus: () => this.setState({ focused: true }),
       onBlur: () => this.setState({ focused: false }),
       error: st.error,
       info: st.error ? '' : st.info,
-      changed: () => this.setState({ info: '등록된 번호가 바뀌었다면 현장 관리자에게 번호 변경을 요청해 주세요.', error: '' }),
-      verify: () => void this.verify(),
-      verifyDisabled,
-      verifyOpacity: verifyDisabled ? 0.4 : 1,
-      verifyLabel: st.busy && st.sent ? '확인하는 중…' : '확인',
+      changed: () =>
+        this.setState({ info: '현장 관리자(반장)에게 등록 코드를 요청해 주세요. 번호가 바뀌었다면 번호 변경도 함께 요청해 주세요.', error: '' }),
+      verify: () => void this.login(),
+      verifyDisabled: disabled,
+      verifyOpacity: disabled ? 0.4 : 1,
+      verifyLabel: st.busy ? '확인하는 중…' : '확인',
     };
   }
 }

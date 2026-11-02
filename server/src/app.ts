@@ -9,6 +9,7 @@ import { meRoutes } from './routes/me.js';
 import { readingsRoutes } from './routes/readings.js';
 import { siteRoutes } from './routes/site.js';
 import { sosRoutes } from './routes/sos.js';
+import { adminRoutes } from './routes/admin.js';
 
 export async function buildApp(opts: { logger?: boolean } = {}) {
   const app = Fastify({
@@ -42,5 +43,6 @@ export async function buildApp(opts: { logger?: boolean } = {}) {
   await app.register(readingsRoutes);
   await app.register(siteRoutes);
   await app.register(sosRoutes);
+  await app.register(adminRoutes);
   return app;
 }

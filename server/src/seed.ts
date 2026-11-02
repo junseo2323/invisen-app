@@ -7,6 +7,7 @@ import { pool, q, one, tx } from './db.js';
 import { migrate } from './migrate.js';
 import { config } from './config.js';
 import { dayStart } from './exposure.js';
+import { issueInvite } from './invites.js';
 
 const demo = process.argv.includes('--demo');
 // --me "이름:01012345678"  → that person takes 김현수's place (so you can log in on a real server)
@@ -125,6 +126,11 @@ async function main() {
   });
   const n = await q('select count(*)::int as n from readings');
   console.log(`seed: done${demo ? ` (demo, ${n[0].n} readings)` : ''}`);
+  const meRow = await one<{ id: number }>('select id from workers where phone = $1', [mePhone.replace(/\D/g, '')]);
+  if (meRow) {
+    const inv = await issueInvite(meRow.id, null);
+    console.log(`${meName} (${mePhone}) 등록 코드: ${inv.code}  — 72시간 안에 한 번만 쓸 수 있어요`);
+  }
 }
 
 main()
