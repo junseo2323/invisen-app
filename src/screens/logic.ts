@@ -28,8 +28,10 @@ const TZ = 'Asia/Seoul';
 const fmtTime = (d: Date | number, seconds = false) =>
   new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit', ...(seconds ? { second: '2-digit' } : {}), hour12: false, timeZone: TZ }).format(d);
 const fmtDate = (d: Date | number) => new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'long', timeZone: TZ }).format(d);
-const go = (route: string) => (location.hash = `#/${route}`);
+const go = (route: string) => (location.hash = `#${route}`);
 const errText = (e: unknown) => (e instanceof ApiError ? e.message : '잠시 문제가 생겼어요. 다시 시도해 주세요.');
+/** Native confirm in the app; the demo (shown where dialogs are blocked) just proceeds. */
+const ask = (msg: string) => import.meta.env.VITE_DEMO === '1' || window.confirm(msg);
 const tel = (n: string | null | undefined) => (n ? `tel:${n.replace(/[^\d+]/g, '')}` : '#');
 
 /** Current PM10: the live sensor value if fresh, else the server's last reading. */
@@ -104,7 +106,7 @@ export class LoginPhone extends Screen<PhoneState> {
     try {
       const r = await api.requestOtp(digits);
       const now = Date.now();
-      this.setState({ sent: true, code: '', expiresAt: now + r.ttlSec * 1000, resendAt: now + r.resendSec * 1000, busy: false, info: '문자로 받은 인증번호 6자리를 입력해 주세요.' });
+      this.setState({ sent: true, code: '', expiresAt: now + r.ttlSec * 1000, resendAt: now + r.resendSec * 1000, busy: false, info: import.meta.env.VITE_DEMO === '1' ? '데모라서 문자는 가지 않아요. 인증번호 000000 을 넣어주세요.' : '문자로 받은 인증번호 6자리를 입력해 주세요.' });
       setTimeout(() => (document.getElementById('otp1') as HTMLInputElement | null)?.focus(), 50);
     } catch (e) {
       this.setState({ busy: false, error: errText(e) });
@@ -184,7 +186,7 @@ export class LoginProfile extends Screen {
       shiftTime: me?.shift.start ? `${me.shift.start}–${me.shift.end}` : '',
       manager: me?.manager ? `${me.manager.name} ${me.manager.title}` : '–',
       notMe: async () => {
-        if (!window.confirm('등록된 정보가 다르면 현장 관리자에게 문의해 주세요.\n로그아웃할까요?')) return;
+        if (!ask('등록된 정보가 다르면 현장 관리자에게 문의해 주세요.\n로그아웃할까요?')) return;
         await api.logout().catch(() => {});
         await logoutLocal();
         go('main');
@@ -643,7 +645,7 @@ export class More extends Screen {
       version: `v${__APP_VERSION__}`,
       logout: async (ev: Event) => {
         ev.preventDefault();
-        if (!window.confirm('로그아웃할까요? 센서 연결도 끊어져요.')) return;
+        if (!ask('로그아웃할까요? 센서 연결도 끊어져요.')) return;
         await api.logout().catch(() => {});
         await logoutLocal();
         go('main');

@@ -1,19 +1,13 @@
 // Typed client for the invisen API (server/src/api-types.ts is the contract).
 import type * as T from '../server/src/api-types';
+import { ApiError } from './errors';
+import { demoApi } from './demo/fake-api';
+
+export { ApiError };
 
 /** '' = same origin (web, or the iOS app loading the hosted site).
  *  The iOS app with the bundled build needs the absolute server URL: VITE_API_URL=https://<domain>. */
 const BASE = ((import.meta.env.VITE_API_URL as string | undefined) ?? '').replace(/\/$/, '');
-
-export class ApiError extends Error {
-  constructor(
-    public status: number,
-    public code: string,
-    message: string,
-  ) {
-    super(message);
-  }
-}
 
 let token: string | null = null;
 let onUnauthorized: () => void = () => {};
@@ -44,7 +38,7 @@ async function req<R>(method: string, path: string, body?: unknown): Promise<R> 
   return data as R;
 }
 
-export const api = {
+const httpApi = {
   requestOtp: (phone: string) => req<T.OtpResponse>('POST', '/api/auth/otp', { phone }),
   verify: (phone: string, code: string) => req<T.VerifyResponse>('POST', '/api/auth/verify', { phone, code }),
   logout: () => req<void>('POST', '/api/auth/logout'),
@@ -62,5 +56,8 @@ export const api = {
   requestShift: () => req<{ notified: string[] }>('POST', '/api/me/requests', { type: 'shift' }),
   ackAlert: () => req<void>('POST', '/api/me/alerts/ack'),
 };
+
+/** VITE_DEMO=1 (npm run build:demo): runs entirely in the browser on sample data. */
+export const api: typeof httpApi = import.meta.env.VITE_DEMO === '1' ? demoApi : httpApi;
 
 export type { T };

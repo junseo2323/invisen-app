@@ -1,9 +1,4 @@
-import '@fontsource/ibm-plex-sans-kr/400.css';
-import '@fontsource/ibm-plex-sans-kr/600.css';
-import '@fontsource/ibm-plex-sans-kr/700.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/500.css';
-import '@fontsource/ibm-plex-mono/600.css';
+import './fonts';
 import './styles.css';
 
 import { compile, morphChildren, render, setAttrTransform, type Screen } from './dc';
@@ -57,8 +52,8 @@ function syncNav() {
 
 function show() {
   const route = resolve(location.hash);
-  if (`#/${route}` !== location.hash.split('?')[0]) {
-    history.replaceState(null, '', `#/${route}`);
+  if (`#${route}` !== location.hash.split("?")[0]) {
+    history.replaceState(null, "", `#${route}`);
   }
   if (current?.route === route) return paint();
   current?.logic.unmount();
@@ -107,7 +102,7 @@ async function boot() {
     await stopMonitor();
     setToken(null);
     await app.persist({ token: null, onboarded: false });
-    location.hash = '#/main';
+    location.hash = "#main";
   });
   applyPrefs();
   show();
@@ -122,3 +117,4 @@ async function boot() {
 }
 
 void boot();
+if (import.meta.env.VITE_DEMO === '1') void import('./demo/controls').then((m) => m.mountDemoControls());

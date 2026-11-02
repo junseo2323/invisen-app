@@ -42,7 +42,7 @@ export async function sosRoutes(app: FastifyInstance) {
     const text = `[SOS] ${w.name}(${w.employee_no}) ${where}${latest ? ` · PM10 ${Math.round(latest.pm10)}` : ''}${map}`;
     const managers = await managersOf(req.worker.id);
     const [pushed, hooked] = await Promise.all([
-      pushToWorkers(managers, { title: 'SOS 긴급 호출', body: text.replace('[SOS] ', ''), route: '#/site', critical: true }),
+      pushToWorkers(managers, { title: 'SOS 긴급 호출', body: text.replace('[SOS] ', ''), route: '#site', critical: true }),
       postWebhook(text),
     ]);
     req.log.warn({ sos: row.id, worker: req.worker.id, pushed, hooked }, 'SOS');
@@ -67,7 +67,7 @@ export async function sosRoutes(app: FastifyInstance) {
     if (!row) throw new HttpError(404, 'not_found', '취소할 호출이 없어요.');
     await q(`insert into events (worker_id, type, title, detail) values ($1, 'sos', 'SOS 취소', '호출을 취소했어요')`, [req.worker.id]);
     const managers = await managersOf(req.worker.id);
-    void pushToWorkers(managers, { title: 'SOS 취소', body: '작업자가 SOS 호출을 취소했어요', route: '#/site' });
+    void pushToWorkers(managers, { title: 'SOS 취소', body: '작업자가 SOS 호출을 취소했어요', route: '#site' });
     void postWebhook(`[SOS 취소] 호출 #${id}`);
     return reply.code(204).send();
   });

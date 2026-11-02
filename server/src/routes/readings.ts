@@ -96,7 +96,7 @@ export async function readingsRoutes(app: FastifyInstance) {
     const danger = newAlerts.find((a) => a.level === 'danger');
     if (danger) {
       const text = `[위험] ${w.name}(${w.employee_no}) ${w.zone_name ?? ''} ${w.spot ?? ''} · PM10 ${Math.round(danger.pm10)} µg/m³ (권고치 ${Math.round((danger.pm10 / limit) * 100)}%)`;
-      void managersOf(workerId).then((ids) => pushToWorkers(ids, { title: '위험 알림', body: text.replace('[위험] ', ''), route: '#/site' }));
+      void managersOf(workerId).then((ids) => pushToWorkers(ids, { title: '위험 알림', body: text.replace('[위험] ', ''), route: '#site' }));
       void postWebhook(text);
     }
     return { accepted, level };

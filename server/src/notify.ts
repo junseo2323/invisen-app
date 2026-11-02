@@ -9,7 +9,7 @@ import { q } from './db.js';
 export interface PushMessage {
   title: string;
   body: string;
-  /** Route to open in the app, e.g. '#/log'. */
+  /** Route to open in the app, e.g. '#log'. */
   route?: string;
   critical?: boolean;
 }

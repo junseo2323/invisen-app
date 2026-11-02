@@ -38,6 +38,16 @@ http://localhost:5173 → 시작하기 → `010-2481-3307`, 인증번호 `000000
 
 테스트: `cd server && npm test` (로컬 `invisen_test` DB 또는 `DATABASE_URL_TEST`).
 
+### 데모 빌드
+
+서버 없이 샘플 데이터 + 가상 센서로 도는 버전입니다 (인증번호 `000000`, 화면 아래 `데모` 스위치로 안전·주의·위험 전환).
+
+```bash
+npm run build:demo
+```
+
+`dist-demo/invisen-demo.html` 한 파일로 나옵니다 (공유용). 일반 빌드에는 데모 코드가 들어가지 않습니다.
+
 ## 앱 흐름
 
 | 단계 | 화면 | 하는 일 |

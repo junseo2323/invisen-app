@@ -221,7 +221,7 @@ export async function meRoutes(app: FastifyInstance) {
     await pushToWorkers(managers, {
       title: '교대 요청',
       body: `${me.name} · ${c.zone_name ?? ''} — 누적 노출량이 높아 교대를 요청했어요`,
-      route: '#/site',
+      route: '#site',
     });
     return { type, notified: me.manager ? [`${me.manager.name} ${me.manager.title}`] : [] };
   });

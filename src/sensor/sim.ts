@@ -7,7 +7,19 @@ const DEVICES = [
   { deviceId: 'sim-0157', id: 'IVS-P10-0157', rssi: -81, battery: 64 },
 ];
 
-function scenario(): 'safe' | 'caution' | 'danger' {
+type Scenario = 'safe' | 'caution' | 'danger';
+let override: Scenario | null = null;
+export function setSimScenario(s: Scenario) {
+  override = s;
+  try {
+    localStorage.setItem('invisen.sim', s);
+  } catch {
+    /* storage blocked */
+  }
+}
+
+export function scenario(): Scenario {
+  if (override) return override;
   const fromUrl = new URLSearchParams(location.search).get('sim') ?? location.hash.match(/[?&]sim=(\w+)/)?.[1];
   let v: string | null | undefined = fromUrl;
   try {
@@ -39,8 +51,8 @@ export const simDriver: SensorDriver = {
     const dev = DEVICES.find((d) => d.deviceId === deviceId) ?? DEVICES[0];
     onDisconnect = h.onDisconnect;
     h.onBattery(dev.battery);
-    const base = { safe: 38, caution: 86, danger: 164 }[scenario()];
     const emit = () => {
+      const base = { safe: 38, caution: 86, danger: 164 }[scenario()];
       const t = Date.now();
       const noise = Math.sin(t / 7000) * 3 + (Math.random() - 0.5) * 2;
       const r: SensorReading = {

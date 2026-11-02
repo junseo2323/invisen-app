@@ -52,15 +52,15 @@ function react(level: Level, pm10: number) {
   const vibe = app.state.prefs.vibe;
   if (level === 'danger') {
     if (vibe) haptics.pattern([400, 100, 400, 100, 400]);
-    void notifyLocal('위험 · 지금 바로 나와주세요', `${zone} PM10 ${Math.round(pm10)} µg/m³`, '#/alert-danger');
+    void notifyLocal('위험 · 지금 바로 나와주세요', `${zone} PM10 ${Math.round(pm10)} µg/m³`, '#alert-danger');
     // don't re-open the alert more than once a minute
     if (Date.now() - dangerShownAt > 60_000) {
       dangerShownAt = Date.now();
-      location.hash = '#/alert-danger';
+      location.hash = '#alert-danger';
     }
   } else if (level === 'caution' && prev === 'safe') {
     if (vibe) haptics.warn();
-    if (!isForeground()) void notifyLocal('주의 · 마스크를 써주세요', `${zone} PM10 ${Math.round(pm10)} µg/m³`, '#/home');
+    if (!isForeground()) void notifyLocal('주의 · 마스크를 써주세요', `${zone} PM10 ${Math.round(pm10)} µg/m³`, '#home');
   }
 }
 
