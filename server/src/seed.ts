@@ -8,6 +8,7 @@ import { migrate } from './migrate.js';
 import { config } from './config.js';
 import { dayStart } from './exposure.js';
 import { issueInvite } from './invites.js';
+import { hhmmss } from './alerts.js';
 
 const demo = process.argv.includes('--demo');
 // --me "이름:01012345678"  → that person takes 김현수's place (so you can log in on a real server)
@@ -137,7 +138,6 @@ async function main() {
     }
 
     // dashboard incidents for the day so far (same story as the worker's log)
-    const hhmmss = (t: number) => new Date(t).toLocaleTimeString('ko-KR', { hour12: false, timeZone: 'Asia/Seoul' });
     const incidents: [number, string, string, string, string, [string, string][], string[], string | null][] = [
       [at(11, 2), 'caution', 'resolved', '김현수 님 PM10 88 µg/m³', '5구역 · 권고치 88%', [['PM10', '88'], ['권고치 대비', '88%'], ['구역', '5구역']], ['PM10 88 감지', '작업자 앱 마스크 알림', '관리자 확인'], null],
       [at(11, 24), 'danger', 'resolved', '김현수 님 PM10 112 µg/m³', '5구역 · 권고치 112%', [['PM10', '112'], ['권고치 대비', '112%'], ['구역', '5구역']], ['PM10 112 감지', '작업자 앱 대피 알림', '관리자 알림', '작업자 휴게실 도착', '처리 완료'], '작업자를 안전 구역으로 대피시키고 원인을 확인해 주세요.'],

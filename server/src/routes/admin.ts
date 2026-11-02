@@ -10,6 +10,7 @@ import { DAY, dateLabel, hm, shortDate, siteWorkers } from '../admin-data.js';
 import { buckets, dayStart, exposurePercent, levelOf, localParts, WEEKDAYS, zoneDurations, type Sample } from '../exposure.js';
 import { samples, tz } from '../queries.js';
 import { pushToWorkers } from '../notify.js';
+import { config } from '../config.js';
 
 const STATUS_LABEL: Record<AlertStatus, string> = { open: '대기', acked: '확인됨', resolved: '처리 완료', auto: '자동 해결', info: '정보' };
 const TYPE_LABEL: Record<AlertType, string> = { caution: '주의', danger: '위험', sos: 'SOS', sensor: '센서', advice: '주의', notice: '공지' };
@@ -41,7 +42,7 @@ export async function adminRoutes(app: FastifyInstance) {
   // ---- auth ---------------------------------------------------------------------
   app.post(
     '/api/admin/auth/login',
-    { config: { rateLimit: { max: 10, timeWindow: '15 minutes', hook: 'preHandler', keyGenerator: (req) => `admin-login:${req.ip}` } } },
+    { config: { rateLimit: { max: 30, timeWindow: '15 minutes', hook: 'preHandler', keyGenerator: (req) => `admin-login:${req.ip}` } } },
     async (req) => {
       const { username, password, remember } = parse(
         z.object({ username: z.string().trim().min(1).max(100), password: z.string().min(1).max(200), remember: z.boolean().default(true) }),
@@ -174,7 +175,9 @@ export async function adminRoutes(app: FastifyInstance) {
       const ws = await siteWorkers(siteId);
       const now = Date.now();
       return ws.map((w) => {
-        const conn = !w.loggedIn ? 'pending' : w.lastSeen && now - w.lastSeen < 10 * 60_000 ? 'on' : 'off';
+        // readings only arrive through the app, so recent data means the app is connected
+        const recent = !!w.lastSeen && now - w.lastSeen < 10 * 60_000;
+        const conn = recent ? 'on' : w.loggedIn ? 'off' : 'pending';
         return {
           id: w.id,
           name: w.name,
@@ -351,14 +354,14 @@ export async function adminRoutes(app: FastifyInstance) {
     });
 
     // ---- alerts ----------------------------------------------------------------------
-    async function recentAlerts(siteId: number, limit: number, since?: number) {
+    async function recentAlerts(siteId: number, limit: number, since?: number, until?: number) {
       const rows = await q<{
         id: number; type: AlertType; status: AlertStatus; title: string; sub: string | null; rec: string | null;
         metrics: [string, string][]; worker_ids: number[]; timeline: [string, string][]; created_at: Date;
       }>(
         `select id, type, status, title, sub, rec, metrics, worker_ids, timeline, created_at from alerts
-          where site_id = $1 ${since ? 'and created_at >= $3' : ''} order by created_at desc limit $2`,
-        since ? [siteId, limit, new Date(since)] : [siteId, limit],
+          where site_id = $1 ${since ? 'and created_at >= $3' : ''} ${until ? 'and created_at < $4' : ''} order by created_at desc limit $2`,
+        since ? [siteId, limit, new Date(since), ...(until ? [new Date(until)] : [])] : [siteId, limit],
       );
       const ids = [...new Set(rows.flatMap((r) => r.worker_ids))];
       const names = new Map(
@@ -396,14 +399,16 @@ export async function adminRoutes(app: FastifyInstance) {
     r.get('/api/admin/sites/:siteId/alerts', async (req) => {
       const { siteId } = parse(siteParam, req.params);
       await siteOr404(siteId);
+      const { day } = parse(z.object({ day: z.enum(['today', 'yesterday']).default('today') }), req.query);
       const today = dayStart(Date.now(), tz());
-      const list = await recentAlerts(siteId, 300, today);
+      const list = day === 'today' ? await recentAlerts(siteId, 300, today) : await recentAlerts(siteId, 300, today - DAY, today);
       const y = await one<{ n: number; open: number }>(
         `select count(*)::int as n, count(*) filter (where status in ('open', 'acked'))::int as open
            from alerts where site_id = $1 and created_at >= $2 and created_at < $3`,
         [siteId, new Date(today - DAY), new Date(today)],
       );
-      return { dateLabel: dateLabel(today), today: list, yesterday: y };
+      const pending = await one<{ n: number }>(`select count(*)::int as n from alerts where site_id = $1 and status = 'open'`, [siteId]);
+      return { day, dateLabel: dateLabel(day === 'today' ? today : today - DAY), list, today: day === 'today' ? list : [], yesterday: y, pending: pending!.n };
     });
 
     r.get('/api/admin/sites/:siteId/alerts/pending-count', async (req) => {
@@ -449,18 +454,24 @@ export async function adminRoutes(app: FastifyInstance) {
     r.get('/api/admin/sites/:siteId/reports', async (req) => {
       const { siteId } = parse(siteParam, req.params);
       await siteOr404(siteId);
-      const { period } = parse(z.object({ period: z.enum(['day', 'week', 'month']).default('week') }), req.query);
-      const now = Date.now();
+      const { period, end } = parse(
+        z.object({ period: z.enum(['day', 'week', 'month']).default('week'), end: z.iso.date().optional() }),
+        req.query,
+      );
       const t = tz();
-      const today = dayStart(now, t);
+      const realToday = dayStart(Date.now(), t);
+      // `end` = last day of an archived report; its "now" is the end of that day
+      const endDay = end ? Math.min(dayStart(Date.parse(`${end}T12:00:00Z`), t), realToday) : realToday;
+      const now = end && endDay < realToday ? endDay + DAY - 1 : Date.now();
+      const today = endDay;
       const nDays = period === 'day' ? 1 : period === 'week' ? 7 : 28;
       const from = today - (nDays - 1) * DAY;
       const prevFrom = from - nDays * DAY;
       const rows = await q<{ worker_id: number; name: string; ts: Date; pm10: number; zone_id: number | null; lim: number | null }>(
         `select r.worker_id, w.name, r.ts, r.pm10, r.zone_id, z.pm10_limit as lim
            from readings r join workers w on w.id = r.worker_id left join zones z on z.id = r.zone_id
-          where w.site_id = $1 and not w.is_demo and r.ts >= $2 order by r.ts`,
-        [siteId, new Date(prevFrom)],
+          where w.site_id = $1 and not w.is_demo and r.ts >= $2 and r.ts <= $3 order by r.ts`,
+        [siteId, new Date(prevFrom), new Date(now)],
       );
       const zones = await q<{ id: number; name: string }>('select id, name from zones where site_id = $1 and not is_rest order by id', [siteId]);
       // per worker per day samples
@@ -489,8 +500,8 @@ export async function adminRoutes(app: FastifyInstance) {
 
       const alerts = await q<{ type: AlertType; status: AlertStatus; created_at: Date; acked_at: Date | null; site_zone: string | null }>(
         `select type, status, created_at, acked_at, (metrics->2->>1) as site_zone from alerts
-          where site_id = $1 and created_at >= $2 and type in ('caution', 'danger', 'sos', 'advice')`,
-        [siteId, new Date(from)],
+          where site_id = $1 and created_at >= $2 and created_at <= $3 and type in ('caution', 'danger', 'sos', 'advice')`,
+        [siteId, new Date(from), new Date(now)],
       );
       const cautions = alerts.filter((a) => a.type === 'caution' || a.type === 'advice');
       const dangers = alerts.filter((a) => a.type === 'danger' || a.type === 'sos');
@@ -503,11 +514,11 @@ export async function adminRoutes(app: FastifyInstance) {
         period === 'month'
           ? Array.from({ length: 4 }, (_, i) => {
               const s0 = from + i * 7 * DAY;
-              return { label: `${shortDate(s0)}~`, from: s0, to: s0 + 7 * DAY, today: i === 3 };
+              return { label: `${shortDate(s0)}~`, from: s0, to: s0 + 7 * DAY, today: i === 3 && !end };
             })
           : Array.from({ length: nDays }, (_, i) => {
               const s0 = from + i * DAY;
-              return { label: s0 === today ? '오늘' : WEEKDAYS[localParts(s0, t).weekday], from: s0, to: s0 + DAY, today: s0 === today };
+              return { label: s0 === realToday ? '오늘' : nDays === 7 && end ? shortDate(s0) : WEEKDAYS[localParts(s0, t).weekday], from: s0, to: s0 + DAY, today: s0 === realToday };
             });
       const heat = zones.map((z) => ({
         zone: z.name,
@@ -531,8 +542,8 @@ export async function adminRoutes(app: FastifyInstance) {
       }));
       const workerIds = [...new Set(cur.map((x) => x.worker))];
       const dangerByWorker = await q<{ id: number; n: number }>(
-        `select unnest(worker_ids) as id, count(*)::int as n from alerts where site_id = $1 and created_at >= $2 and type in ('danger', 'sos') group by 1`,
-        [siteId, new Date(from)],
+        `select unnest(worker_ids) as id, count(*)::int as n from alerts where site_id = $1 and created_at >= $2 and created_at <= $3 and type in ('danger', 'sos') group by 1`,
+        [siteId, new Date(from), new Date(now)],
       );
       const people = workerIds
         .map((w) => {
@@ -552,22 +563,23 @@ export async function adminRoutes(app: FastifyInstance) {
           };
         })
         .sort((a, b) => b.avg - a.avg);
-      const lp = localParts(now, t);
       const range =
-        period === 'day' ? `${dateLabel(now)} · 일간` : period === 'week' ? `${shortDate(from)} – ${shortDate(now)} · 주간` : `${shortDate(from)} – ${shortDate(now)} · 최근 4주`;
-      void lp;
+        period === 'day' ? `${dateLabel(today)} · 일간` : period === 'week' ? `${shortDate(from)} – ${shortDate(today)} · 주간` : `${shortDate(from)} – ${shortDate(today)} · 4주`;
       const zoneCount = new Map<string, number>();
       for (const a of cautions) if (a.site_zone) zoneCount.set(a.site_zone, (zoneCount.get(a.site_zone) ?? 0) + 1);
       const topZone = [...zoneCount].sort((a, b) => b[1] - a[1])[0];
       return {
         range,
+        period,
+        end: end ?? null,
+        prevLabel: period === 'day' ? '어제' : period === 'week' ? '지난주' : '이전 4주',
         summary: {
           avg: avg == null ? null : Math.round(avg),
           delta: avg != null && prevAvg != null ? Math.round(avg - prevAvg) : null,
           caution: cautions.length,
           cautionNote: topZone ? `${topZone[1]}건이 ${topZone[0]}` : cautions.length ? '' : '없어요',
           danger: dangers.length,
-          dangerNote: dangers[0] ? `${hm(dangers.at(-1)!.created_at)} 가장 최근` : '없어요',
+          dangerNote: dangers.length ? `${shortDate(Math.max(...dangers.map((d) => d.created_at.getTime())))} ${hm(Math.max(...dangers.map((d) => d.created_at.getTime())))} 가장 최근` : '없어요',
           handled: handled.length,
           total: alerts.length,
           avgResponseSec: avgResp == null ? null : Math.round(avgResp / 1000),
@@ -583,9 +595,9 @@ export async function adminRoutes(app: FastifyInstance) {
     r.get('/api/admin/sites/:siteId/sensors', async (req) => {
       const { siteId } = parse(siteParam, req.params);
       await siteOr404(siteId);
-      const rows = await q<{ id: string; maker: string | null; model: string | null; items: string | null; battery: number | null; calibrated_on: string | null; last_seen_at: Date | null; worker: string | null; worker_id: number | null }>(
-        `select s.id, s.maker, s.model, s.items, s.battery, s.calibrated_on::text, s.last_seen_at, w.name as worker, w.id as worker_id
-           from sensors s left join workers w on w.id = s.worker_id
+      const rows = await q<{ id: string; maker: string | null; model: string | null; items: string | null; battery: number | null; calibrated_on: string | null; last_seen_at: Date | null; worker: string | null; worker_id: number | null; zone: string | null }>(
+        `select s.id, s.maker, s.model, s.items, s.battery, s.calibrated_on::text, s.last_seen_at, w.name as worker, w.id as worker_id, z.name as zone
+           from sensors s left join workers w on w.id = s.worker_id left join zones z on z.id = w.current_zone_id
           where s.site_id = $1 and s.id not like 'IVS-DEMO-%' order by s.id`,
         [siteId],
       );
@@ -604,6 +616,7 @@ export async function adminRoutes(app: FastifyInstance) {
           last: !seen ? '–' : now - seen < 60_000 ? '방금' : hm(seen),
           calibrated: s.calibrated_on?.replace(/-/g, '.') ?? '–',
           calDue: calDue(s.calibrated_on),
+          zone: s.worker_id ? s.zone : null,
           kind,
         };
       });
@@ -658,6 +671,15 @@ export async function adminRoutes(app: FastifyInstance) {
         rules: await siteRules(siteId),
         members: members.map((m) => ({ ...m, me: m.id === req.admin.id })),
         myRole: req.admin.role,
+        integrations: {
+          app: (await one<{ n: number; online: number }>(
+            `select count(*)::int as n, count(*) filter (where last_seen_at > now() - interval '10 minutes')::int as online
+               from sensors where site_id = $1 and worker_id is not null and id not like 'IVS-DEMO-%'`,
+            [siteId],
+          ))!,
+          push: !!(config.apns.keyId && config.apns.teamId && (config.apns.key || config.apns.keyFile)),
+          webhook: !!config.alertWebhookUrl,
+        },
       };
     });
 
@@ -708,10 +730,15 @@ export async function adminRoutes(app: FastifyInstance) {
     r.patch('/api/admin/admins/:id', { preHandler: requireOwner }, async (req) => {
       const { id } = parse(idParam, req.params);
       if (id === req.admin.id) throw new HttpError(400, 'invalid_request', '내 계정은 여기서 바꿀 수 없어요.');
-      const { active } = parse(z.object({ active: z.boolean() }), req.body);
-      await q('update admins set active = $2 where id = $1', [id, active]);
-      if (!active) await q('delete from admin_sessions where admin_id = $1', [id]);
-      return { id, active };
+      const b = parse(z.object({ active: z.boolean().optional(), password: z.string().min(8).max(200).optional() }), req.body);
+      const target = await one<{ role: string }>('select role from admins where id = $1', [id]);
+      if (!target) throw new HttpError(404, 'not_found', '계정을 찾을 수 없어요.');
+      if (target.role === 'owner') throw new HttpError(400, 'invalid_request', '소유자 계정은 바꿀 수 없어요.');
+      if (b.active !== undefined) await q('update admins set active = $2 where id = $1', [id, b.active]);
+      // temporary password: the person must pick a new one at next sign-in
+      if (b.password) await q('update admins set password_hash = $2, must_change_password = true where id = $1', [id, await hashPassword(b.password)]);
+      if (b.active === false || b.password) await q('delete from admin_sessions where admin_id = $1', [id]);
+      return { id, active: b.active };
     });
   });
 }

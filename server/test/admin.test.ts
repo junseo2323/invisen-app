@@ -165,12 +165,51 @@ test('sensors, reports, settings', async () => {
   assert.equal(set2.rules.dEvac, true, 'evacuation alerts cannot be turned off');
 });
 
+test("yesterday's alerts, archived weekly report, sensor zones, integrations, app caution rule", async () => {
+  await pool.query(`insert into alerts (site_id, type, status, title, created_at) values (1, 'caution', 'resolved', '어제 알림', now() - interval '1 day')`);
+  const y = (await call('GET', '/api/admin/sites/1/alerts?day=yesterday')).body;
+  assert.equal(y.day, 'yesterday');
+  assert.ok(y.list.some((a: { title: string }) => a.title === '어제 알림'));
+  const t = (await call('GET', '/api/admin/sites/1/alerts')).body;
+  assert.ok(!t.list.some((a: { title: string }) => a.title === '어제 알림'));
+  assert.ok(t.yesterday.n >= 1);
+  assert.equal(typeof t.pending, 'number');
+  // a past week: no "today" column, today's readings are not in it
+  const end = new Date(Date.now() - 3 * 86_400_000).toISOString().slice(0, 10);
+  const rep = (await call('GET', `/api/admin/sites/1/reports?period=week&end=${end}`)).body;
+  assert.equal(rep.end, end);
+  assert.equal(rep.columns.length, 7);
+  assert.ok(!rep.columns.some((c: { today: boolean }) => c.today));
+  assert.equal(rep.people.length, 0);
+  assert.equal((await call('GET', '/api/admin/sites/1/reports?period=week&end=nope')).status, 400);
+  // sensors carry the wearer's zone
+  const s = (await call('GET', '/api/admin/sites/1/sensors')).body;
+  assert.equal(s.sensors.find((x: { id: string }) => x.id === 'IVS-P10-0142').zone, '3구역');
+  assert.equal(s.sensors.find((x: { id: string }) => x.id === 'IVS-P10-0170').zone, null);
+  const set = (await call('GET', '/api/admin/sites/1/settings')).body;
+  assert.equal(typeof set.integrations.push, 'boolean');
+  assert.equal(typeof set.integrations.webhook, 'boolean');
+  assert.ok(set.integrations.app.n >= 1);
+  // the worker app follows "주의: 작업자 앱 알림"
+  assert.equal((await call('GET', '/api/me', undefined, worker)).body.cautionAlerts, true);
+  await call('PUT', '/api/admin/sites/1/settings', { rules: { cApp: false } });
+  assert.equal((await call('GET', '/api/me', undefined, worker)).body.cautionAlerts, false);
+  await call('PUT', '/api/admin/sites/1/settings', { rules: { cApp: true } });
+});
+
 test('accounts: create a viewer, viewers cannot change things, password change', async () => {
   assert.equal((await call('POST', '/api/admin/admins', { username: 'viewer1', name: '최동훈', role: 'viewer', password: 'short' })).status, 400);
   assert.equal((await call('POST', '/api/admin/admins', { username: 'viewer1', name: '최동훈', role: 'viewer', password: 'viewer-pass-1' })).status, 200);
   const v = (await call('POST', '/api/admin/auth/login', { username: 'viewer1', password: 'viewer-pass-1' }, '')).body.token;
   assert.equal((await call('GET', '/api/admin/sites/1/overview', undefined, v)).status, 200);
   assert.equal((await call('POST', '/api/admin/workers/2/shift-order', undefined, v)).status, 403);
+  // the owner hands out a temporary password: sessions end, the next sign-in must change it
+  const vid = (await call('GET', '/api/admin/sites/1/settings')).body.members.find((m: { username: string }) => m.username === 'viewer1').id;
+  assert.equal((await call('PATCH', `/api/admin/admins/${vid}`, { password: 'temp-pass-9' })).status, 200);
+  assert.equal((await call('GET', '/api/admin/me', undefined, v)).status, 401);
+  const relog = (await call('POST', '/api/admin/auth/login', { username: 'viewer1', password: 'temp-pass-9' }, '')).body;
+  assert.equal(relog.admin.mustChangePassword, true);
+  assert.equal((await call('PATCH', `/api/admin/admins/${vid}`, { active: false }, relog.token)).status, 403);
   assert.equal((await call('POST', '/api/admin/me/password', { current: 'wrong', next: 'new-password-1' })).status, 400);
   assert.equal((await call('POST', '/api/admin/me/password', { current: 'admin', next: 'new-password-1' })).status, 204);
   assert.equal((await call('GET', '/api/admin/me')).body.mustChangePassword, false);

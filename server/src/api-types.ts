@@ -52,6 +52,8 @@ export interface Me {
   sensor: SensorInfo | null;
   /** Demo / review account: the app uses the simulated sensor. */
   demo: boolean;
+  /** Site rule "주의: 작업자 앱 알림" (admin settings). Danger alerts can't be turned off. */
+  cautionAlerts?: boolean;
 }
 
 export interface Status {

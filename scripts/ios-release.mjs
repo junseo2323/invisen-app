@@ -23,6 +23,6 @@ try {
 } catch (e) {
   console.warn(`[주의] ${url}/api/health 에 닿지 않아요 (${e.message}). 빌드는 계속합니다.`);
 }
-run('npm run build');
+run('INVISEN_APP_ONLY=1 npm run build');
 run('npx cap sync ios');
 console.log('\n준비 완료. Xcode: npm run ios:open → Product › Archive, 또는 GitHub Actions 의 "iOS TestFlight" 실행.');

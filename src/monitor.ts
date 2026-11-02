@@ -59,6 +59,8 @@ function react(level: Level, pm10: number) {
       location.hash = '#alert-danger';
     }
   } else if (level === 'caution' && prev === 'safe') {
+    // the site can turn caution alerts off (관리자 설정 > 알림 규칙); danger always alerts
+    if (app.state.me?.cautionAlerts === false) return;
     if (vibe) haptics.warn();
     if (!isForeground()) void notifyLocal('주의 · 마스크를 써주세요', `${zone} PM10 ${Math.round(pm10)} µg/m³`, '#home');
   }

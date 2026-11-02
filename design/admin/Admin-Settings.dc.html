@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>설정</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;display=swap">
+<style>
+html,body{margin:0;background:#0b0e12;overflow-x:hidden}
+a{color:#a9b1bb}a:hover{color:#e3e7eb}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #2bd8f0;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <aside style="flex: 1 1 232px; box-sizing: border-box; padding: 32px 16px 24px; display: flex; flex-direction: column; gap: 36px; border-right: 1px solid #1c2127;">
+    <img src="/_blob/b00325e71462f4b61154644f1df0abb6" alt="invisen" style="display: block; width: 96px; height: auto; margin: 0 12px;">
+    <nav aria-label="관리자 메뉴" style="display: flex; flex-direction: column; gap: 4px;">
+      <a href="Admin-Home.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"></rect><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"></rect><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"></rect></svg>관제 홈
+      </a>
+      <a href="Admin-Workers.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"></path></svg>작업자
+      </a>
+      <a href="Admin-Alerts.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 21h4"></path></svg>알림
+        <span style="margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #2e2306; color: #ffbe1a; font-size: 12px; font-weight: 700;">2</span>
+      </a>
+      <a href="Admin-Reports.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path><path d="M14 3v5h5M9.5 13h6M9.5 17h4"></path></svg>보고서
+      </a>
+      <a href="Admin-Sensors.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 5V2l5 5L7 17"></path></svg>센서
+      </a>
+      <a href="Admin-Settings.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; background: #1c2127; color: #e3e7eb; text-decoration: none; font-size: 15px; font-weight: 600;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path><circle cx="15" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></svg>설정
+      </a>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <a href="Admin-Sites.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; color: #e3e7eb; text-decoration: none;">
+        <span style="flex: 1; display: flex; flex-direction: column;">
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">인천공항 T1 BHS</span>
+          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">현장 바꾸기</span>
+        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"></path></svg>
+      </a>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-left: 12px;">
+        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">박정민 반장</span>
+        <a href="Admin-Login.dc.html" style="height: 36px; display: flex; align-items: center; padding: 0 8px; font-size: 13px; color: #a9b1bb; text-decoration: none;">로그아웃</a>
+      </div>
+    </div>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 36px 40px 56px; display: flex; flex-direction: column; gap: 28px;">
+
+    <header style="display: flex; flex-direction: column; gap: 4px;">
+      <h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em;">설정</h1>
+      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">인천공항 T1 BHS</span>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start;">
+
+      <nav aria-label="설정 항목" style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 2px;">
+        <a href="#site" style="height: 40px; display: flex; align-items: center; padding: 0 12px; background: #13171c; color: #e3e7eb; text-decoration: none; font-size: 15px; font-weight: 600;">현장</a>
+        <a href="#limits" style="height: 40px; display: flex; align-items: center; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">노출 기준</a>
+        <a href="#rules" style="height: 40px; display: flex; align-items: center; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">알림 규칙</a>
+        <a href="#members" style="height: 40px; display: flex; align-items: center; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">관리자</a>
+        <a href="#integrations" style="height: 40px; display: flex; align-items: center; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">연동</a>
+      </nav>
+
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+        <section id="site" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+          <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">현장</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">현장 이름</span>
+              <input value="인천공항 제1여객터미널 수하물 처리 시설" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">주소</span>
+              <input value="인천광역시 중구 공항로 272" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">근무조</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+              <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; background: #070a0d;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">주간 A조</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #a9b1bb;">07:00–15:00</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; background: #070a0d;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">주간 B조</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #a9b1bb;">15:00–23:00</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; background: #070a0d;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">야간 C조</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #a9b1bb;">23:00–07:00</span></div>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 1px solid #1c2127;">
+            <span style="font-size: 15px; line-height: 22px;">구역 5개 · 휴게실 2개 · 관제실 1개</span>
+            <button type="button" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">도면에서 구역 편집</button>
+          </div>
+        </section>
+
+        <section id="limits" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px;">
+            <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">노출 기준</h2>
+            <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">바꾼 기록은 보고서에 남아요</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); gap: 16px; padding: 0 0 10px; border-bottom: 1px solid #2c333b; font-size: 13px; line-height: 20px; color: #a9b1bb;">
+              <span>항목</span><span>권고치</span><span>측정 기준</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #1c2127;">
+              <span style="font-size: 15px; font-weight: 600;">미세먼지 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">PM10</span></span>
+              <label style="display: flex; align-items: center; gap: 8px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">PM10 권고치</span><input value="100" inputmode="numeric" style="width: 80px; height: 44px; box-sizing: border-box; padding: 0 12px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">µg/m³</span></label>
+              <span style="font-size: 14px; color: #a9b1bb;">8시간 시간가중평균</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #1c2127;">
+              <span style="font-size: 15px; font-weight: 600;">초미세먼지 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">PM2.5</span></span>
+              <label style="display: flex; align-items: center; gap: 8px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">PM2.5 권고치</span><input value="50" inputmode="numeric" style="width: 80px; height: 44px; box-sizing: border-box; padding: 0 12px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">µg/m³</span></label>
+              <span style="font-size: 14px; color: #a9b1bb;">8시간 시간가중평균</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); align-items: center; gap: 16px; padding: 12px 0;">
+              <span style="font-size: 15px; font-weight: 600;">일산화탄소 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">CO</span></span>
+              <label style="display: flex; align-items: center; gap: 8px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">CO 권고치</span><input value="30" inputmode="numeric" style="width: 80px; height: 44px; box-sizing: border-box; padding: 0 12px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">ppm</span></label>
+              <span style="font-size: 14px; color: #a9b1bb;">8시간 시간가중평균</span>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #070a0d;">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 9px; height: 6px; background: #34c77b;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span></span>
+              <span style="flex: 1; font-size: 15px; font-weight: 700; color: #34c77b;">안전</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #a9b1bb;">&lt; 80%</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #070a0d;">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #ffbe1a;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span></span>
+              <span style="flex: 1; font-size: 15px; font-weight: 700; color: #ffbe1a;">주의</span>
+              <label style="display: flex; align-items: center; gap: 6px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">주의 기준</span><input value="80" inputmode="numeric" style="width: 56px; height: 36px; box-sizing: border-box; padding: 0 8px; background: #13171c; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">% 이상</span></label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #070a0d;">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #ff5a4a;"></span></span>
+              <span style="flex: 1; font-size: 15px; font-weight: 700; color: #ff5a4a;">위험</span>
+              <label style="display: flex; align-items: center; gap: 6px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">위험 기준</span><input value="100" inputmode="numeric" style="width: 56px; height: 36px; box-sizing: border-box; padding: 0 8px; background: #13171c; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">% 이상</span></label>
+            </div>
+          </div>
+        </section>
+
+        <section id="rules" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 8px;">
+          <h2 style="margin: 0 0 8px; font-size: 18px; line-height: 26px; font-weight: 700;">알림 규칙</h2>
+          <sc-for list="{{rules}}" as="r" hint-placeholder-count="7">
+            <div style="display: flex; align-items: center; gap: 16px; min-height: 64px; border-top: 1px solid #1c2127;">
+              <span style="width: 52px; flex-shrink: 0;">
+                <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 8px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 12px; font-weight: 700;">{{r.tag}}</span>
+              </span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+                <span id="{{r.id}}" style="font-size: 15px; line-height: 22px; font-weight: 600;">{{r.label}}</span>
+                <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{r.hint}}</span>
+              </span>
+              <button type="button" role="switch" aria-checked="{{r.on}}" aria-labelledby="{{r.id}}" aria-disabled="{{r.locked}}" onClick="{{r.flip}}" style="position: relative; width: 52px; height: 32px; padding: 0; flex-shrink: 0; border: 0; border-radius: 0; cursor: {{r.cursor}}; background: {{r.track}}; opacity: {{r.opacity}};">
+                <span aria-hidden="true" style="position: absolute; top: 4px; left: {{r.left}}px; width: 24px; height: 24px; background: {{r.knob}};"></span>
+              </button>
+            </div>
+          </sc-for>
+        </section>
+
+        <section id="members" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px;">
+            <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">관리자</h2>
+            <button type="button" style="height: 40px; display: flex; align-items: center; gap: 6px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>초대
+            </button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; min-height: 64px; border-top: 1px solid #1c2127;">
+            <span aria-hidden="true" style="width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #2c333b; font-size: 14px; font-weight: 600;">박</span>
+            <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">박정민 반장 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">· 나</span></span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">협력사 A · 현장 관리자</span></span>
+            <span style="font-size: 14px; color: #e3e7eb;">소유자</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; min-height: 64px; border-top: 1px solid #1c2127;">
+            <span aria-hidden="true" style="width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #2c333b; font-size: 14px; font-weight: 600;">이</span>
+            <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">이수진</span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">협력사 A · 안전관리자</span></span>
+            <span style="font-size: 14px; color: #e3e7eb;">관리자</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; min-height: 64px; border-top: 1px solid #1c2127;">
+            <span aria-hidden="true" style="width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #2c333b; font-size: 14px; font-weight: 600;">최</span>
+            <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">최동훈</span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">원청 안전보건팀</span></span>
+            <span style="font-size: 14px; color: #a9b1bb;">보기 전용</span>
+          </div>
+        </section>
+
+        <section id="integrations" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+          <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">연동</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #070a0d;">
+              <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">파트너 A</span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">센서 22대 · 2초마다 수신</span></span>
+              <span style="display: flex; align-items: center; gap: 6px; font-size: 13px;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #e3e7eb; transform: rotate(45deg);"></span>연결됨</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #070a0d;">
+              <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">파트너 B</span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">센서 4대 · 5초마다 수신</span></span>
+              <span style="display: flex; align-items: center; gap: 6px; font-size: 13px;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #e3e7eb; transform: rotate(45deg);"></span>연결됨</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid #1c2127;">
+            <span style="flex: 1 1 200px; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">API 키</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; line-height: 20px; color: #a9b1bb;">ivs_live_••••••••••••3f9a</span></span>
+            <button type="button" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">복사</button>
+            <button type="button" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">다시 만들기</button>
+          </div>
+        </section>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px;">
+          <button type="button" style="height: 48px; padding: 0 22px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">되돌리기</button>
+          <button type="button" style="height: 48px; padding: 0 26px; background: #e3e7eb; border: 0; border-radius: 0; color: #0b0e12; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">변경 사항 저장</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = this.state || {};
+    const defs = [
+      { id: 'r1', key: 'cApp', tag: '주의', label: '작업자 앱 알림', hint: '본인에게 진동과 화면 알림', def: true },
+      { id: 'r2', key: 'cAdmin', tag: '주의', label: '관리자 알림', hint: '관제 홈과 알림 탭에 표시', def: true },
+      { id: 'r3', key: 'dEvac', tag: '위험', label: '자동 대피 알림', hint: '해당 구역 작업자 모두에게 · 끌 수 없어요', def: true, locked: true },
+      { id: 'r4', key: 'dSms', tag: '위험', label: '관리자 문자', hint: '관리자 3명에게 바로 문자', def: true },
+      { id: 'r5', key: 'ai', tag: 'AI', label: '교대·순환 권고', hint: '누적 80%를 넘으면 행동 지침 제안', def: true },
+      { id: 'r6', key: 'sensor', tag: '센서', label: '연결 끊김 알림', hint: '60초 이상 수신이 없으면', def: true },
+      { id: 'r7', key: 'weekly', tag: '보고', label: '주간 보고서 자동 발송', hint: '매주 월요일 원청 안전보건팀에게', def: false }
+    ];
+    const tags = {
+      '주의': ['#2e2306', '#ffbe1a'],
+      '위험': ['#35110e', '#ff5a4a'],
+      'AI': ['#1c2127', '#a9b1bb'],
+      '센서': ['#1c2127', '#a9b1bb'],
+      '보고': ['#1c2127', '#a9b1bb']
+    };
+    const rules = defs.map((d) => {
+      const on = d.locked ? true : (st[d.key] == null ? d.def : st[d.key]);
+      return {
+        id: d.id,
+        tag: d.tag,
+        label: d.label,
+        hint: d.hint,
+        on,
+        locked: !!d.locked,
+        tagBg: tags[d.tag][0],
+        tagFg: tags[d.tag][1],
+        track: on ? '#e3e7eb' : '#2c333b',
+        knob: on ? '#0b0e12' : '#a9b1bb',
+        left: on ? 24 : 4,
+        cursor: d.locked ? 'not-allowed' : 'pointer',
+        opacity: d.locked ? 0.6 : 1,
+        flip: () => { if (!d.locked) this.setState({ [d.key]: !on }); }
+      };
+    });
+    return { rules };
+  }
+}
+</script>
+</body>
+</html>

@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "design:import": "node scripts/import-design.mjs",
+    "design:import-admin": "node scripts/import-admin-design.mjs",
     "dev": "vite --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
-    "ios:sync": "npm run build && cap sync ios",
+    "ios:sync": "INVISEN_APP_ONLY=1 npm run build && cap sync ios",
     "ios:open": "cap open ios",
     "build:demo": "tsc --noEmit && vite build --mode demo && node scripts/inline-demo.mjs",
     "ios:release": "node scripts/ios-release.mjs",

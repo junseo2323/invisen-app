@@ -1,0 +1,234 @@
+/* Shell around the dashboard artboards (admin/src/markup). Visuals stay inline in the
+   markup; this file only adapts them to a real browser window, adds the toast and the
+   default-password banner, and makes reports/alerts print cleanly. */
+:root {
+  color-scheme: dark;
+  --signal: #2bd8f0;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html,
+body {
+  margin: 0;
+  background: #0b0e12;
+  color: #e3e7eb;
+  font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+input:focus {
+  outline: none;
+  border-color: var(--signal) !important;
+  box-shadow: inset 0 0 0 1px var(--signal);
+}
+input[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+input::placeholder {
+  color: #5f6975;
+}
+button[disabled] {
+  cursor: default !important;
+}
+
+/* hover states the static design can't express */
+aside nav a:hover,
+main a[href^='#worker-']:hover {
+  color: #e3e7eb !important;
+}
+aside nav a {
+  transition: background-color 0.15s var(--ease-out), color 0.15s var(--ease-out);
+}
+aside nav a:hover {
+  background-color: #13171c;
+}
+main [role='row']:has(a[href^='#worker-']):hover,
+section[aria-label='알림 목록'] > button:hover {
+  background-color: #10151a !important;
+}
+
+/* the sidebar stays put on wide screens */
+@media (min-width: 1000px) {
+  #admin > div > aside {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+/* narrow windows: tighter page padding, and the sidebar folds into a top bar
+   (logo + site/logout on one row, the menu as a scrolling row of tabs) */
+@media (max-width: 720px) {
+  #admin main {
+    padding: 24px 16px 40px !important;
+  }
+  #admin > div > aside {
+    display: grid !important;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 12px 16px !important;
+    padding: 14px 16px 10px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid #1c2127;
+  }
+  #admin > div > aside > img {
+    height: 22px !important;
+    width: auto !important;
+  }
+  #admin > div > aside > nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-direction: row !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 4px !important;
+  }
+  #admin > div > aside > nav a {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 0 12px !important;
+  }
+  #admin > div > aside > div {
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px !important;
+    min-width: 0;
+  }
+  #admin > div > aside > div > a[href='#sites'] {
+    padding: 6px 10px !important;
+    min-width: 0;
+  }
+  #admin > div > aside > div > a[href='#sites'] span span:last-child,
+  #admin > div > aside > div > div > span {
+    display: none !important;
+  }
+  #admin > div > aside > div > div {
+    padding: 0 !important;
+    border: 0 !important;
+  }
+}
+
+/* dialogs fade in, the card rises */
+@keyframes overlay-in { from { opacity: 0; } }
+@keyframes dialog-in { from { opacity: 0; transform: translate3d(0, 16px, 0); } }
+.overlay { animation: overlay-in 0.2s var(--ease-out) both; }
+.overlay > [role='dialog'] { animation: dialog-in 0.32s var(--ease-out) both; }
+
+/* ---- toast ------------------------------------------------------------------------------ */
+#admin-toast {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  z-index: 60;
+  max-width: min(560px, calc(100vw - 48px));
+  padding: 16px 20px;
+  background: #e3e7eb;
+  color: #0b0e12;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  pointer-events: none;
+  transition: opacity 0.2s var(--ease-out), transform 0.25s var(--ease-out);
+}
+#admin-toast.show {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+@media (max-width: 720px) {
+  #admin-toast,
+  .toast {
+    right: 16px !important;
+    left: 16px;
+    bottom: 16px !important;
+  }
+}
+
+/* ---- default password banner ------------------------------------------------------------- */
+#admin-banner {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  background: #2e2306;
+  border-bottom: 1px solid #ffbe1a;
+  color: #ffbe1a;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+#admin-banner a {
+  color: #0b0e12;
+  background: #ffbe1a;
+  padding: 4px 12px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* ---- print: reports and the alert record ---------------------------------------------------- */
+@media print {
+  @page { size: A4; margin: 12mm; }
+  html,
+  body {
+    background: #0b0e12 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #admin > div {
+    min-height: 0 !important;
+  }
+  aside,
+  #admin-banner,
+  #admin-toast,
+  .overlay,
+  .toast,
+  [data-loading]::after {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    flex: 1 1 100% !important;
+  }
+  main * {
+    animation: none !important;
+  }
+  main section {
+    break-inside: avoid;
+  }
+  /* reports: drop the controls */
+  body[data-screen='reports'] header button,
+  body[data-screen='reports'] [aria-label='기간'],
+  body[data-screen='reports'] main > section:last-child {
+    display: none !important;
+  }
+  /* alerts: only the selected record */
+  body[data-screen='alerts'] [aria-label='알림 종류'],
+  body[data-screen='alerts'] section[aria-label='알림 목록'],
+  body[data-screen='alerts'] header a,
+  body[data-screen='alerts'] section[aria-label='알림 상세'] button,
+  body[data-screen='alerts'] section[aria-label='알림 상세'] > div:last-child > a {
+    display: none !important;
+  }
+}

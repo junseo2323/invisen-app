@@ -1,4 +1,5 @@
 import { one, q } from './db.js';
+import { siteRules } from './alerts.js';
 import { config } from './config.js';
 import type { Me, SensorInfo } from './api-types.js';
 import type { Sample } from './exposure.js';
@@ -58,6 +59,7 @@ export async function loadMe(workerId: number): Promise<Me> {
     manager: w.manager_name ? { name: w.manager_name, title: '반장', phone: w.manager_phone ?? '' } : null,
     sensor: sensor ? sensorInfo(sensor) : null,
     demo: w.is_demo,
+    cautionAlerts: (await siteRules(w.site_id)).cApp,
   };
 }
 

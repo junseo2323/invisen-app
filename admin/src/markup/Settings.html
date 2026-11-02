@@ -1,0 +1,267 @@
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <aside style="flex: 1 1 232px; box-sizing: border-box; padding: 32px 16px 24px; display: flex; flex-direction: column; gap: 36px; border-right: 1px solid #1c2127;">
+    <img src="../logo.svg" alt="invisen" style="display: block; width: 96px; height: auto; margin: 0 12px;">
+    <nav aria-label="관리자 메뉴" style="display: flex; flex-direction: column; gap: 4px;">
+      <a href="#home" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"></rect><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"></rect><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"></rect></svg>관제 홈
+      </a>
+      <a href="#workers" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"></path></svg>작업자
+      </a>
+      <a href="#alerts" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 21h4"></path></svg>알림
+        <sc-if value="{{nav.alerts}}"><span style="margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #2e2306; color: #ffbe1a; font-size: 12px; font-weight: 700;">{{nav.alerts}}</span></sc-if>
+      </a>
+      <a href="#reports" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path><path d="M14 3v5h5M9.5 13h6M9.5 17h4"></path></svg>보고서
+      </a>
+      <a href="#sensors" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 5V2l5 5L7 17"></path></svg>센서
+      </a>
+      <a href="#settings" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; background: #1c2127; color: #e3e7eb; text-decoration: none; font-size: 15px; font-weight: 600;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path><circle cx="15" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></svg>설정
+      </a>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <a href="#sites" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; color: #e3e7eb; text-decoration: none;">
+        <span style="flex: 1; display: flex; flex-direction: column;">
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{nav.site}}</span>
+          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">현장 바꾸기</span>
+        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"></path></svg>
+      </a>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-left: 12px;">
+        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{nav.admin}}</span>
+        <a href="#login" onClick="{{nav.logout}}" style="height: 36px; display: flex; align-items: center; padding: 0 8px; font-size: 13px; color: #a9b1bb; text-decoration: none;">로그아웃</a>
+      </div>
+    </div>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 36px 40px 56px; display: flex; flex-direction: column; gap: 28px;">
+
+    <header style="display: flex; flex-direction: column; gap: 4px;">
+      <h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em;">설정</h1>
+      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{siteName}}</span>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start;">
+
+      <nav aria-label="설정 항목" style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 2px;">
+        <sc-for list="{{sections}}" as="n"><button type="button" onClick="{{n.go}}" style="height: 40px; display: flex; align-items: center; padding: 0 12px; background: {{n.bg}}; border: 0; border-radius: 0; color: {{n.fg}}; font-family: inherit; text-align: left; font-size: 15px; font-weight: {{n.fw}}; cursor: pointer;">{{n.label}}</button></sc-for>
+      </nav>
+
+      <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+        <section id="s-site" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+          <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">현장</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">현장 이름</span>
+              <input id="st-name" value="{{f.name}}" onInput="{{onName}}" disabled="{{ro}}" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">시설</span>
+              <input id="st-facility" value="{{f.facility}}" onInput="{{onFacility}}" disabled="{{ro}}" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">주소</span>
+              <input id="st-address" value="{{f.address}}" onInput="{{onAddress}}" disabled="{{ro}}" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">근무조</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+              <sc-for list="{{shifts}}" as="h"><div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; background: #070a0d;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{h.name}}</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #a9b1bb;">{{h.time}}</span></div></sc-for>
+              <sc-if value="{{noShifts}}"><span style="font-size: 14px; color: #a9b1bb;">등록된 근무조가 없어요</span></sc-if>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; border-top: 1px solid #1c2127;">
+            <span style="font-size: 15px; line-height: 22px;">{{zonesLabel}}</span>
+          </div>
+        </section>
+
+        <section id="s-limits" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px;">
+            <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">노출 기준</h2>
+            <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">저장하면 바로 적용돼요 · 주의 80%와 위험 100%는 고정</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); gap: 16px; padding: 0 0 10px; border-bottom: 1px solid #2c333b; font-size: 13px; line-height: 20px; color: #a9b1bb;">
+              <span>항목</span><span>권고치</span><span>측정 기준</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #1c2127;">
+              <span style="font-size: 15px; font-weight: 600;">미세먼지 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">PM10</span></span>
+              <label style="display: flex; align-items: center; gap: 8px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">PM10 권고치</span><input id="lim-pm10" value="{{f.pm10}}" onInput="{{onPm10}}" inputmode="numeric" disabled="{{ro}}" style="width: 80px; height: 44px; box-sizing: border-box; padding: 0 12px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">µg/m³</span></label>
+              <span style="font-size: 14px; color: #a9b1bb;">8시간 시간가중평균</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #1c2127;">
+              <span style="font-size: 15px; font-weight: 600;">초미세먼지 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">PM2.5</span></span>
+              <label style="display: flex; align-items: center; gap: 8px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">PM2.5 권고치</span><input id="lim-pm25" value="{{f.pm25}}" onInput="{{onPm25}}" inputmode="numeric" disabled="{{ro}}" style="width: 80px; height: 44px; box-sizing: border-box; padding: 0 12px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">µg/m³</span></label>
+              <span style="font-size: 14px; color: #a9b1bb;">8시간 시간가중평균</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(120px, 1fr) 160px minmax(120px, 1fr); align-items: center; gap: 16px; padding: 12px 0;">
+              <span style="font-size: 15px; font-weight: 600;">일산화탄소 <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">CO</span></span>
+              <label style="display: flex; align-items: center; gap: 8px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">CO 권고치</span><input id="lim-co" value="{{f.co}}" onInput="{{onCo}}" inputmode="numeric" disabled="{{ro}}" style="width: 80px; height: 44px; box-sizing: border-box; padding: 0 12px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">ppm</span></label>
+              <span style="font-size: 14px; color: #a9b1bb;">8시간 시간가중평균</span>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #070a0d;">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 9px; height: 6px; background: #34c77b;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span></span>
+              <span style="flex: 1; font-size: 15px; font-weight: 700; color: #34c77b;">안전</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; color: #a9b1bb;">&lt; 80%</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #070a0d;">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #ffbe1a;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span></span>
+              <span style="flex: 1; font-size: 15px; font-weight: 700; color: #ffbe1a;">주의</span>
+              <label style="display: flex; align-items: center; gap: 6px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">주의 기준</span><input value="80" inputmode="numeric" disabled="disabled" title="모든 현장에 같은 기준을 써요" style="width: 56px; height: 36px; box-sizing: border-box; padding: 0 8px; background: #13171c; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">% 이상</span></label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #070a0d;">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #2c333b;"></span><span style="width: 9px; height: 6px; background: #ff5a4a;"></span></span>
+              <span style="flex: 1; font-size: 15px; font-weight: 700; color: #ff5a4a;">위험</span>
+              <label style="display: flex; align-items: center; gap: 6px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">위험 기준</span><input value="100" inputmode="numeric" disabled="disabled" title="모든 현장에 같은 기준을 써요" style="width: 56px; height: 36px; box-sizing: border-box; padding: 0 8px; background: #13171c; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 14px; text-align: right;"><span style="font-size: 13px; color: #a9b1bb;">% 이상</span></label>
+            </div>
+          </div>
+        </section>
+
+        <section id="s-rules" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 8px;">
+          <h2 style="margin: 0 0 8px; font-size: 18px; line-height: 26px; font-weight: 700;">알림 규칙</h2>
+          <sc-for list="{{rules}}" as="r" hint-placeholder-count="7">
+            <div style="display: flex; align-items: center; gap: 16px; min-height: 64px; border-top: 1px solid #1c2127;">
+              <span style="width: 52px; flex-shrink: 0;">
+                <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 8px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 12px; font-weight: 700;">{{r.tag}}</span>
+              </span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+                <span id="{{r.id}}" style="font-size: 15px; line-height: 22px; font-weight: 600;">{{r.label}}</span>
+                <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{r.hint}}</span>
+              </span>
+              <button type="button" role="switch" aria-checked="{{r.on}}" aria-labelledby="{{r.id}}" aria-disabled="{{r.locked}}" onClick="{{r.flip}}" style="position: relative; width: 52px; height: 32px; padding: 0; flex-shrink: 0; border: 0; border-radius: 0; cursor: {{r.cursor}}; background: {{r.track}}; opacity: {{r.opacity}};">
+                <span aria-hidden="true" style="position: absolute; top: 4px; left: {{r.left}}px; width: 24px; height: 24px; background: {{r.knob}};"></span>
+              </button>
+            </div>
+          </sc-for>
+        </section>
+
+        <section id="s-members" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px;">
+            <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">관리자</h2>
+            <sc-if value="{{isOwner}}"><button type="button" onClick="{{openInvite}}" style="height: 40px; display: flex; align-items: center; gap: 6px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>계정 추가
+            </button></sc-if>
+          </div>
+          <sc-for list="{{members}}" as="m">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; min-height: 64px; padding: 10px 0; box-sizing: border-box; border-top: 1px solid #1c2127; opacity: {{m.opacity}};">
+            <span aria-hidden="true" style="width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #2c333b; font-size: 14px; font-weight: 600;">{{m.initial}}</span>
+            <span style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{m.name}} <span style="font-size: 13px; font-weight: 400; color: #a9b1bb;">{{m.tag}}</span></span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{m.sub}}</span></span>
+            <span style="font-size: 14px; color: {{m.roleFg}};">{{m.roleLabel}}</span>
+            <sc-if value="{{m.isMe}}"><button type="button" onClick="{{openPassword}}" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">비밀번호 변경</button></sc-if>
+            <sc-if value="{{m.canToggle}}"><button type="button" onClick="{{m.reset}}" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">임시 비밀번호</button></sc-if>
+            <sc-if value="{{m.canToggle}}"><button type="button" onClick="{{m.toggle}}" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">{{m.toggleLabel}}</button></sc-if>
+          </div>
+          </sc-for>
+        </section>
+
+        <section id="s-integrations" style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+          <h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700;">연동</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px;">
+            <sc-for list="{{integrations}}" as="i">
+            <div style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #070a0d;">
+              <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{i.name}}</span><span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{i.sub}}</span></span>
+              <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: {{i.fg}};"><span aria-hidden="true" style="width: 6px; height: 6px; background: {{i.dot}}; transform: rotate(45deg);"></span>{{i.label}}</span>
+            </div>
+            </sc-for>
+          </div>
+          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">푸시 알림 키와 웹훅 주소는 서버의 /etc/invisen/api.env에서 설정해요</span>
+        </section>
+
+        <sc-if value="{{canEdit}}">
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px; padding-top: 8px;">
+          <sc-if value="{{saveError}}"><p role="alert" style="margin: 0 auto 0 0; font-size: 14px; color: #ff5a4a;">{{saveError}}</p></sc-if>
+          <button type="button" onClick="{{revert}}" disabled="{{clean}}" style="height: 48px; padding: 0 22px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%); opacity: {{dimClean}};">되돌리기</button>
+          <button type="button" onClick="{{save}}" disabled="{{clean}}" style="height: 48px; padding: 0 26px; background: #e3e7eb; border: 0; border-radius: 0; color: #0b0e12; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%); opacity: {{dimClean}};">{{saveLabel}}</button>
+        </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </main>
+
+  <sc-if value="{{passwordOpen}}">
+    <div class="overlay" style="position: fixed; inset: 0; z-index: 40; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 96px 24px 48px; box-sizing: border-box; background: #070a0dd9;">
+      <div role="dialog" aria-modal="true" aria-labelledby="passwordOpen-title" style="width: 100%; max-width: 640px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 28px 32px 0;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="passwordOpen-title" style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 700;">비밀번호 변경</h2>
+            <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{pwHint}}</span>
+          </div>
+          <button type="button" aria-label="닫기" onClick="{{closeModal}}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; padding: 0; margin-right: 8px; background: transparent; border: 0; border-radius: 0; color: #e3e7eb; cursor: pointer;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; padding: 28px 32px;">
+            <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">지금 비밀번호</span>
+              <input id="p-cur" type="password" value="{{pw.current}}" onInput="{{onPwCur}}" autocomplete="current-password" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">새 비밀번호 <span style="color: #5f6975;">· 8자 이상</span></span>
+              <input id="p-next" type="password" value="{{pw.next}}" onInput="{{onPwNext}}" autocomplete="new-password" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">새 비밀번호 확인</span>
+              <input id="p-again" type="password" value="{{pw.again}}" onInput="{{onPwAgain}}" onKeyDown="{{onPwKey}}" autocomplete="new-password" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding: 20px 32px 28px; border-top: 1px solid #1c2127;">
+          <sc-if value="{{m.error}}"><p role="alert" style="margin: 0 auto 0 0; align-self: center; font-size: 14px; color: #ff5a4a;">{{m.error}}</p></sc-if>
+          <button type="button" onClick="{{closeModal}}" style="height: 48px; padding: 0 24px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">취소</button>
+          <button type="button" onClick="{{m.submit}}" disabled="{{m.busy}}" style="height: 48px; padding: 0 26px; background: #e3e7eb; border: 0; border-radius: 0; color: #0b0e12; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%); opacity: {{m.opacity}};">{{m.label}}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{inviteOpen}}">
+    <div class="overlay" style="position: fixed; inset: 0; z-index: 40; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 96px 24px 48px; box-sizing: border-box; background: #070a0dd9;">
+      <div role="dialog" aria-modal="true" aria-labelledby="inviteOpen-title" style="width: 100%; max-width: 640px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 28px 32px 0;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h2 id="inviteOpen-title" style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 700;">관리자 계정 추가</h2>
+            <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">처음 로그인하면 비밀번호를 바꾸게 돼요</span>
+          </div>
+          <button type="button" aria-label="닫기" onClick="{{closeModal}}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; padding: 0; margin-right: 8px; background: transparent; border: 0; border-radius: 0; color: #e3e7eb; cursor: pointer;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; padding: 28px 32px;">
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">아이디</span>
+              <input id="a-user" value="{{inv.username}}" onInput="{{onInvUser}}" autocapitalize="off" spellcheck="false" placeholder="영문·숫자 3자 이상" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">이름</span>
+              <input id="a-name" value="{{inv.name}}" onInput="{{onInvName}}" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">직함 · 소속</span>
+              <input id="a-title" value="{{inv.title}}" onInput="{{onInvTitle}}" placeholder="안전관리자" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px;">
+            </label>
+            <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">역할</span>
+              <div role="group" aria-label="역할" style="display: flex; flex-wrap: wrap; gap: 6px;"><sc-for list="{{roleChips}}" as="o"><button type="button" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="height: 40px; padding: 0 14px; border: 1px solid {{o.bd}}; border-radius: 0; background: {{o.bg}}; color: {{o.fg}}; font-family: inherit; font-size: 14px; font-weight: {{o.fw}}; cursor: pointer;">{{o.label}}</button></sc-for></div>
+            </label>
+            <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">임시 비밀번호</span>
+              <span style="display: flex; gap: 8px;"><input id="a-pass" value="{{inv.password}}" onInput="{{onInvPass}}" spellcheck="false" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #070a0d; border: 1px solid #5f6975; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; flex: 1; min-width: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace;"><button type="button" onClick="{{copyPass}}" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; height: 48px;">{{copyLabel}}</button></span>
+            </label>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding: 20px 32px 28px; border-top: 1px solid #1c2127;">
+          <sc-if value="{{m.error}}"><p role="alert" style="margin: 0 auto 0 0; align-self: center; font-size: 14px; color: #ff5a4a;">{{m.error}}</p></sc-if>
+          <button type="button" onClick="{{closeModal}}" style="height: 48px; padding: 0 24px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">취소</button>
+          <button type="button" onClick="{{m.submit}}" disabled="{{m.busy}}" style="height: 48px; padding: 0 26px; background: #e3e7eb; border: 0; border-radius: 0; color: #0b0e12; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%); opacity: {{m.opacity}};">{{m.label}}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>

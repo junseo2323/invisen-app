@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>알림</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;display=swap">
+<style>
+html,body{margin:0;background:#0b0e12;overflow-x:hidden}
+a{color:#a9b1bb}a:hover{color:#e3e7eb}
+a:focus-visible,button:focus-visible{outline:2px solid #2bd8f0;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <aside style="flex: 1 1 232px; box-sizing: border-box; padding: 32px 16px 24px; display: flex; flex-direction: column; gap: 36px; border-right: 1px solid #1c2127;">
+    <img src="/_blob/b00325e71462f4b61154644f1df0abb6" alt="invisen" style="display: block; width: 96px; height: auto; margin: 0 12px;">
+    <nav aria-label="관리자 메뉴" style="display: flex; flex-direction: column; gap: 4px;">
+      <a href="Admin-Home.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"></rect><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"></rect><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"></rect></svg>관제 홈
+      </a>
+      <a href="Admin-Workers.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"></path></svg>작업자
+      </a>
+      <a href="Admin-Alerts.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; background: #1c2127; color: #e3e7eb; text-decoration: none; font-size: 15px; font-weight: 600;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 21h4"></path></svg>알림
+        <span style="margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #2e2306; color: #ffbe1a; font-size: 12px; font-weight: 700;">2</span>
+      </a>
+      <a href="Admin-Reports.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path><path d="M14 3v5h5M9.5 13h6M9.5 17h4"></path></svg>보고서
+      </a>
+      <a href="Admin-Sensors.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 5V2l5 5L7 17"></path></svg>센서
+      </a>
+      <a href="Admin-Settings.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; color: #a9b1bb; text-decoration: none; font-size: 15px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path><circle cx="15" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></svg>설정
+      </a>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <a href="Admin-Sites.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; color: #e3e7eb; text-decoration: none;">
+        <span style="flex: 1; display: flex; flex-direction: column;">
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600;">인천공항 T1 BHS</span>
+          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">현장 바꾸기</span>
+        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"></path></svg>
+      </a>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-left: 12px;">
+        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">박정민 반장</span>
+        <a href="Admin-Login.dc.html" style="height: 36px; display: flex; align-items: center; padding: 0 8px; font-size: 13px; color: #a9b1bb; text-decoration: none;">로그아웃</a>
+      </div>
+    </div>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 36px 40px 56px; display: flex; flex-direction: column; gap: 24px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em;">알림</h1>
+        <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">오늘 7건 · 처리 대기 2건</span>
+      </div>
+      <a href="Admin-Settings.dc.html" style="height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 18px; background: #1c2127; color: #e3e7eb; text-decoration: none; font-size: 15px; font-weight: 600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path><circle cx="15" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></svg>알림 규칙
+      </a>
+    </header>
+
+    <div role="group" aria-label="알림 종류" style="align-self: flex-start; display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: #13171c;">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="6">
+        <button type="button" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="height: 36px; padding: 0 16px; border: 0; border-radius: 0; font-family: inherit; font-size: 14px; cursor: pointer; background: {{f.bg}}; color: {{f.fg}}; font-weight: {{f.fw}};">{{f.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+
+      <section aria-label="알림 목록" style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 8px 0;">
+        <span style="padding: 12px 24px 8px; font-size: 13px; line-height: 20px; color: #a9b1bb;">오늘 · 11월 2일</span>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+          <button type="button" aria-pressed="{{r.sel}}" onClick="{{r.pick}}" style="width: 100%; display: flex; align-items: flex-start; gap: 16px; padding: 16px 24px; border: 0; border-top: 1px solid #1c2127; border-radius: 0; color: #e3e7eb; font-family: inherit; text-align: left; cursor: pointer; background: {{r.rowBg}};">
+            <span style="width: 44px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; line-height: 24px; color: #a9b1bb;">{{r.t}}</span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+                <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 10px 0 8px; background: {{r.bBg}}; color: {{r.bFg}}; font-size: 12px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="display: {{r.scaleDisplay}}; gap: 2px;"><span style="width: 6px; height: 4px; background: {{r.s1}};"></span><span style="width: 6px; height: 4px; background: {{r.s2}};"></span><span style="width: 6px; height: 4px; background: {{r.s3}};"></span></span>{{r.cat}}</span>
+                <sc-if value="{{r.ai}}" hint-placeholder-val="{{ false }}">
+                  <span style="height: 24px; display: inline-flex; align-items: center; padding: 0 8px; background: #1c2127; font-size: 12px; font-weight: 600; color: #a9b1bb;">AI 권고</span>
+                </sc-if>
+              </span>
+              <span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{r.title}}</span>
+              <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">{{r.sub}}</span>
+            </span>
+            <span style="flex-shrink: 0; font-size: 13px; line-height: 24px; font-weight: {{r.stW}}; color: {{r.stFg}};">{{r.status}}</span>
+          </button>
+        </sc-for>
+        <button type="button" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border: 0; border-top: 1px solid #1c2127; border-radius: 0; background: transparent; color: #a9b1bb; font-family: inherit; font-size: 14px; cursor: pointer;">
+          어제 · 4건 · 모두 처리 완료
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+      </section>
+
+      <section aria-label="알림 상세" style="position: relative; flex: 1 1 400px; min-width: 0; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); padding: 28px; display: flex; flex-direction: column; gap: 22px;">
+        <sc-if value="{{d.danger}}" hint-placeholder-val="{{ false }}">
+          <span aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(-45deg, #ff5a4a 0 6px, #0b0e12 6px 12px);"></span>
+        </sc-if>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px; padding-right: 8px;">
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: {{d.bBg}}; color: {{d.bFg}}; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="display: {{d.scaleDisplay}}; gap: 2px;"><span style="width: 7px; height: 5px; background: {{d.s1}};"></span><span style="width: 7px; height: 5px; background: {{d.s2}};"></span><span style="width: 7px; height: 5px; background: {{d.s3}};"></span></span>{{d.cat}}</span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #a9b1bb;">{{d.t}}</span>
+            <span style="margin-left: auto; font-size: 13px; font-weight: {{d.stW}}; color: {{d.stFg}};">{{d.status}}</span>
+          </div>
+          <h2 style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 700;">{{d.title}}</h2>
+          <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">{{d.sub}}</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{d.metrics}}" as="m" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; background: #070a0d; min-width: 0;">
+              <span style="font-size: 12px; line-height: 18px; color: #a9b1bb;">{{m.k}}</span>
+              <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{m.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{d.hasRec}}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; background: #070a0d;">
+            <span style="height: 24px; display: inline-flex; align-items: center; padding: 0 8px; flex-shrink: 0; background: #1c2127; font-size: 12px; font-weight: 600; color: #a9b1bb;">권고</span>
+            <span style="font-size: 14px; line-height: 22px;">{{d.rec}}</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{d.hasPeople}}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">대상 작업자</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{d.people}}" as="p" hint-placeholder-count="3">
+                <a href="Admin-Worker.dc.html" style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 4px; background: #1c2127; color: #e3e7eb; text-decoration: none; font-size: 14px; font-weight: 600;">
+                  <span aria-hidden="true" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: #2c333b; font-size: 12px;">{{p.i}}</span>{{p.n}}
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 13px; line-height: 20px; color: #a9b1bb; padding-bottom: 6px;">처리 기록</span>
+          <sc-for list="{{d.timeline}}" as="e" hint-placeholder-count="4">
+            <div style="display: flex; gap: 14px; padding: 8px 0;">
+              <span style="width: 64px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; line-height: 22px; color: #a9b1bb;">{{e.t}}</span>
+              <span aria-hidden="true" style="width: 6px; height: 6px; margin-top: 8px; flex-shrink: 0; background: {{e.dot}}; transform: rotate(45deg);"></span>
+              <span style="font-size: 14px; line-height: 22px;">{{e.x}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px;">
+          <sc-if value="{{d.pending}}" hint-placeholder-val="{{ true }}">
+            <a href="{{d.primaryHref}}" style="height: 48px; display: flex; align-items: center; padding: 0 22px; background: #e3e7eb; color: #0b0e12; text-decoration: none; font-size: 15px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">{{d.primary}}</a>
+          </sc-if>
+          <sc-if value="{{d.pending}}" hint-placeholder-val="{{ true }}">
+            <button type="button" onClick="{{d.resolve}}" style="height: 48px; padding: 0 20px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;">처리 완료로 표시</button>
+          </sc-if>
+          <button type="button" style="height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 18px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>기록 PDF
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = this.state || {};
+    const sel = st.sel || 'a1';
+    const filter = st.filter || 'all';
+    const done = st.done || {};
+    const items = [
+      { id: 'a1', t: '14:31', type: 'caution', cat: '주의', ai: true, status: '대기', title: '5구역 작업자 3명 누적 80% 초과', sub: '정우진 84% · 박하늘 82% · 김태오 81%',
+        metrics: [['대상', '3명'], ['평균 누적', '82%'], ['5구역 PM10', '83']],
+        rec: '작업 교대를 권해요. 3구역 인원과 바꾸면 오늘 누적을 90% 아래로 막을 수 있어요.',
+        people: ['정우진', '박하늘', '김태오'], primary: '교대 지시', primaryHref: 'Admin-Worker.dc.html',
+        timeline: [['14:31:02', '누적 80% 초과 감지'], ['14:31:05', 'AI 교대 권고 생성'], ['14:31:06', '관리자 알림 발송']] },
+      { id: 'a2', t: '13:40', type: 'sensor', cat: '센서', status: '대기', title: '문지호 님 센서 연결 끊김', sub: '2구역 · 배터리 3%',
+        metrics: [['센서', 'IVS-P10-0156'], ['마지막 수신', '13:40:12'], ['배터리', '3%']],
+        rec: '배터리가 다 됐어요. 예비 센서로 바꿔 주세요.', people: ['문지호'], primary: '센서 보기', primaryHref: 'Admin-Sensors.dc.html',
+        timeline: [['13:38:40', '배터리 5% 미만 경고'], ['13:40:12', '신호 끊김'], ['13:41:00', '관리자 알림 발송']] },
+      { id: 'a3', t: '14:00', type: 'notice', cat: '공지', status: '정보', title: '5구역 집진기 점검 시작', sub: '16:00까지 · 시설팀',
+        metrics: [['구역', '5구역'], ['시간', '14–16시'], ['받은 사람', '24명']], rec: '', people: [],
+        timeline: [['13:55:20', '공지 작성 · 박정민'], ['14:00:00', '작업자 앱 24명에게 공지']] },
+      { id: 'a4', t: '12:58', type: 'sensor', cat: '센서', status: '자동 해결', title: '김현수 님 센서 42초 끊김', sub: '3구역 · 다시 연결됨',
+        metrics: [['센서', 'IVS-P10-0142'], ['끊긴 시간', '42초'], ['배터리', '76%']], rec: '', people: ['김현수'],
+        timeline: [['12:57:41', '신호 끊김'], ['12:58:23', '자동 재연결']] },
+      { id: 'a5', t: '11:24', type: 'danger', cat: '위험', status: '처리 완료', title: '5구역 PM10 112 µg/m³', sub: '권고치 112% · 4명 대피',
+        metrics: [['PM10', '112'], ['권고치 대비', '112%'], ['대피', '4명']], rec: '', people: ['정우진', '박하늘', '김태오', '윤재희'],
+        timeline: [['11:24:08', '5구역 센서 4대 평균 112 감지'], ['11:24:10', '작업자 4명에게 대피 알림'], ['11:24:12', '관리자 문자 발송'], ['11:26:40', '박정민 반장 확인'], ['11:31:05', '4명 모두 휴게실 B 도착'], ['11:31:20', '처리 완료']] },
+      { id: 'a6', t: '11:02', type: 'caution', cat: '주의', status: '확인됨', title: '5구역 PM10 88 µg/m³', sub: '마스크 착용 알림 4명',
+        metrics: [['PM10', '88'], ['권고치 대비', '88%'], ['대상', '4명']], rec: '', people: ['정우진', '박하늘', '김태오', '윤재희'],
+        timeline: [['11:02:15', '5구역 PM10 88 감지'], ['11:02:16', '작업자 4명에게 마스크 알림'], ['11:05:30', '박정민 반장 확인']] },
+      { id: 'a7', t: '09:30', type: 'caution', cat: '주의', status: '확인됨', title: '정우진 님 PM10 96 µg/m³', sub: '5구역 · 마스크 착용 알림',
+        metrics: [['PM10', '96'], ['권고치 대비', '96%'], ['대상', '1명']], rec: '', people: ['정우진'],
+        timeline: [['09:30:44', '개인 센서 96 감지'], ['09:30:45', '작업자 앱 알림'], ['09:31:10', '작업자 확인']] }
+    ];
+    const off = '#3f4852';
+    const look = (it) => {
+      const status = done[it.id] ? '처리 완료' : it.status;
+      const pending = status === '대기';
+      const danger = it.type === 'danger';
+      const caution = it.type === 'caution';
+      const lvl = danger || caution;
+      return {
+        status,
+        pending,
+        danger,
+        bBg: danger ? '#35110e' : (caution ? '#2e2306' : '#1c2127'),
+        bFg: danger ? '#ff5a4a' : (caution ? '#ffbe1a' : '#a9b1bb'),
+        scaleDisplay: lvl ? 'flex' : 'none',
+        s1: off,
+        s2: caution ? '#ffbe1a' : off,
+        s3: danger ? '#ff5a4a' : off,
+        stFg: pending ? '#e3e7eb' : (status === '처리 완료' || status === '자동 해결' ? '#34c77b' : '#a9b1bb'),
+        stW: pending ? 700 : 400
+      };
+    };
+    const match = (it) => {
+      const status = done[it.id] ? '처리 완료' : it.status;
+      if (filter === 'all') return true;
+      if (filter === 'pending') return status === '대기';
+      return it.type === filter;
+    };
+    const rows = items.filter(match).map((it) => ({
+      ...it,
+      ...look(it),
+      ai: !!it.ai,
+      sel: it.id === sel,
+      rowBg: it.id === sel ? '#0d2e35' : 'transparent',
+      pick: () => this.setState({ sel: it.id })
+    }));
+    const cur = items.find((it) => it.id === sel) || items[0];
+    const lk = look(cur);
+    const d = {
+      ...cur,
+      ...lk,
+      hasRec: !!cur.rec,
+      hasPeople: cur.people.length > 0,
+      metrics: cur.metrics.map(([k, v]) => ({ k, v })),
+      people: cur.people.map((n) => ({ n, i: n.charAt(0) })),
+      timeline: cur.timeline.map(([t, x], i) => ({ t, x, dot: i === cur.timeline.length - 1 ? '#e3e7eb' : '#5f6975' })).concat(done[cur.id] ? [{ t: '14:33:00', x: '박정민 반장이 처리 완료로 표시', dot: '#34c77b' }] : []),
+      primary: cur.primary || '',
+      primaryHref: cur.primaryHref || '#',
+      resolve: () => this.setState({ done: { ...done, [cur.id]: true } })
+    };
+    const pendingCount = items.filter((it) => !done[it.id] && it.status === '대기').length;
+    const defs = [['all', '전체 7'], ['pending', '대기 ' + pendingCount], ['danger', '위험 1'], ['caution', '주의 3'], ['sensor', '센서 2'], ['notice', '공지 1']];
+    const filters = defs.map(([id, label]) => ({
+      label,
+      on: id === filter,
+      bg: id === filter ? '#2c333b' : 'transparent',
+      fg: id === filter ? '#e3e7eb' : '#a9b1bb',
+      fw: id === filter ? 700 : 400,
+      pick: () => this.setState({ filter: id })
+    }));
+    return { rows, d, filters };
+  }
+}
+</script>
+</body>
+</html>

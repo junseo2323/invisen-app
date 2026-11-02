@@ -21,7 +21,7 @@ export async function siteRules(siteId: number): Promise<Rules> {
   return { ...RULE_DEFAULTS, ...(r?.rules ?? {}), dEvac: true };
 }
 
-const clock = (d = new Date()) =>
+const clock = (d: Date | number = new Date()) =>
   new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Seoul' }).format(d);
 export const hhmmss = clock;
 

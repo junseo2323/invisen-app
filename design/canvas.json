@@ -3,10 +3,13 @@
   "createdOnFiles": {"v": 1, "at": "2026-11-02T01:10:00Z"},
   "title": "invisen 작업자 앱",
   "launch": {"view": "canvas"},
-  "pages": [],
+  "pages": [
+    {"id": "app", "name": "작업자 앱"},
+    {"id": "admin", "name": "관리자 대시보드"}
+  ],
   "boards": {
     "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "01 시작", "is_interactive": true},
-    "Login-Phone.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "02 휴대폰 인증", "is_interactive": true},
+    "Login-Phone.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "02 인증 코드", "is_interactive": true},
     "Login-Profile.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "03 소속 확인", "is_interactive": true},
     "Login-Sensor.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 844, "title": "04 센서 연결", "is_interactive": true},
     "Login-Wear.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 844, "title": "05 착용·권한", "is_interactive": true},
@@ -18,7 +21,17 @@
     "More.dc.html": {"x": 2350, "y": 1264, "w": 390, "h": 1440, "title": "11 전체", "is_interactive": true},
     "Home-Caution.dc.html": {"x": 0, "y": 3324, "w": 390, "h": 844, "title": "12 홈 · 주의", "is_interactive": true},
     "Alert-Danger.dc.html": {"x": 470, "y": 3324, "w": 390, "h": 844, "title": "13 위험 알림", "is_interactive": true},
-    "SOS.dc.html": {"x": 940, "y": 3324, "w": 390, "h": 844, "title": "14 SOS 긴급 호출", "is_interactive": true}
+    "SOS.dc.html": {"x": 940, "y": 3324, "w": 390, "h": 844, "title": "14 SOS 긴급 호출", "is_interactive": true},
+    "Admin-Login.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 900, "title": "L1 관리자 로그인", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Verify.dc.html": {"x": 1520, "y": 0, "w": 1440, "h": 900, "title": "L2 2단계 인증", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Sites.dc.html": {"x": 3040, "y": 0, "w": 1440, "h": 900, "title": "L3 현장 선택", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Home.dc.html": {"x": 0, "y": 1320, "w": 1440, "h": 1680, "title": "A1 관제 홈", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Workers.dc.html": {"x": 1520, "y": 1320, "w": 1440, "h": 1040, "title": "A2 작업자 · 인증 코드 발급", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Worker.dc.html": {"x": 3040, "y": 1320, "w": 1440, "h": 1480, "title": "A3 작업자 상세", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Alerts.dc.html": {"x": 4560, "y": 1320, "w": 1440, "h": 1200, "title": "A4 알림", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Reports.dc.html": {"x": 6080, "y": 1320, "w": 1440, "h": 1640, "title": "A5 보고서", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Sensors.dc.html": {"x": 7600, "y": 1320, "w": 1440, "h": 1320, "title": "A6 센서", "page": "admin", "expand": "fill", "is_interactive": true},
+    "Admin-Settings.dc.html": {"x": 9120, "y": 1320, "w": 1440, "h": 1800, "title": "A7 설정", "page": "admin", "expand": "fill", "is_interactive": true}
   },
   "order": [
     "Main.dc.html",
@@ -34,12 +47,24 @@
     "More.dc.html",
     "Home-Caution.dc.html",
     "Alert-Danger.dc.html",
-    "SOS.dc.html"
+    "SOS.dc.html",
+    "Admin-Login.dc.html",
+    "Admin-Verify.dc.html",
+    "Admin-Sites.dc.html",
+    "Admin-Home.dc.html",
+    "Admin-Workers.dc.html",
+    "Admin-Worker.dc.html",
+    "Admin-Alerts.dc.html",
+    "Admin-Reports.dc.html",
+    "Admin-Sensors.dc.html",
+    "Admin-Settings.dc.html"
   ],
   "notes": {
     "t1": {"x": 0, "y": -300, "text": "로그인 플로우", "kind": "title1", "maxW": 2270},
     "t2": {"x": 0, "y": 964, "text": "메인 · 홈 / 현장 / 노출량 / 기록 / 전체", "kind": "title1", "maxW": 2740},
-    "t3": {"x": 0, "y": 3024, "text": "상태 변화 · 긴급", "kind": "title1", "maxW": 1330}
+    "t3": {"x": 0, "y": 3024, "text": "상태 변화 · 긴급", "kind": "title1", "maxW": 1330},
+    "t4": {"x": 0, "y": -300, "text": "관리자 · 로그인 플로우", "kind": "title1", "maxW": 4480, "page": "admin"},
+    "t5": {"x": 0, "y": 1020, "text": "관리자 · 메뉴별 화면", "kind": "title1", "maxW": 10560, "page": "admin"}
   },
   "designSystems": [
     {"title": "invisen", "namespace": "invisen", "artifact": "https://claude.ai/code/artifact/8bb24a22-32f2-40d4-bf09-4fcd66a0f7c1", "version": "1793416276-9b33", "copiedAt": "2026-11-02T01:10:00Z"}

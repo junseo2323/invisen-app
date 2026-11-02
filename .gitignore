@@ -17,3 +17,4 @@ ios/App/build/
 ios/App/fastlane/report.xml
 ios/App/fastlane/README.md
 *.p8
+design/imported-admin/

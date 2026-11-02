@@ -1,16 +1,20 @@
-# invisen 작업자 앱
+# invisen 작업자 앱 · 관리자 대시보드
 
 현장 작업자용 미세먼지 노출 모니터링 앱. 웹앱(Vite + TypeScript)을 iOS WKWebView(Capacitor 8)로 감싸 배포하고,
 API(Fastify + PostgreSQL)는 eney.cloud 인스턴스에서 Docker로 돌립니다.
+반장·안전관리자용 관리자 대시보드(웹)는 같은 서버의 `/admin/` 에서 열립니다.
 
 ```
-design/              디자인 캔버스 원본 (14개 화면 .dc.html, 토큰)
+design/              디자인 캔버스 원본 (앱 14개 화면 .dc.html, 토큰) · design/admin/ 대시보드 10개 화면
 src/                 앱 (웹뷰 안에서 도는 코드)
   screens/markup/    화면 마크업 — 디자인에서 가져와 {{값}} 을 데이터에 연결한 것
   screens/logic.ts   화면별 상태·동작
   monitor.ts         센서 연결 유지, 측정값 업로드(오프라인 큐), 주의/위험 알림
   sensor/            BLE 센서 드라이버 + 시뮬레이터
   native.ts          푸시, 로컬 알림, 위치, QR, 햅틱, 권한
+admin/               관리자 대시보드 (웹, /admin/) — 앱과 같은 렌더러(src/dc.ts)
+  src/markup/        대시보드 화면 마크업 (design/admin 에서 가져와 데이터에 연결)
+  src/logic.ts       화면별 상태·동작 · src/api.ts 대시보드 API
 server/              API + DB 마이그레이션 + 테스트
 ios/                 Xcode 프로젝트 (Capacitor)
 deploy/              서버 설정 스크립트, docker compose
@@ -151,10 +155,31 @@ sudo invisen-admin seed --me "이름:010XXXXXXXX"
 문자 인증 대신, 반장이 작업자별로 일회용 6자리 등록 코드를 발급하고 작업자는 휴대폰 번호 + 코드로 로그인합니다.
 코드는 72시간 유효, 한 번만 쓸 수 있고, 5번 틀리면 잠깁니다. 새로 발급하면 이전 코드는 무효가 됩니다.
 
-- 관리자 대시보드에서: `POST /api/admin/invites` `{ "phone": "010…" }` 또는 `{ "workerId": 3 }` (반장 계정 세션 필요, 같은 현장 작업자만)
-- 대시보드가 생기기 전 / 첫 반장 계정: `sudo invisen-admin invite 010XXXXXXXX`
+- 관리자 대시보드에서: 작업자 › 작업자 추가 (저장하면 코드가 나옴) 또는 목록의 「새 코드」
+- 서버에서: `sudo invisen-admin invite 010XXXXXXXX`
 
-관리: `sudo invisen-admin status | logs | restart | invite | demo | psql | backup`
+관리: `sudo invisen-admin status | logs | restart | invite | demo | admin-password | psql | backup`
+
+### 관리자 대시보드 (`/admin/`)
+
+`http://<서버>/admin/` (도메인 연결 후 `https://<도메인>/admin/`). 처음 계정은 **admin / admin** 이고, 로그인하면
+비밀번호를 바꿀 때까지 화면 위에 안내가 떠 있습니다.
+
+| 화면 | 하는 일 |
+|---|---|
+| 로그인 → 현장 선택 | 관리자 계정(작업자 계정과 별개). 「로그인 유지」를 끄면 이 탭에서만 유지 |
+| 관제 홈 | 근무 중·주의·위험 인원, 구역별 평균, 현장 도면 위 작업자 위치, 최근 알림 (10초마다 갱신) |
+| 작업자 | 검색·연결 상태 필터, 작업자 추가 → 앱 로그인 코드 발급, 새 코드, 목록에서 빼기 |
+| 작업자 상세 | 지금 PM10·오늘 누적·위치·센서, 30분 단위 그래프, 구역 체류, 7일 누적, 교대 지시(앱 푸시), 측정값 CSV |
+| 알림 | 주의·위험·SOS·센서 끊김·권고·공지, 처리 완료 표시, 어제 알림, 기록 인쇄/PDF |
+| 보고서 | 일간·주간·월간, 구역×요일 노출 히트맵, 알림 발생, 작업자별 요약, 지난 4주 주간 보고서, 인쇄/PDF |
+| 센서 | 연결·끊김·예비·교정 필요·배터리, 구역별 연결, 센서 등록 |
+| 설정 | 현장 정보, 권고치(PM10·PM2.5·CO), 알림 규칙, 관리자 계정(소유자만 추가·사용 중지·임시 비밀번호), 연동 상태 |
+
+역할: 소유자(owner) · 관리자(admin, 편집) · 보기 전용(viewer). 비밀번호를 잊으면 소유자가 설정 › 관리자 › 「임시 비밀번호」,
+소유자 본인은 서버에서 `sudo invisen-admin admin-password admin`.
+
+디자인을 다시 가져올 때: `npm run design:import-admin` (기본은 design/imported-admin/ 에 써서 비교용, `-- --overwrite` 로 교체)
 
 ## CI/CD
 
@@ -178,6 +203,7 @@ push ─▶ CI (웹 빌드 · API 테스트(PostgreSQL) · Docker 이미지 · c
 
 - 센서 BLE 프로토콜은 임시값 (위 참고)
 - 작업자 위치(구역·지도 좌표)는 서버 DB 값을 그대로 씁니다. 실내 측위(비콘 등)와 연동하는 부분이 아직 없습니다
-- 관리자 대시보드 없음: 등록 코드 발급 API 는 준비됨. 작업자·센서·공지 관리는 아직 `invisen-admin` 또는 DB 직접
+- 대시보드: 2단계 인증(디자인의 인증 코드 화면)은 아직 없습니다. 도면은 인천공항 T1 BHS 한 곳 기준이고, 구역 편집 화면이 없습니다
+- 대시보드: 문자 발송·외부 게이트웨이 연동은 없습니다(센서는 작업자 휴대폰이 중계). 위험·SOS 는 웹훅(Dooray·Slack)으로 보낼 수 있습니다
 - 앱이 완전히 종료돼 있으면 측정이 멈춥니다(웹뷰 기반 한계). 백그라운드 BLE 는 켜 두었지만 iOS 가 앱을 오래 멈추면 업로드가 지연될 수 있습니다
 - 실기기 테스트 전: Xcode 빌드, 푸시, BLE, QR 은 이 환경(리눅스)에서 실행해보지 못했습니다

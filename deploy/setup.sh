@@ -250,6 +250,14 @@ case "${1:-help}" in
             [[ -n "${2:-}" && "${3:-}" =~ ^(on|off)$ ]] || { echo "사용법: invisen-admin demo 010XXXXXXXX on|off"; exit 1; }
             printf '%s\n' "update workers set is_demo = (:'state' = 'on') where phone = regexp_replace(:'phone', '\\D', '', 'g') returning name, phone, is_demo;" \
               | "${COMPOSE[@]}" exec -T db psql -U invisen invisen -v phone="$2" -v state="$3";;
+  admin-password) # admin-password <아이디> [새 비밀번호] : 관리자 대시보드 비밀번호 초기화
+            [[ -n "${2:-}" ]] || { echo "사용법: invisen-admin admin-password <아이디> [새 비밀번호]"; exit 1; }
+            pw="${3:-$(head -c 64 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | cut -c1-12)}"
+            (( ${#pw} >= 8 )) || { echo "비밀번호는 8자 이상이어야 해요"; exit 1; }
+            user=$(printf '%s\n' "with a as (update admins set password_hash = crypt(:'pw', gen_salt('bf', 10)), must_change_password = true, active = true where lower(username) = lower(:'u') returning id, username), s as (delete from admin_sessions where admin_id in (select id from a)) select username from a;" \
+              | "${COMPOSE[@]}" exec -T db psql -U invisen invisen -At -v u="$2" -v pw="$pw")
+            [[ -n "$user" ]] || { echo "'$2' 계정이 없어요"; exit 1; }
+            echo "$user 의 임시 비밀번호: $pw  (다음 로그인 때 새 비밀번호로 바꾸게 돼요)";;
   *) cat <<'HELP'
 사용법: sudo invisen-admin <명령>
   status                 컨테이너 / 자동 배포 상태
@@ -258,6 +266,7 @@ case "${1:-help}" in
   seed --me "이름:010…"  샘플 현장·구역·센서 + 내 계정 만들기 (DB 가 비어 있을 때만, 등록 코드 출력)
   invite 010… [시간]     작업자 로그인용 등록 코드 발급 (기본 72시간, 한 번만 사용)
   demo 010… on|off       가상 센서로 쓰는 계정으로 전환 (실제 센서 사양 전 테스트용)
+  admin-password 아이디 [비밀번호]  관리자 대시보드 비밀번호 초기화 (비우면 임시 비밀번호 생성)
   psql                   DB 콘솔
   backup                 지금 DB 백업
 HELP
@@ -411,8 +420,12 @@ location /assets/ {
     try_files \$uri =404;
 }
 
-# index.html 은 항상 새로 받아 배포가 바로 반영되게
+# index.html 은 항상 새로 받아 배포가 바로 반영되게 (앱 + 관리자 대시보드 /admin/)
 location = /index.html {
+    include snippets/invisen-security.conf;
+    add_header Cache-Control "no-cache";
+}
+location = /admin/index.html {
     include snippets/invisen-security.conf;
     add_header Cache-Control "no-cache";
 }
