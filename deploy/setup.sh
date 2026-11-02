@@ -58,9 +58,16 @@ has_keys=0
 for f in /root/.ssh/authorized_keys /home/*/.ssh/authorized_keys; do
   [[ -s "$f" ]] && has_keys=1
 done
+# root 로 접속해서 실행했으면 root 키 로그인은 남겨둔다 (막으면 SSH 가 잠김).
+# 키가 있는 일반 계정에서 sudo 로 실행했을 때만 root 로그인을 완전히 막는다.
+root_login="prohibit-password"
+admin="${SUDO_USER:-root}"
+if [[ "$admin" != "root" && -s "$(getent passwd "$admin" | cut -d: -f6)/.ssh/authorized_keys" ]]; then
+  root_login="no"
+fi
 if [[ $has_keys -eq 1 ]]; then
-  cat >/etc/ssh/sshd_config.d/00-invisen-hardening.conf <<'EOF'
-PermitRootLogin no
+  cat >/etc/ssh/sshd_config.d/00-invisen-hardening.conf <<EOF
+PermitRootLogin $root_login
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 PubkeyAuthentication yes
