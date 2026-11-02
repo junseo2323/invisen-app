@@ -1,0 +1,218 @@
+/* Motion for the invisen app.
+   Character: precise and industrial — things are measured, filled and scanned, never bounced.
+   Short ease-out for arrivals, the signal cyan only for "detected / live", red pulses only for danger.
+   Everything is off under prefers-reduced-motion. */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+html,
+body {
+  transition: background-color 0.3s var(--ease-out);
+}
+
+/* ---- screen transitions (data-enter is set by the router) ----------------------- */
+@keyframes enter-push { from { opacity: 0; transform: translate3d(32px, 0, 0); } }
+@keyframes enter-pop { from { opacity: 0; transform: translate3d(-32px, 0, 0); } }
+@keyframes enter-modal { from { opacity: 0; transform: translate3d(0, 48px, 0); } }
+@keyframes enter-fade { from { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translate3d(0, 12px, 0); } }
+
+[data-enter='push'] { animation: enter-push 0.34s var(--ease-out) both; }
+[data-enter='pop'] { animation: enter-pop 0.34s var(--ease-out) both; }
+[data-enter='modal'] { animation: enter-modal 0.42s var(--ease-out) both; }
+[data-enter='swap'] { animation: enter-fade 0.3s var(--ease-out) both; }
+
+/* tabs: header settles, cards rise one after another */
+[data-enter='tab'] > header,
+[data-enter='tab'] > div:not([class]) { animation: enter-fade 0.3s var(--ease-out) both; }
+[data-enter='tab'] main > *,
+[data-enter='push'] main > *,
+main[data-enter] > *,
+.stagger > * { animation: rise 0.48s var(--ease-out) both; }
+[data-enter] main > *:nth-child(1), main[data-enter] > *:nth-child(1), .stagger > *:nth-child(1) { animation-delay: 0.03s; }
+[data-enter] main > *:nth-child(2), main[data-enter] > *:nth-child(2), .stagger > *:nth-child(2) { animation-delay: 0.08s; }
+[data-enter] main > *:nth-child(3), main[data-enter] > *:nth-child(3), .stagger > *:nth-child(3) { animation-delay: 0.13s; }
+[data-enter] main > *:nth-child(4), main[data-enter] > *:nth-child(4) { animation-delay: 0.18s; }
+[data-enter] main > *:nth-child(5), main[data-enter] > *:nth-child(5) { animation-delay: 0.22s; }
+[data-enter] main > *:nth-child(6), main[data-enter] > *:nth-child(6) { animation-delay: 0.26s; }
+[data-enter] main > *:nth-child(7), main[data-enter] > *:nth-child(7) { animation-delay: 0.3s; }
+[data-enter] main > *:nth-child(n + 8), main[data-enter] > *:nth-child(n + 8) { animation-delay: 0.34s; }
+/* the start screen staggers inside its own block instead */
+main[data-enter] > .stagger { animation: none; }
+
+/* ---- measured things fill up ------------------------------------------------------ */
+@keyframes grow-x { from { transform: scaleX(0); } }
+@keyframes grow-y { from { transform: scaleY(0); } }
+
+.fill-x {
+  transform-origin: left center;
+  animation: grow-x 0.9s var(--ease-out) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.08s);
+  transition: width 0.6s var(--ease-out), background-color 0.5s;
+}
+
+.segs > div {
+  transform-origin: left center;
+  animation: grow-x 0.32s var(--ease-out) both;
+  transition: background-color 0.5s var(--ease-out);
+}
+.segs > div:nth-child(1) { animation-delay: 0.18s; }
+.segs > div:nth-child(2) { animation-delay: 0.28s; }
+.segs > div:nth-child(3) { animation-delay: 0.38s; }
+
+.bar-y {
+  transform-origin: center bottom;
+  animation: grow-y 0.6s var(--ease-out) both;
+  animation-delay: calc(0.15s + var(--i, 0) * 0.03s);
+  transition: height 0.5s var(--ease-out), background-color 0.5s;
+}
+
+/* sparklines draw left to right, then the "now" point lands */
+@keyframes draw { from { stroke-dashoffset: 1; } }
+@keyframes land { from { opacity: 0; } }
+.spark { stroke-dasharray: 1; animation: draw 1.1s var(--ease-in-out) 0.15s both; }
+.spark-dot { animation: land 0.3s var(--ease-out) 1.2s both; }
+
+/* ---- live signal ---------------------------------------------------------------------- */
+@keyframes ping-dot {
+  0% { transform: scale(1); opacity: 0.8; }
+  80%, 100% { transform: scale(3); opacity: 0; }
+}
+@keyframes blink { 50% { opacity: 0.35; } }
+.live-dot { position: relative; }
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  animation: ping-dot 1.8s var(--ease-out) infinite;
+}
+.sos-dot { animation: blink 2.4s ease-in-out infinite; }
+
+/* status card: a thin scan line in the level colour sweeps the reading */
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  12% { opacity: 0.6; }
+  88% { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+.status-hero { position: relative; transition: background-color 0.6s var(--ease-out); }
+.status-hero > * { position: relative; }
+.status-hero > .scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--scan, #2bd8f0) 30%, var(--scan, #2bd8f0) 70%, transparent);
+  pointer-events: none;
+  animation: scan 4.2s var(--ease-in-out) infinite;
+}
+
+/* ---- danger ----------------------------------------------------------------------------- */
+@keyframes march { to { background-position: 16.97px 0; } }
+.hazard { animation: march 0.9s linear infinite; }
+
+@keyframes alarm { 50% { background-color: #6e1e16; } }
+.alert-frame { animation: alarm 1.1s ease-in-out infinite; }
+
+/* SOS: idle button breathes and sends out chamfered rings */
+@keyframes breathe { 50% { transform: scale(1.018); } }
+@keyframes ring {
+  from { transform: scale(1); opacity: 0.55; }
+  to { transform: scale(1.2); opacity: 0; }
+}
+.sos-idle { animation: breathe 2.6s ease-in-out infinite; }
+.sos-ring {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 248px;
+  height: 248px;
+  box-sizing: border-box;
+  border: 2px solid #ff5a4a;
+  clip-path: polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
+  pointer-events: none;
+  animation: ring 2.6s var(--ease-out) infinite;
+}
+.sos-ring-2 { animation-delay: 1.3s; }
+
+/* ---- site map ------------------------------------------------------------------------------ */
+@keyframes pop {
+  from { transform: scale(0); }
+  60% { transform: scale(1.3); }
+}
+.pop-in { animation: pop 0.45s var(--ease-out) both; animation-delay: calc(0.25s + var(--i, 0) * 0.06s); }
+
+@keyframes ping-ring {
+  from { transform: rotate(45deg) scale(0.7); opacity: 0.9; }
+  to { transform: rotate(45deg) scale(2.4); opacity: 0; }
+}
+.ping { animation: ping-ring 2.2s var(--ease-out) infinite; }
+
+/* ---- onboarding ------------------------------------------------------------------------------ */
+@keyframes appear { from { opacity: 0; transform: translate3d(0, 10px, 0); } }
+.appear { animation: appear 0.38s var(--ease-out) both; transition: background-color 0.2s, border-color 0.2s; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.9s linear infinite; }
+
+@keyframes orbit { to { stroke-dashoffset: -80; } }
+.orbit { animation: orbit 14s linear infinite; }
+.beacon { animation: blink 1.6s ease-in-out infinite; }
+
+/* ---- touch feedback ---------------------------------------------------------------------------- */
+button,
+a {
+  transition: transform 0.12s var(--ease-out), opacity 0.2s, filter 0.2s;
+}
+button:not([disabled]):active,
+a:active {
+  transform: scale(0.98);
+  filter: brightness(1.12);
+}
+
+/* tab bar: the active tab gets a signal line and its icon lifts once */
+@keyframes lift { 40% { transform: translate3d(0, -2px, 0) scale(1.12); } }
+nav[aria-label='주요 메뉴'] a { position: relative; }
+nav[aria-label='주요 메뉴'] a[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 32%;
+  right: 32%;
+  height: 2px;
+  background: var(--signal);
+  transform-origin: center;
+  animation: grow-x 0.35s var(--ease-out) both;
+}
+nav[aria-label='주요 메뉴'] a[aria-current='page'] svg { animation: lift 0.4s var(--ease-out); }
+
+/* data screens before their first load: content hidden, a signal bar scans under the status bar */
+@keyframes loadbar {
+  from { transform: translate3d(-100%, 0, 0); }
+  to { transform: translate3d(340%, 0, 0); }
+}
+[data-loading] main { visibility: hidden; }
+[data-loading]::after {
+  content: '';
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
+  width: 30%;
+  height: 2px;
+  background: var(--signal);
+  animation: loadbar 1s var(--ease-in-out) infinite;
+  z-index: 20;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .status-hero > .scanline { display: none; }
+}

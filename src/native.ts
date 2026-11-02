@@ -16,6 +16,9 @@ let patternTimers: number[] = [];
 let webVibrating = false;
 
 export const haptics = {
+  light() {
+    if (isNative) void Haptics.impact({ style: ImpactStyle.Light });
+  },
   tick() {
     if (isNative) void Haptics.impact({ style: ImpactStyle.Medium });
     else navigator.vibrate?.(30);

@@ -6,7 +6,7 @@
       <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{dateLine}}</span>
     </div>
     <a href="#sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
-      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
+      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" class="sos-dot" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
     </a>
   </header>
 
@@ -19,10 +19,10 @@
           <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: {{badge.s1}};"></span><span style="width: 7px; height: 5px; background: {{badge.s2}};"></span><span style="width: 7px; height: 5px; background: {{badge.s3}};"></span></span>{{badge.word}}
         </span>
       </div>
-      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.04em;">{{percent}}%</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.04em;" data-count>{{percent}}%</span>
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div style="position: relative; height: 8px; background: #070a0d;">
-          <div style="width: {{gauge}}%; height: 8px; background: {{gaugeColor}};"></div>
+          <div class="fill-x" style="width: {{gauge}}%; height: 8px; background: {{gaugeColor}};"></div>
           <div aria-hidden="true" style="position: absolute; left: 66.7%; top: -4px; width: 2px; height: 16px; background: #ffbe1a;"></div>
           <div aria-hidden="true" style="position: absolute; left: 83.3%; top: -4px; width: 2px; height: 16px; background: #ff5a4a;"></div>
         </div>
@@ -34,7 +34,7 @@
       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 16px; border-top: 1px solid #1c2127;">
         <div style="display: flex; flex-direction: column;">
           <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">평균</span>
-          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600;">{{average}} <span style="font-size: 13px; font-weight: 500; color: #a9b1bb;">µg/m³</span></span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; line-height: 24px; font-weight: 600;" data-count>{{average}} <span style="font-size: 13px; font-weight: 500; color: #a9b1bb;">µg/m³</span></span>
         </div>
         <div style="display: flex; flex-direction: column;">
           <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">권고치</span>
@@ -76,7 +76,7 @@
         <div aria-hidden="true" style="position: absolute; right: 0; bottom: 100px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 14px; font-weight: 500; color: #ffbe1a;">80</div>
         <div style="position: absolute; left: 0; right: 30px; bottom: 0; height: 160px; display: grid; grid-template-columns: repeat({{barCount}}, minmax(0, 1fr)); gap: 4px; align-items: end;">
           <sc-for list="{{bars}}" as="b" hint-placeholder-count="15">
-            <div style="position: relative; height: {{b.h}}px; background: {{b.c}};">
+            <div class="bar-y" style="--i: {{index}}; position: relative; height: {{b.h}}px; background: {{b.c}};">
               <sc-if value="{{b.now}}" hint-placeholder-val="{{ false }}">
                 <span aria-hidden="true" style="position: absolute; left: 50%; top: -14px; width: 7px; height: 7px; margin-left: -3.5px; background: #2bd8f0; transform: rotate(45deg);"></span>
               </sc-if>
@@ -101,7 +101,7 @@
           <span style="font-size: 15px; line-height: 22px; font-weight: 600;">{{z.name}}</span>
           <span style="font-size: 14px; line-height: 20px;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">{{z.h}}</span>시간 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">{{z.m}}</span>분</span>
         </div>
-        <div style="height: 6px; background: #070a0d;"><div style="width: {{z.width}}%; height: 6px; background: #a9b1bb;"></div></div>
+        <div style="height: 6px; background: #070a0d;"><div class="fill-x" style="--i: {{index}}; width: {{z.width}}%; height: 6px; background: #a9b1bb;"></div></div>
       </div>
       </sc-for>
       <sc-if value="{{noZones}}"><p style="margin: 0; font-size: 14px; line-height: 22px; color: #a9b1bb;">아직 기록이 없어요</p></sc-if>
@@ -116,7 +116,7 @@
         <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
           <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
             <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: {{d.tc}};">{{d.v}}</span>
-            <div style="width: 100%; height: {{d.h}}px; background: {{d.c}};"></div>
+            <div class="bar-y" style="--i: {{index}}; width: 100%; height: {{d.h}}px; background: {{d.c}};"></div>
             <span style="font-size: 13px; line-height: 20px; color: {{d.tc}}; font-weight: {{d.w}};">{{d.day}}</span>
           </div>
         </sc-for>

@@ -6,7 +6,7 @@
       <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{siteName}}</span>
     </div>
     <a href="#sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
-      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
+      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" class="sos-dot" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
     </a>
   </header>
 
@@ -15,7 +15,7 @@
     <section aria-label="현장 요약" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #13171c; box-shadow: inset 0 1px 0 #ffffff12;">
       <div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 20px;">
         <span style="font-size: 13px; line-height: 18px; color: #a9b1bb;">근무 중</span>
-        <span style="font-size: 18px; line-height: 26px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;">{{working}}</span>명</span>
+        <span style="font-size: 18px; line-height: 26px; font-weight: 700;"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600;" data-count>{{working}}</span>명</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; border-left: 1px solid #1c2127;">
         <span style="font-size: 13px; line-height: 18px; color: #a9b1bb;">주의</span>
@@ -39,7 +39,7 @@
           <span style="font-size: 15px; line-height: 22px; font-weight: 600;">수하물 처리 구역</span>
           <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">체크인 F–N · 3~5구역</span>
         </div>
-        <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" class="live-dot" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
       </div>
 
       <div style="position: relative;">
@@ -128,7 +128,7 @@
 
 
         <sc-for list="{{mapTeam}}" as="t" hint-placeholder-count="7">
-          <div aria-hidden="true" style="position: absolute; left: {{t.x}}%; top: {{t.y}}%; width: 0px; height: 0px;">
+          <div aria-hidden="true" class="pop-in" style="--i: {{index}}; position: absolute; left: {{t.x}}%; top: {{t.y}}%; width: 0px; height: 0px;">
             <sc-if value="{{t.sel}}" hint-placeholder-val="{{ false }}">
               <span style="position: absolute; left: -12px; top: -12px; width: 24px; height: 24px; box-sizing: border-box; border: 2px solid #2bd8f0; background: #0d2e35; transform: rotate(45deg);"></span>
             </sc-if>
@@ -138,6 +138,7 @@
 
         <sc-if value="{{me.has}}">
         <div aria-hidden="true" style="position: absolute; left: {{me.x}}%; top: {{me.y}}%; width: 0px; height: 0px;">
+          <span class="ping" style="position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; box-sizing: border-box; border: 2px solid #2bd8f0; transform: rotate(45deg);"></span>
           <span style="position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; box-sizing: border-box; border: 2px solid #2bd8f0; background: #0d2e35; transform: rotate(45deg);"></span>
           <span style="position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; background: #2bd8f0; transform: rotate(45deg);"></span>
           <span style="position: absolute; left: 18px; top: -9px; padding: 0 6px; background: #0b0e12; font-size: 12px; line-height: 18px; font-weight: 700; color: #2bd8f0;">나</span>

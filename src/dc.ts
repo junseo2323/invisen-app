@@ -132,7 +132,8 @@ function morphNode(a: Node, b: Node) {
   const ea = a as HandledElement;
   const eb = b as HandledElement;
   for (const attr of Array.from(ea.attributes)) {
-    if (!eb.hasAttribute(attr.name)) ea.removeAttribute(attr.name);
+    // data-enter is set by the router for the entry animation; re-renders must not cut it off
+    if (!eb.hasAttribute(attr.name) && attr.name !== 'data-enter' && attr.name !== 'data-loading') ea.removeAttribute(attr.name);
   }
   for (const attr of Array.from(eb.attributes)) {
     if (ea.getAttribute(attr.name) !== attr.value) ea.setAttribute(attr.name, attr.value);
@@ -173,6 +174,11 @@ export abstract class Screen<S extends Vals = Vals> {
 
   renderVals(): Vals {
     return {};
+  }
+
+  /** True while the screen has nothing to show yet (its content is hidden behind a scan bar). */
+  loading(): boolean {
+    return false;
   }
 
   /** Called after the screen is first put on the page. */

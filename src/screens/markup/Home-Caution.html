@@ -3,27 +3,28 @@
   <header style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 24px 0;">
     <img src="./logo.svg" alt="invisen" style="display: block; width: 84px; height: auto;">
     <a href="#sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
-      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
+      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" class="sos-dot" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
     </a>
   </header>
 
   <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 28px 24px 0;">
     <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.01em;">{{title}}</h1>
-    <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
+    <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" class="live-dot" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
   </div>
 
   <main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 20px 24px 32px;">
 
-    <section aria-label="지금 상태" style="background: {{cur.soft}}; clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); padding: 28px; display: flex; flex-direction: column; gap: 18px;">
+    <section aria-label="지금 상태" class="status-hero" style="background: {{cur.soft}}; clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); padding: 28px; display: flex; flex-direction: column; gap: 18px;">
+      <span class="scanline" aria-hidden="true" style="--scan: {{cur.color}};"></span>
       <div style="display: flex; align-items: baseline; gap: 10px;">
         <span style="font-size: 22px; line-height: 30px; font-weight: 700; color: {{cur.color}};">{{cur.word}}</span>
         <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">PM10</span>
       </div>
       <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
-        <span style="font-size: 96px; line-height: 92px; font-weight: 600; letter-spacing: -0.04em;">{{cur.value}}</span>
+        <span style="font-size: 96px; line-height: 92px; font-weight: 600; letter-spacing: -0.04em;" data-count>{{cur.value}}</span>
         <span style="font-size: 18px; line-height: 24px; font-weight: 500; color: #a9b1bb;">µg/m³</span>
       </div>
-      <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding-top: 4px;">
+      <div aria-hidden="true" class="segs" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding-top: 4px;">
         <div style="height: 6px; background: {{cur.s1}};"></div>
         <div style="height: 6px; background: {{cur.s2}};"></div>
         <div style="height: 6px; background: {{cur.s3}};"></div>
@@ -39,9 +40,9 @@
           <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: {{cum.s1}};"></span><span style="width: 7px; height: 5px; background: {{cum.s2}};"></span><span style="width: 7px; height: 5px; background: {{cum.s3}};"></span></span>{{cum.word}}
         </span>
       </div>
-      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -0.02em;">{{cum.percent}}%</span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -0.02em;" data-count>{{cum.percent}}%</span>
       <div style="position: relative; height: 6px; background: #070a0d;">
-        <div style="width: {{cum.width}}%; height: 6px; background: {{cum.color}};"></div>
+        <div class="fill-x" style="width: {{cum.width}}%; height: 6px; background: {{cum.color}};"></div>
         <div aria-hidden="true" style="position: absolute; left: 80%; top: -3px; width: 2px; height: 12px; background: #0b0e12;"></div>
       </div>
       <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 600;">{{cum.message}}</p>

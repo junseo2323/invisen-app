@@ -5,7 +5,7 @@
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
     </a>
     <h1 style="flex: 1; margin: 0; font-size: 20px; line-height: 28px; font-weight: 700;">센서값</h1>
-    <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
+    <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" class="live-dot" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
   </header>
 
   <main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 16px 24px 40px;">
@@ -29,13 +29,13 @@
         </span>
       </div>
       <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
-        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;">{{p10.value}}</span>
+        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;" data-count>{{p10.value}}</span>
         <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #a9b1bb;">µg/m³</span>
       </div>
       <svg width="310" height="72" viewBox="0 0 326 72" fill="none" role="img" aria-label="{{p10.label}}" style="display: block; width: 100%; height: auto;">
         <line x1="0" y1="14.7" x2="326" y2="14.7" stroke="#5f6975" stroke-width="1" stroke-dasharray="2 4" stroke-linecap="round"></line>
-        <polyline points="{{p10.points}}" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        <rect x="{{p10.dotX}}" y="{{p10.dotY}}" width="8" height="8" transform="{{p10.dotT}}" fill="#2bd8f0"></rect>
+        <polyline class="spark" pathLength="1" points="{{p10.points}}" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <rect class="spark-dot" x="{{p10.dotX}}" y="{{p10.dotY}}" width="8" height="8" transform="{{p10.dotT}}" fill="#2bd8f0"></rect>
       </svg>
       <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
         <span>-30분</span><span>권고치 {{p10.limit}}</span><span>지금</span>
@@ -50,13 +50,13 @@
         </span>
       </div>
       <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
-        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;">{{p25.value}}</span>
+        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;" data-count>{{p25.value}}</span>
         <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #a9b1bb;">µg/m³</span>
       </div>
       <svg width="310" height="72" viewBox="0 0 326 72" fill="none" role="img" aria-label="{{p25.label}}" style="display: block; width: 100%; height: auto;">
         <line x1="0" y1="14.7" x2="326" y2="14.7" stroke="#5f6975" stroke-width="1" stroke-dasharray="2 4" stroke-linecap="round"></line>
-        <polyline points="{{p25.points}}" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        <rect x="{{p25.dotX}}" y="{{p25.dotY}}" width="8" height="8" transform="{{p25.dotT}}" fill="#2bd8f0"></rect>
+        <polyline class="spark" pathLength="1" points="{{p25.points}}" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <rect class="spark-dot" x="{{p25.dotX}}" y="{{p25.dotY}}" width="8" height="8" transform="{{p25.dotT}}" fill="#2bd8f0"></rect>
       </svg>
       <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
         <span>-30분</span><span>권고치 {{p25.limit}}</span><span>지금</span>
@@ -77,13 +77,13 @@
         </span>
       </div>
       <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
-        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;">{{co.value}}</span>
+        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;" data-count>{{co.value}}</span>
         <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #a9b1bb;">ppm</span>
       </div>
       <svg width="310" height="72" viewBox="0 0 326 72" fill="none" role="img" aria-label="{{co.label}}" style="display: block; width: 100%; height: auto;">
         <line x1="0" y1="14.7" x2="326" y2="14.7" stroke="#5f6975" stroke-width="1" stroke-dasharray="2 4" stroke-linecap="round"></line>
-        <polyline points="{{co.points}}" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        <rect x="{{co.dotX}}" y="{{co.dotY}}" width="8" height="8" transform="{{co.dotT}}" fill="#2bd8f0"></rect>
+        <polyline class="spark" pathLength="1" points="{{co.points}}" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <rect class="spark-dot" x="{{co.dotX}}" y="{{co.dotY}}" width="8" height="8" transform="{{co.dotT}}" fill="#2bd8f0"></rect>
       </svg>
       <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
         <span>-30분</span><span>권고치 {{co.limit}}</span><span>지금</span>
@@ -107,7 +107,7 @@
         <div style="display: flex; align-items: center; justify-content: space-between; min-height: 48px;">
           <dt style="font-size: 16px; line-height: 22px;">배터리</dt>
           <dd style="margin: 0; display: flex; align-items: center; gap: 10px;">
-            <span aria-hidden="true" style="display: flex; align-items: center; gap: 2px;"><span style="width: 26px; height: 12px; box-sizing: border-box; border: 1.5px solid #a9b1bb; padding: 1.5px;"><span style="display: block; width: {{batteryWidth}}%; height: 100%; background: {{batteryColor}};"></span></span><span style="width: 2px; height: 5px; background: #a9b1bb;"></span></span>
+            <span aria-hidden="true" style="display: flex; align-items: center; gap: 2px;"><span style="width: 26px; height: 12px; box-sizing: border-box; border: 1.5px solid #a9b1bb; padding: 1.5px;"><span style="display: block; width: {{batteryWidth}}%; transition: width .6s cubic-bezier(.2,.8,.2,1); height: 100%; background: {{batteryColor}};"></span></span><span style="width: 2px; height: 5px; background: #a9b1bb;"></span></span>
             <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 20px; font-weight: 500;">{{battery}}</span>
           </dd>
         </div>

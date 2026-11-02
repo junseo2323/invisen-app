@@ -1,6 +1,6 @@
 <div style="width: 100%; min-height: var(--screen-min-h); box-sizing: border-box; overflow-x: hidden; position: relative; display: flex; flex-direction: column; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
 
-  <div aria-hidden="true" style="height: 4px; flex-shrink: 0; background: repeating-linear-gradient(-45deg, #ff5a4a 0 6px, #0b0e12 6px 12px);"></div>
+  <div aria-hidden="true" class="hazard" style="height: 4px; flex-shrink: 0; background: repeating-linear-gradient(-45deg, #ff5a4a 0 6px, #0b0e12 6px 12px);"></div>
 
   <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 24px 0 12px;">
     <a href="#home" aria-label="닫기" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: #e3e7eb;">
@@ -14,11 +14,12 @@
     <h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em; white-space: pre-line;">{{headline}}</h1>
 
     <div style="position: relative; align-self: center; width: 288px; height: 288px;">
+      <sc-if value="{{idle}}"><span class="sos-ring" aria-hidden="true"></span><span class="sos-ring sos-ring-2" aria-hidden="true"></span></sc-if>
       <svg width="288" height="288" viewBox="0 0 288 288" fill="none" aria-hidden="true" style="position: absolute; inset: 0;">
         <path d="M4 4H248L284 40V284H4Z" stroke="#35110e" stroke-width="4" stroke-linejoin="round"></path>
         <path d="M4 4H248L284 40V284H4Z" pathLength="100" stroke="#ff5a4a" stroke-width="4" stroke-linejoin="round" stroke-dasharray="100 100" stroke-dashoffset="{{dash}}"></path>
       </svg>
-      <button type="button" aria-label="SOS 긴급 호출. 3초 동안 누르세요" onPointerDown="{{start}}" onPointerUp="{{stop}}" onPointerLeave="{{stop}}" style="position: absolute; left: 20px; top: 20px; width: 248px; height: 248px; padding: 0; border: 0; border-radius: 0; cursor: pointer; background: #ff5a4a; color: #0b0e12; font-family: inherit; display: flex; flex-direction: column; align-items: stretch; clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); touch-action: none;">
+      <button type="button" class="{{btnClass}}" aria-label="SOS 긴급 호출. 3초 동안 누르세요" onPointerDown="{{start}}" onPointerUp="{{stop}}" onPointerLeave="{{stop}}" style="position: absolute; left: 20px; top: 20px; width: 248px; height: 248px; padding: 0; border: 0; border-radius: 0; cursor: pointer; background: #ff5a4a; color: #0b0e12; font-family: inherit; display: flex; flex-direction: column; align-items: stretch; clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); touch-action: none;">
         <span style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
           <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 64px; line-height: 64px; font-weight: 600; letter-spacing: 0.04em;">{{big}}</span>
           <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.16em;">{{plate}}</span>

@@ -57,6 +57,7 @@ function linkWord() {
 }
 
 async function logoutLocal() {
+  dataCache.clear();
   await stopMonitor();
   setToken(null);
   await app.persist({ token: null, onboarded: false, deviceId: null });
@@ -64,8 +65,15 @@ async function logoutLocal() {
 }
 
 /** Screen that loads data on mount and refreshes it on an interval. */
+const dataCache = new Map<string, unknown>();
+
 abstract class DataScreen<D, S extends Record<string, unknown> = Record<string, unknown>> extends Screen<S & { data?: D; error?: string }> {
   private timer?: number;
+  // revisiting a screen shows the last data at once, then refreshes
+  state = { data: dataCache.get(this.constructor.name) } as S & { data?: D; error?: string };
+  loading() {
+    return !this.state.data && !this.state.error;
+  }
   protected abstract load(): Promise<D>;
   protected every = 30_000;
   mounted() {
@@ -77,7 +85,9 @@ abstract class DataScreen<D, S extends Record<string, unknown> = Record<string, 
   }
   async refresh() {
     try {
-      this.setState({ data: await this.load(), error: undefined } as Partial<S & { data?: D; error?: string }>);
+      const data = await this.load();
+      dataCache.set(this.constructor.name, data);
+      this.setState({ data, error: undefined } as Partial<S & { data?: D; error?: string }>);
     } catch (e) {
       this.setState({ error: errText(e) } as Partial<S & { data?: D; error?: string }>);
     }
@@ -244,6 +254,7 @@ export class LoginSensor extends Screen<SensorPick> {
       sensors,
       foundLabel: st.found.length ? `${st.found.length}대 찾았어요` : st.scanning ? '센서를 찾고 있어요' : '센서를 찾지 못했어요',
       scanning: st.scanning,
+      spinClass: st.scanning ? 'spin' : '',
       rescan: () => void this.scan(),
       qr: async () => {
         const id = (await scanQr())?.toUpperCase().match(/IVS-[A-Z0-9-]+/)?.[0];
@@ -786,6 +797,8 @@ export class Sos extends Screen<SosState> {
       big: sent ? 'SENT' : 'SOS',
       plate: sent ? `${this.state.sentTime} · 반장 · 관제실` : sending ? 'SENDING' : 'HOLD ' + secs + 'S',
       sent,
+      idle: !sent && !sending && p === 0,
+      btnClass: !sent && !sending && p === 0 ? 'sos-idle' : '',
       flashOpacity: flash ? (calm ? 0.18 : 0.42) : 0,
       callBg: sent || this.state.error ? '#e3e7eb' : '#1c2127',
       callFg: sent || this.state.error ? '#0b0e12' : '#e3e7eb',
