@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>착용과 권한</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;display=swap">
+<style>
+html,body{margin:0;background:#0b0e12;overflow-x:hidden}
+a{color:#a9b1bb}a:hover{color:#e3e7eb}
+a:focus-visible,button:focus-visible{outline:2px solid #2bd8f0;outline-offset:2px}
+</style>
+</helmet>
+<main style="width: 100%; min-height: 844px; box-sizing: border-box; overflow-x: hidden; padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 28px; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; margin: 0 -12px;">
+    <a href="Login-Sensor.dc.html" aria-label="뒤로" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: #e3e7eb;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <div aria-label="4단계 중 4단계" style="display: flex; align-items: center; gap: 4px; padding-right: 12px;">
+      <div style="width: 20px; height: 3px; background: #e3e7eb;"></div>
+      <div style="width: 20px; height: 3px; background: #e3e7eb;"></div>
+      <div style="width: 20px; height: 3px; background: #e3e7eb;"></div>
+      <div style="width: 20px; height: 3px; background: #e3e7eb;"></div>
+    </div>
+  </div>
+
+  <h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em;">가슴 높이에<br>달아주세요</h1>
+
+  <div style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); padding: 20px 16px 16px; display: flex; flex-direction: column; gap: 16px;">
+    <svg width="318" height="160" viewBox="0 0 324 170" fill="none" role="img" aria-label="상반신 그림. 센서는 옷깃 아래 가슴 높이, 코와 입에서 30 cm 안쪽에 답니다." style="display: block; width: 100%; height: auto;">
+      <circle cx="162" cy="72" r="66" stroke="#3f4852" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"></circle>
+      <rect x="140" y="32" width="44" height="52" rx="18" stroke="#a9b1bb" stroke-width="2"></rect>
+      <path d="M152 84v18M172 84v18" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round"></path>
+      <path d="M72 170v-22c0-8 4-14 11-18l36-20c6-3 12-5 19-5h48c7 0 13 2 19 5l36 20c7 4 11 10 11 18v22" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M146 106l16 20 16-20" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <rect x="177" y="117" width="14" height="14" transform="rotate(45 184 124)" fill="#2bd8f0"></rect>
+    </svg>
+    <div style="display: flex; justify-content: center; gap: 24px; font-size: 14px; line-height: 22px;">
+      <span style="display: flex; align-items: center; gap: 8px;"><span aria-hidden="true" style="width: 7px; height: 7px; background: #2bd8f0; transform: rotate(45deg);"></span>센서</span>
+      <span style="display: flex; align-items: center; gap: 8px; color: #a9b1bb;"><span aria-hidden="true" style="width: 14px; border-top: 2px dotted #5f6975;"></span>호흡 영역 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500;">30 cm</span></span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 14px; min-height: 60px;">
+      <span style="width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #13171c;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 5V2l5 5L7 17"></path></svg>
+      </span>
+      <span style="flex: 1; font-size: 16px; line-height: 22px; font-weight: 600;">블루투스</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="허용됨"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px; min-height: 60px;">
+      <span style="width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #13171c;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 21h4"></path></svg>
+      </span>
+      <span style="flex: 1; font-size: 16px; line-height: 22px; font-weight: 600;">알림</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="허용됨"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px; min-height: 60px;">
+      <span style="width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #13171c;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"></path><path d="M12 7.8l2.2 2.2-2.2 2.2-2.2-2.2z"></path></svg>
+      </span>
+      <span style="flex: 1; display: flex; flex-direction: column;">
+        <span style="font-size: 16px; line-height: 22px; font-weight: 600;">위치</span>
+        <span style="font-size: 13px; line-height: 18px; color: #a9b1bb;">SOS 때만 써요</span>
+      </span>
+      <button type="button" style="height: 40px; padding: 0 16px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">허용</button>
+    </div>
+  </div>
+
+  <div style="margin-top: auto;">
+    <a href="Home.dc.html" style="height: 56px; display: flex; align-items: center; justify-content: center; background: #e3e7eb; color: #0b0e12; text-decoration: none; font-size: 17px; line-height: 24px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">측정 시작하기</a>
+  </div>
+
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

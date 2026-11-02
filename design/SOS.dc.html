@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>SOS 긴급 호출</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;display=swap">
+<style>
+html,body{margin:0;background:#0b0e12;overflow-x:hidden}
+a{color:#a9b1bb}a:hover{color:#e3e7eb}
+a:focus-visible,button:focus-visible{outline:2px solid #2bd8f0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 844px; box-sizing: border-box; overflow-x: hidden; position: relative; display: flex; flex-direction: column; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <div aria-hidden="true" style="height: 4px; flex-shrink: 0; background: repeating-linear-gradient(-45deg, #ff5a4a 0 6px, #0b0e12 6px 12px);"></div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 24px 0 12px;">
+    <a href="Home.dc.html" aria-label="닫기" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: #e3e7eb;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </a>
+    <span style="font-size: 13px; line-height: 20px; font-weight: 600; color: #ff5a4a;">긴급 호출</span>
+  </div>
+
+  <main style="flex: 1; display: flex; flex-direction: column; gap: 32px; padding: 16px 24px 40px;">
+
+    <h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em; white-space: pre-line;">{{headline}}</h1>
+
+    <div style="position: relative; align-self: center; width: 288px; height: 288px;">
+      <svg width="288" height="288" viewBox="0 0 288 288" fill="none" aria-hidden="true" style="position: absolute; inset: 0;">
+        <path d="M4 4H248L284 40V284H4Z" stroke="#35110e" stroke-width="4" stroke-linejoin="round"></path>
+        <path d="M4 4H248L284 40V284H4Z" pathLength="100" stroke="#ff5a4a" stroke-width="4" stroke-linejoin="round" stroke-dasharray="100 100" stroke-dashoffset="{{dash}}"></path>
+      </svg>
+      <button type="button" aria-label="SOS 긴급 호출. 3초 동안 누르세요" onPointerDown="{{start}}" onPointerUp="{{stop}}" onPointerLeave="{{stop}}" style="position: absolute; left: 20px; top: 20px; width: 248px; height: 248px; padding: 0; border: 0; border-radius: 0; cursor: pointer; background: #ff5a4a; color: #0b0e12; font-family: inherit; display: flex; flex-direction: column; align-items: stretch; clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); touch-action: none;">
+        <span style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 64px; line-height: 64px; font-weight: 600; letter-spacing: 0.04em;">{{big}}</span>
+          <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.16em;">{{plate}}</span>
+        </span>      </button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #13171c; box-shadow: inset 0 1px 0 #ffffff12;">
+      <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px;">
+        <span style="font-size: 12px; line-height: 18px; color: #a9b1bb;">위치</span>
+        <span style="font-size: 15px; line-height: 22px; font-weight: 600;">3구역 C-12</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-left: 1px solid #1c2127;">
+        <span style="font-size: 12px; line-height: 18px; color: #a9b1bb;">PM10</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 22px; font-weight: 600; color: #ff5a4a;">164</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-left: 1px solid #1c2127;">
+        <span style="font-size: 12px; line-height: 18px; color: #a9b1bb;">시각</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 22px; font-weight: 600;">14:32</span>
+      </div>
+    </div>
+
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <sc-if value="{{sent}}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{reset}}" style="height: 56px; background: #1c2127; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">호출 취소</button>
+      </sc-if>
+      <a href="#" style="height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 17px; line-height: 24px; font-weight: 600; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%); background: {{callBg}}; color: {{callFg}};">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 4h3l1.6 4.2-2 1.3a10.5 10.5 0 0 0 6.4 6.4l1.3-2L20 15.5v3a1.5 1.5 0 0 1-1.6 1.5A15.5 15.5 0 0 1 4 5.6 1.5 1.5 0 0 1 5.5 4z"></path></svg>관제실에 전화
+      </a>
+    </div>
+
+  </main>
+
+  <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: #ff5a4a; opacity: {{flashOpacity}}; transition: opacity 150ms ease-out;"></div>
+  <sc-if value="{{sent}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 0; width: 0; height: 0; overflow: hidden;">관제실과 반장님께 SOS를 보냈어요</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  componentWillUnmount() {
+    this.stopAll();
+  }
+  audio() {
+    try {
+      if (!this.ac) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        this.ac = new AC();
+      }
+      if (this.ac.state === 'suspended') this.ac.resume();
+      return this.ac;
+    } catch (e) {
+      return null;
+    }
+  }
+  beep(freq, dur, vol) {
+    const ac = this.audio();
+    if (!ac) return;
+    const t = ac.currentTime;
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.type = 'square';
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g);
+    g.connect(ac.destination);
+    o.start(t);
+    o.stop(t + dur + 0.02);
+  }
+  siren(seconds) {
+    const ac = this.audio();
+    if (!ac) return;
+    const t = ac.currentTime;
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.type = 'sawtooth';
+    for (let i = 0; i < seconds * 2; i++) {
+      o.frequency.setValueAtTime(i % 2 ? 640 : 960, t + i * 0.5);
+    }
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.2, t + 0.05);
+    g.gain.setValueAtTime(0.2, t + seconds - 0.1);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + seconds);
+    o.connect(g);
+    g.connect(ac.destination);
+    o.start(t);
+    o.stop(t + seconds + 0.05);
+    this.sirenOsc = o;
+  }
+  alarm() {
+    this.siren(6);
+    try { if (navigator.vibrate) navigator.vibrate([400, 100, 400, 100, 400, 100, 400]); } catch (e) {}
+    const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    clearInterval(this.flashTimer);
+    if (reduce) {
+      this.setState({ flash: true, calm: true });
+      return;
+    }
+    let n = 0;
+    this.setState({ flash: true, calm: false });
+    this.flashTimer = setInterval(() => {
+      n += 1;
+      if (n >= 12) {
+        clearInterval(this.flashTimer);
+        this.setState({ flash: false });
+        return;
+      }
+      this.setState({ flash: n % 2 === 0 });
+    }, 500);
+  }
+  stopAll() {
+    clearInterval(this.timer);
+    clearInterval(this.flashTimer);
+    try { if (this.sirenOsc) this.sirenOsc.stop(); } catch (e) {}
+    this.sirenOsc = null;
+    try { if (navigator.vibrate) navigator.vibrate(0); } catch (e) {}
+  }
+  renderVals() {
+    const st = this.state || {};
+    const p = st.p || 0;
+    const sent = !!st.sent;
+    const start = () => {
+      if (this.state && this.state.sent) return;
+      clearInterval(this.timer);
+      this.beep(880, 0.08, 0.2);
+      this.timer = setInterval(() => {
+        const prev = (this.state && this.state.p) || 0;
+        const np = Math.min(1, prev + 0.05);
+        if (np >= 1) {
+          clearInterval(this.timer);
+          this.setState({ p: 1, sent: true });
+          this.alarm();
+        } else {
+          if (Math.floor(np * 3 + 1e-6) > Math.floor(prev * 3 + 1e-6)) this.beep(880, 0.08, 0.2);
+          this.setState({ p: np });
+        }
+      }, 150);
+    };
+    const stop = () => {
+      if (this.state && this.state.sent) return;
+      clearInterval(this.timer);
+      this.setState({ p: 0 });
+    };
+    const reset = () => {
+      this.stopAll();
+      this.setState({ p: 0, sent: false, flash: false, calm: false });
+    };
+    const secs = Math.max(1, Math.ceil(3 - p * 3));
+    return {
+      headline: sent ? '관제실에\n알렸어요' : '3초 동안\n꾹 눌러주세요',
+      dash: sent ? 0 : Math.round((100 - p * 100) * 10) / 10,
+      big: sent ? 'SENT' : 'SOS',
+      plate: sent ? '14:32 · 반장 · 관제실' : 'HOLD ' + secs + 'S',
+      sent,
+      flashOpacity: st.flash ? (st.calm ? 0.18 : 0.42) : 0,
+      callBg: sent ? '#e3e7eb' : '#1c2127',
+      callFg: sent ? '#0b0e12' : '#e3e7eb',
+      start,
+      stop,
+      reset
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>센서값 상세</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;display=swap">
+<style>
+html,body{margin:0;background:#0b0e12;overflow-x:hidden}
+a{color:#a9b1bb}a:hover{color:#e3e7eb}
+a:focus-visible,button:focus-visible{outline:2px solid #2bd8f0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1480px; box-sizing: border-box; overflow-x: hidden; display: flex; flex-direction: column; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <header style="display: flex; align-items: center; gap: 4px; padding: 12px 24px 4px 12px;">
+    <a href="Home.dc.html" aria-label="뒤로" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: #e3e7eb;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <h1 style="flex: 1; margin: 0; font-size: 20px; line-height: 28px; font-weight: 700;">센서값</h1>
+    <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; color: #2bd8f0;"><span aria-hidden="true" style="width: 6px; height: 6px; background: #2bd8f0; transform: rotate(45deg);"></span>LIVE</span>
+  </header>
+
+  <main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 16px 24px 40px;">
+
+    <div style="display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12;">
+      <span style="width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #070a0d;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 5V2l5 5L7 17"></path></svg>
+      </span>
+      <span style="flex: 1; display: flex; flex-direction: column;">
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 22px; font-weight: 600;">IVS-P10-0142</span>
+        <span style="font-size: 13px; line-height: 20px; color: #a9b1bb;">연결됨</span>
+      </span>
+      <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; line-height: 20px; font-weight: 500; color: #a9b1bb;">14:32:08</span>
+    </div>
+
+    <section style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-right: 4px;">
+        <h2 style="margin: 0; display: flex; align-items: baseline; gap: 8px; font-size: 16px; line-height: 24px; font-weight: 600;">미세먼지<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: #a9b1bb;">PM10</span></h2>
+        <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: #0e2a1c; color: #34c77b; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
+          <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: #34c77b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span></span>안전
+        </span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
+        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;">38</span>
+        <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #a9b1bb;">µg/m³</span>
+      </div>
+      <svg width="310" height="72" viewBox="0 0 326 72" fill="none" role="img" aria-label="최근 30분 PM10 추이. 34에서 42 사이로 권고치 100보다 낮습니다." style="display: block; width: 100%; height: auto;">
+        <line x1="0" y1="14.7" x2="326" y2="14.7" stroke="#5f6975" stroke-width="1" stroke-dasharray="2 4" stroke-linecap="round"></line>
+        <polyline points="0,49.9 22.1,48.8 44.3,49.3 66.4,47.2 88.6,46.1 110.7,46.7 132.9,48.3 155,48.8 177.1,47.7 199.3,45.6 221.4,46.7 243.6,47.2 265.7,48.3 287.9,48.8 310,47.7" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <rect x="306" y="43.7" width="8" height="8" transform="rotate(45 310 47.7)" fill="#2bd8f0"></rect>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
+        <span>-30분</span><span>권고치 100</span><span>지금</span>
+      </div>
+    </section>
+
+    <section style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-right: 4px;">
+        <h2 style="margin: 0; display: flex; align-items: baseline; gap: 8px; font-size: 16px; line-height: 24px; font-weight: 600;">초미세먼지<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: #a9b1bb;">PM2.5</span></h2>
+        <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: #0e2a1c; color: #34c77b; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
+          <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: #34c77b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span></span>안전
+        </span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
+        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;">21</span>
+        <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #a9b1bb;">µg/m³</span>
+      </div>
+      <svg width="310" height="72" viewBox="0 0 326 72" fill="none" role="img" aria-label="최근 30분 PM2.5 추이. 19에서 24 사이로 권고치 50보다 낮습니다." style="display: block; width: 100%; height: auto;">
+        <line x1="0" y1="14.7" x2="326" y2="14.7" stroke="#5f6975" stroke-width="1" stroke-dasharray="2 4" stroke-linecap="round"></line>
+        <polyline points="0,47.7 22.1,46.7 44.3,44.5 66.4,45.6 88.6,43.5 110.7,44.5 132.9,46.7 155,47.7 177.1,45.6 199.3,42.4 221.4,44.5 243.6,45.6 265.7,46.7 287.9,46.7 310,45.6" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <rect x="306" y="41.6" width="8" height="8" transform="rotate(45 310 45.6)" fill="#2bd8f0"></rect>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
+        <span>-30분</span><span>권고치 50</span><span>지금</span>
+      </div>
+    </section>
+
+    <section style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding-right: 4px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <h2 style="margin: 0; display: flex; align-items: baseline; gap: 8px; font-size: 16px; line-height: 24px; font-weight: 600;">일산화탄소<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: #a9b1bb;">CO</span></h2>
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 20px; color: #a9b1bb;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 15.5V8a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v7.5"></path><path d="M13.5 10.5h4l3 3v2h-7"></path><path d="M2.5 15.5h2M9.5 15.5h5"></path><circle cx="7" cy="16.5" r="2"></circle><circle cx="17" cy="16.5" r="2"></circle></svg>
+            수하물 견인차 배기가스
+          </span>
+        </div>
+        <span style="display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px 0 10px; background: #0e2a1c; color: #34c77b; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
+          <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: #34c77b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span><span style="width: 7px; height: 5px; background: #2c333b;"></span></span>안전
+        </span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;">
+        <span style="font-size: 44px; line-height: 48px; font-weight: 600; letter-spacing: -0.02em;">12</span>
+        <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #a9b1bb;">ppm</span>
+      </div>
+      <svg width="310" height="72" viewBox="0 0 326 72" fill="none" role="img" aria-label="최근 30분 일산화탄소 추이. 평소 6 ppm 안팎이고 견인차가 지날 때 14, 18, 13으로 잠깐 올랐습니다. 권고치 30보다 낮습니다." style="display: block; width: 100%; height: auto;">
+        <line x1="0" y1="14.7" x2="326" y2="14.7" stroke="#5f6975" stroke-width="1" stroke-dasharray="2 4" stroke-linecap="round"></line>
+        <polyline points="0,57.3 22.1,57.3 44.3,55.6 66.4,43.1 88.6,52 110.7,55.6 132.9,57.3 155,57.3 177.1,36 199.3,48.4 221.4,53.8 243.6,55.6 265.7,57.3 287.9,44.9 310,46.7" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <rect x="306" y="42.7" width="8" height="8" transform="rotate(45 310 46.7)" fill="#2bd8f0"></rect>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 16px; font-weight: 500; color: #a9b1bb;">
+        <span>-30분</span><span>권고치 30</span><span>지금</span>
+      </div>
+    </section>
+
+    <section aria-label="작업 환경" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+      <div style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 20px 24px; display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">온도</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 26px; line-height: 32px; font-weight: 600;">24.6<span style="font-size: 14px; font-weight: 500; color: #a9b1bb;"> °C</span></span>
+      </div>
+      <div style="background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; padding: 20px 24px; display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 14px; line-height: 22px; color: #a9b1bb;">습도</span>
+        <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 26px; line-height: 32px; font-weight: 600;">48<span style="font-size: 14px; font-weight: 500; color: #a9b1bb;"> %</span></span>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 4px; padding-top: 24px;">
+      <h2 style="margin: 0 0 8px; font-size: 18px; line-height: 26px; font-weight: 700;">센서 상태</h2>
+      <dl style="margin: 0; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; min-height: 48px;">
+          <dt style="font-size: 16px; line-height: 22px;">배터리</dt>
+          <dd style="margin: 0; display: flex; align-items: center; gap: 10px;">
+            <span aria-hidden="true" style="display: flex; align-items: center; gap: 2px;"><span style="width: 26px; height: 12px; box-sizing: border-box; border: 1.5px solid #a9b1bb; padding: 1.5px;"><span style="display: block; width: 76%; height: 100%; background: #e3e7eb;"></span></span><span style="width: 2px; height: 5px; background: #a9b1bb;"></span></span>
+            <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 20px; font-weight: 500;">76%</span>
+          </dd>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; min-height: 48px;">
+          <dt style="font-size: 16px; line-height: 22px;">신호</dt>
+          <dd style="margin: 0; font-size: 15px; line-height: 20px; font-weight: 600;">강함</dd>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; min-height: 48px;">
+          <dt style="font-size: 16px; line-height: 22px;">최근 교정</dt>
+          <dd style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 20px; font-weight: 500;">2026.10.12</dd>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; min-height: 48px;">
+          <dt style="font-size: 16px; line-height: 22px;">펌웨어</dt>
+          <dd style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; line-height: 20px; font-weight: 500;">v2.1.4</dd>
+        </div>
+      </dl>
+    </section>
+
+  </main>
+
+  <nav aria-label="주요 메뉴" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px 4px 10px; border-top: 1px solid #1c2127; background: #0b0e12;">
+    <a href="Home.dc.html" aria-current="page" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #e3e7eb; font-size: 12px; line-height: 16px; font-weight: 600;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.7 3.5a2 2 0 0 1 2.6 0l6.6 5.6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2h-3.4a.8.8 0 0 1-.8-.8V16a1.2 1.2 0 0 0-1.2-1.2h-2.4A1.2 1.2 0 0 0 9.6 16v4.2a.8.8 0 0 1-.8.8H5.4a2 2 0 0 1-2-2v-8.4a2 2 0 0 1 .7-1.5z" fill="currentColor"></path></svg>홈
+    </a>
+    <a href="Site.dc.html" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5A7.5 7.5 0 0 0 4.5 10c0 5.2 6.2 10.6 6.9 11.2a.9.9 0 0 0 1.2 0c.7-.6 6.9-6 6.9-11.2A7.5 7.5 0 0 0 12 2.5zM12 7.2l2.8 2.8-2.8 2.8-2.8-2.8z" fill="currentColor"></path></svg>현장
+    </a>
+    <a href="Exposure.dc.html" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="12" width="4.5" height="9" rx="1.6" fill="currentColor"></rect><rect x="9.75" y="7" width="4.5" height="14" rx="1.6" fill="currentColor"></rect><rect x="16" y="3" width="4.5" height="18" rx="1.6" fill="currentColor"></rect></svg>노출량
+    </a>
+    <a href="Log.dc.html" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6 2.5h7.6c.5 0 1 .2 1.4.6l3.9 3.9c.4.4.6.9.6 1.4v11.1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2zM8.8 11h6.4a1 1 0 0 1 0 2H8.8a1 1 0 0 1 0-2zM8.8 15h4a1 1 0 0 1 0 2h-4a1 1 0 0 1 0-2z" fill="currentColor"></path></svg>기록
+    </a>
+    <a href="More.dc.html" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect><rect x="13" y="3.5" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect><rect x="3.5" y="13" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect><rect x="13" y="13" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect></svg>전체
+    </a>
+  </nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

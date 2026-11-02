@@ -1,0 +1,47 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-11-02T01:10:00Z"},
+  "title": "invisen 작업자 앱",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "01 시작", "is_interactive": true},
+    "Login-Phone.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "02 휴대폰 인증", "is_interactive": true},
+    "Login-Profile.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "03 소속 확인", "is_interactive": true},
+    "Login-Sensor.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 844, "title": "04 센서 연결", "is_interactive": true},
+    "Login-Wear.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 844, "title": "05 착용·권한", "is_interactive": true},
+    "Home.dc.html": {"x": 0, "y": 1264, "w": 390, "h": 844, "title": "06 홈 · 안전", "is_interactive": true},
+    "Site.dc.html": {"x": 470, "y": 1264, "w": 390, "h": 1460, "title": "07 현장 지도", "is_interactive": true},
+    "Sensor.dc.html": {"x": 940, "y": 1264, "w": 390, "h": 1480, "title": "08 센서값 상세", "is_interactive": true},
+    "Exposure.dc.html": {"x": 1410, "y": 1264, "w": 390, "h": 1640, "title": "09 노출량 대시보드", "is_interactive": true},
+    "Log.dc.html": {"x": 1880, "y": 1264, "w": 390, "h": 1200, "title": "10 기록", "is_interactive": true},
+    "More.dc.html": {"x": 2350, "y": 1264, "w": 390, "h": 1440, "title": "11 전체", "is_interactive": true},
+    "Home-Caution.dc.html": {"x": 0, "y": 3324, "w": 390, "h": 844, "title": "12 홈 · 주의", "is_interactive": true},
+    "Alert-Danger.dc.html": {"x": 470, "y": 3324, "w": 390, "h": 844, "title": "13 위험 알림", "is_interactive": true},
+    "SOS.dc.html": {"x": 940, "y": 3324, "w": 390, "h": 844, "title": "14 SOS 긴급 호출", "is_interactive": true}
+  },
+  "order": [
+    "Main.dc.html",
+    "Login-Phone.dc.html",
+    "Login-Profile.dc.html",
+    "Login-Sensor.dc.html",
+    "Login-Wear.dc.html",
+    "Home.dc.html",
+    "Site.dc.html",
+    "Sensor.dc.html",
+    "Exposure.dc.html",
+    "Log.dc.html",
+    "More.dc.html",
+    "Home-Caution.dc.html",
+    "Alert-Danger.dc.html",
+    "SOS.dc.html"
+  ],
+  "notes": {
+    "t1": {"x": 0, "y": -300, "text": "로그인 플로우", "kind": "title1", "maxW": 2270},
+    "t2": {"x": 0, "y": 964, "text": "메인 · 홈 / 현장 / 노출량 / 기록 / 전체", "kind": "title1", "maxW": 2740},
+    "t3": {"x": 0, "y": 3024, "text": "상태 변화 · 긴급", "kind": "title1", "maxW": 1330}
+  },
+  "designSystems": [
+    {"title": "invisen", "namespace": "invisen", "artifact": "https://claude.ai/code/artifact/8bb24a22-32f2-40d4-bf09-4fcd66a0f7c1", "version": "1793416276-9b33", "copiedAt": "2026-11-02T01:10:00Z"}
+  ]
+}

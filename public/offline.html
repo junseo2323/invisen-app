@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>연결 안 됨 · invisen</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0e12;color:#e3e7eb;font-family:'Apple SD Gothic Neo',system-ui,sans-serif}
+main{box-sizing:border-box;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:calc(32px + env(safe-area-inset-top)) 24px calc(40px + env(safe-area-inset-bottom))}
+img{width:120px;height:auto;margin-bottom:24px}
+h1{margin:0;font-size:28px;line-height:36px;font-weight:700;letter-spacing:-0.01em}
+p{margin:0;font-size:16px;line-height:26px;color:#a9b1bb}
+button{margin-top:24px;height:56px;border:0;border-radius:0;background:#e3e7eb;color:#0b0e12;font:inherit;font-size:17px;font-weight:700;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,0 100%)}
+button:focus-visible{outline:2px solid #2bd8f0;outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<img src="./logo.svg" alt="invisen">
+<h1>서버에 연결할 수<br>없어요</h1>
+<p>네트워크 연결을 확인해 주세요. SOS가 급하면 반장님께 바로 전화하세요.</p>
+<button type="button" onclick="history.length > 1 ? history.back() : location.reload()">다시 시도</button>
+</main>
+</body>
+</html>

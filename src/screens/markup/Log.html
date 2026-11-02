@@ -1,0 +1,70 @@
+<div style="width: 100%; min-height: var(--screen-min-h); box-sizing: border-box; overflow-x: hidden; display: flex; flex-direction: column; background: #0b0e12; color: #e3e7eb; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;">
+
+  <header style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 24px 0;">
+    <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 6px;">
+      <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.01em;">기록</h1>
+      <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">11월 2일 월요일</span>
+    </div>
+    <a href="#/sos" aria-label="SOS 긴급 호출" style="height: 48px; display: flex; align-items: center; text-decoration: none;">
+      <span style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 12px; background: #35110e; color: #ff5a4a; font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.04em; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);"><span aria-hidden="true" style="width: 6px; height: 6px; background: #ff5a4a; transform: rotate(45deg);"></span>SOS</span>
+    </a>
+  </header>
+
+  <div style="padding: 28px 24px 8px;">
+    <div role="group" aria-label="기록 종류" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #13171c;">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+        <button type="button" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="height: 40px; border: 0; border-radius: 0; font-family: inherit; font-size: 14px; cursor: pointer; background: {{f.bg}}; color: {{f.fg}}; font-weight: {{f.fw}};">{{f.label}}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <main style="flex: 1; display: flex; flex-direction: column; padding: 16px 24px 40px;">
+
+    <h2 style="margin: 0; padding: 12px 0 4px; font-size: 14px; line-height: 22px; font-weight: 600; color: #a9b1bb;">오늘</h2>
+
+    <sc-for list="{{items}}" as="it" hint-placeholder-count="8">
+      <div style="display: flex; gap: 16px; padding: 14px 0;">
+        <span style="width: 42px; flex-shrink: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; line-height: 22px; font-weight: 500; color: #a9b1bb;">{{it.time}}</span>
+        <span aria-hidden="true" style="width: 7px; height: 7px; margin-top: 7px; flex-shrink: 0; background: {{it.dot}}; transform: rotate(45deg);"></span>
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+          <sc-if value="{{it.hasState}}" hint-placeholder-val="{{ false }}">
+            <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 10px 0 8px; background: {{it.sBg}}; color: {{it.sFg}}; font-size: 13px; font-weight: 700; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);">
+              <span aria-hidden="true" style="display: flex; gap: 2px;"><span style="width: 7px; height: 5px; background: {{it.s1}};"></span><span style="width: 7px; height: 5px; background: {{it.s2}};"></span><span style="width: 7px; height: 5px; background: {{it.s3}};"></span></span>{{it.word}}
+            </span>
+          </sc-if>
+          <span style="font-size: 16px; line-height: 22px; font-weight: 600;">{{it.title}}</span>
+          <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">{{it.detail}}</span>
+        </div>
+      </div>
+    </sc-for>
+
+    <h2 style="margin: 0; padding: 20px 0 8px; font-size: 14px; line-height: 22px; font-weight: 600; color: #a9b1bb;">어제</h2>
+    <button type="button" style="display: flex; align-items: center; gap: 16px; padding: 20px 24px; background: #13171c; box-shadow: inset 0 1px 0 #ffffff12; border: 0; border-radius: 0; color: #e3e7eb; font-family: inherit; text-align: left; cursor: pointer;">
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+        <span style="font-size: 16px; line-height: 22px; font-weight: 600;">누적 <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace;">38%</span> · 안전</span>
+        <span style="font-size: 14px; line-height: 20px; color: #a9b1bb;">알림 없음 · 기록 6건</span>
+      </span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a9b1bb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+    </button>
+
+  </main>
+
+  <nav aria-label="주요 메뉴" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px 4px 10px; border-top: 1px solid #1c2127; background: #0b0e12;">
+    <a href="#/home" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.7 3.5a2 2 0 0 1 2.6 0l6.6 5.6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2h-3.4a.8.8 0 0 1-.8-.8V16a1.2 1.2 0 0 0-1.2-1.2h-2.4A1.2 1.2 0 0 0 9.6 16v4.2a.8.8 0 0 1-.8.8H5.4a2 2 0 0 1-2-2v-8.4a2 2 0 0 1 .7-1.5z" fill="currentColor"></path></svg>홈
+    </a>
+    <a href="#/site" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5A7.5 7.5 0 0 0 4.5 10c0 5.2 6.2 10.6 6.9 11.2a.9.9 0 0 0 1.2 0c.7-.6 6.9-6 6.9-11.2A7.5 7.5 0 0 0 12 2.5zM12 7.2l2.8 2.8-2.8 2.8-2.8-2.8z" fill="currentColor"></path></svg>현장
+    </a>
+    <a href="#/exposure" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="12" width="4.5" height="9" rx="1.6" fill="currentColor"></rect><rect x="9.75" y="7" width="4.5" height="14" rx="1.6" fill="currentColor"></rect><rect x="16" y="3" width="4.5" height="18" rx="1.6" fill="currentColor"></rect></svg>노출량
+    </a>
+    <a href="#/log" aria-current="page" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #e3e7eb; font-size: 12px; line-height: 16px; font-weight: 600;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6 2.5h7.6c.5 0 1 .2 1.4.6l3.9 3.9c.4.4.6.9.6 1.4v11.1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2zM8.8 11h6.4a1 1 0 0 1 0 2H8.8a1 1 0 0 1 0-2zM8.8 15h4a1 1 0 0 1 0 2h-4a1 1 0 0 1 0-2z" fill="currentColor"></path></svg>기록
+    </a>
+    <a href="#/more" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #848e9a; font-size: 12px; line-height: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect><rect x="13" y="3.5" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect><rect x="3.5" y="13" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect><rect x="13" y="13" width="7.5" height="7.5" rx="2.2" fill="currentColor"></rect></svg>전체
+    </a>
+  </nav>
+
+</div>
