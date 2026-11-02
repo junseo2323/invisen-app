@@ -6,6 +6,7 @@ import { hhmm } from '../exposure.js';
 import { managersOf, postWebhook, pushToWorkers } from '../notify.js';
 import { tz } from '../queries.js';
 import type { SosResponse } from '../api-types.js';
+import { createAlert, appendTimeline } from '../alerts.js';
 
 const schema = z.object({
   lat: z.number().min(-90).max(90).optional(),
@@ -46,6 +47,21 @@ export async function sosRoutes(app: FastifyInstance) {
       postWebhook(text),
     ]);
     req.log.warn({ sos: row.id, worker: req.worker.id, pushed, hooked }, 'SOS');
+    await createAlert({
+      siteId: req.worker.siteId,
+      type: 'sos',
+      title: `${w.name} 님 SOS 긴급 호출`,
+      sub: [where || '위치 미확인', latest ? `PM10 ${Math.round(latest.pm10)}` : null].filter(Boolean).join(' · '),
+      metrics: [
+        ['위치', where || '–'],
+        ['PM10', latest ? String(Math.round(latest.pm10)) : '–'],
+        ['GPS', body.lat != null ? `${body.lat.toFixed(5)}, ${body.lng!.toFixed(5)}` : '없음'],
+      ],
+      rec: '작업자에게 바로 연락하고 현장으로 사람을 보내 주세요.',
+      workerIds: [req.worker.id],
+      timeline: ['SOS 수신', `반장 푸시 ${pushed}건${hooked ? ' · 관제실 웹훅' : ''}`],
+      dedupKey: `sos:${row.id}`,
+    });
 
     return {
       id: row.id,
@@ -69,6 +85,11 @@ export async function sosRoutes(app: FastifyInstance) {
     const managers = await managersOf(req.worker.id);
     void pushToWorkers(managers, { title: 'SOS 취소', body: '작업자가 SOS 호출을 취소했어요', route: '#site' });
     void postWebhook(`[SOS 취소] 호출 #${id}`);
+    const a = await one<{ id: number }>(
+      `update alerts set status = 'resolved', resolved_at = now() where dedup_key = $1 and status in ('open', 'acked') returning id`,
+      [`sos:${id}`],
+    );
+    if (a) await appendTimeline(a.id, '작업자가 호출을 취소했어요');
     return reply.code(204).send();
   });
 }

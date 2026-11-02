@@ -5,6 +5,7 @@ import { HttpError, parse, requireAuth } from '../http.js';
 import { isEscalation, levelOf, type Level } from '../exposure.js';
 import { managersOf, postWebhook, pushToWorkers } from '../notify.js';
 import { sensorInfo } from '../queries.js';
+import { createAlert, siteRules } from '../alerts.js';
 import type { ReadingsResponse, SensorLive } from '../api-types.js';
 
 const num = (min: number, max: number) => z.number().finite().min(min).max(max);
@@ -93,6 +94,26 @@ export async function readingsRoutes(app: FastifyInstance) {
       return ins.rowCount ?? 0;
     });
 
+    // dashboard incidents (one per worker per level while it stays open)
+    if (newAlerts.length) {
+      const rules = await siteRules(req.worker.siteId);
+      for (const a of newAlerts) {
+        if (a.level === 'caution' && !rules.cAdmin) continue;
+        const pct = Math.round((a.pm10 / limit) * 100);
+        const v = Math.round(a.pm10);
+        await createAlert({
+          siteId: req.worker.siteId,
+          type: a.level === 'danger' ? 'danger' : 'caution',
+          title: `${w.name} 님 PM10 ${v} µg/m³`,
+          sub: `${w.zone_name ?? '구역 미지정'}${w.spot ? ` ${w.spot}` : ''} · 권고치 ${pct}%`,
+          metrics: [['PM10', String(v)], ['권고치 대비', `${pct}%`], ['구역', w.zone_name ?? '–']],
+          rec: a.level === 'danger' ? '작업자를 안전 구역으로 대피시키고 원인을 확인해 주세요.' : null,
+          workerIds: [workerId],
+          timeline: a.level === 'danger' ? [`PM10 ${v} 감지`, '작업자 앱 대피 알림', '관리자 알림'] : [`PM10 ${v} 감지`, '작업자 앱 마스크 알림'],
+          dedupKey: `${a.level}:${workerId}`,
+        });
+      }
+    }
     const danger = newAlerts.find((a) => a.level === 'danger');
     if (danger) {
       const text = `[위험] ${w.name}(${w.employee_no}) ${w.zone_name ?? ''} ${w.spot ?? ''} · PM10 ${Math.round(danger.pm10)} µg/m³ (권고치 ${Math.round((danger.pm10 / limit) * 100)}%)`;

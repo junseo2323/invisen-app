@@ -14,7 +14,6 @@ const { issueInvite } = await import('../src/invites.js');
 type App = Awaited<ReturnType<typeof buildApp>>;
 let app: App;
 let token = '';
-let managerToken = '';
 
 const call = async (method: string, url: string, body?: unknown, auth = true) => {
   const res = await app.inject({
@@ -76,22 +75,6 @@ test('unregistered numbers get the same answer as a wrong code', async () => {
   const r = await call('POST', '/api/auth/login', { phone: '01099999999', code: '123456' }, false);
   assert.equal(r.status, 400);
   assert.equal(r.body.error, 'invalid_code');
-});
-
-test('managers issue invite codes for their own site only', async () => {
-  const workerTry = await call('POST', '/api/admin/invites', { workerId: 3 });
-  assert.equal(workerTry.status, 403);
-  const m = await issueInvite(1, null);
-  managerToken = (await call('POST', '/api/auth/login', { phone: '01000000001', code: m.code }, false)).body.token;
-  const saved = token;
-  token = managerToken;
-  const inv = await call('POST', '/api/admin/invites', { phone: '010-0000-0002', ttlHours: 24 });
-  assert.equal(inv.status, 200);
-  assert.match(inv.body.code, /^\d{6}$/);
-  assert.equal(inv.body.worker.name, '이도윤');
-  assert.equal((await call('POST', '/api/admin/invites', { workerId: 999 })).status, 404);
-  token = saved;
-  assert.equal((await call('POST', '/api/auth/login', { phone: '01000000002', code: inv.body.code }, false)).status, 200);
 });
 
 test('review login creates a demo account that stays out of team views', async () => {

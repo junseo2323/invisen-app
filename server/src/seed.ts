@@ -23,7 +23,13 @@ async function main() {
   }
   await tx(async (c) => {
     const site = (await c.query<{ id: number }>(
-      `insert into sites (name, control_room_phone, map_width_m, map_height_m) values ('인천공항 T1 BHS', '0200000000', 600, 300) returning id`,
+      `insert into sites (name, facility, address, control_room_phone, map_width_m, map_height_m, shifts)
+       values ('인천공항 T1 BHS', '수하물 처리 시설', '인천광역시 중구 공항로 272', '0200000000', 600, 300, $1) returning id`,
+      [JSON.stringify([
+        { name: '주간 A조', start: '07:00', end: '15:00' },
+        { name: '주간 B조', start: '15:00', end: '23:00' },
+        { name: '야간 C조', start: '23:00', end: '07:00' },
+      ])],
     )).rows[0].id;
     const zone = async (code: string, name: string, rest = false, refuge?: [string, number]) =>
       (await c.query<{ id: number }>(
@@ -60,8 +66,10 @@ async function main() {
     }
 
     await c.query(
-      `insert into sensors (id, battery, firmware, calibrated_on) values
-         ('IVS-P10-0142', 92, 'v2.1.4', '2026-10-12'), ('IVS-P10-0157', 64, 'v2.1.4', '2026-10-12')`,
+      `insert into sensors (id, site_id, maker, model, items, battery, firmware, calibrated_on) values
+         ('IVS-P10-0142', $1, '파트너 A', 'W-3', 'PM10 · PM2.5 · CO · 온습도', 92, 'v2.1.4', '2026-10-12'),
+         ('IVS-P10-0157', $1, '파트너 A', 'W-3', 'PM10 · PM2.5 · CO · 온습도', 64, 'v2.1.4', '2026-10-12')`,
+      [site],
     );
     await c.query(
       `insert into notices (site_id, title, detail) values ($1, '5구역 집진기를 점검하고 있어요', '14:00–16:00 · 관제실')`,
@@ -96,7 +104,11 @@ async function main() {
     // team: last 10 minutes
     for (const [i, id] of teamIds.entries()) {
       const sid = `IVS-P10-02${String(i).padStart(2, '0')}`;
-      await c.query(`insert into sensors (id, worker_id, battery, firmware, last_seen_at) values ($1, $2, 80, 'v2.1.4', now())`, [sid, id]);
+      await c.query(
+        `insert into sensors (id, site_id, worker_id, maker, model, items, battery, firmware, calibrated_on, last_seen_at)
+         values ($1, $2, $3, '파트너 B', 'BX-2', 'PM10 · PM2.5 · 온습도', $4, 'v2.1.4', '2026-08-14', now())`,
+        [sid, site, id, 55 + i * 5],
+      );
       const z = team[i][2];
       const base = z === z5 ? 86 : z === zr ? 15 : 40;
       for (let t = now - 10 * MIN; t <= now; t += MIN) rows.push([id, sid, z, t, base + (i % 3), null, null]);
@@ -123,6 +135,25 @@ async function main() {
     for (const [t, type, level, title, detail] of events.filter((e) => e[0] <= now)) {
       await c.query(`insert into events (worker_id, ts, type, level, title, detail) values ($1, $2, $3, $4, $5, $6)`, [me, new Date(t), type, level, title, detail]);
     }
+
+    // dashboard incidents for the day so far (same story as the worker's log)
+    const hhmmss = (t: number) => new Date(t).toLocaleTimeString('ko-KR', { hour12: false, timeZone: 'Asia/Seoul' });
+    const incidents: [number, string, string, string, string, [string, string][], string[], string | null][] = [
+      [at(11, 2), 'caution', 'resolved', '김현수 님 PM10 88 µg/m³', '5구역 · 권고치 88%', [['PM10', '88'], ['권고치 대비', '88%'], ['구역', '5구역']], ['PM10 88 감지', '작업자 앱 마스크 알림', '관리자 확인'], null],
+      [at(11, 24), 'danger', 'resolved', '김현수 님 PM10 112 µg/m³', '5구역 · 권고치 112%', [['PM10', '112'], ['권고치 대비', '112%'], ['구역', '5구역']], ['PM10 112 감지', '작업자 앱 대피 알림', '관리자 알림', '작업자 휴게실 도착', '처리 완료'], '작업자를 안전 구역으로 대피시키고 원인을 확인해 주세요.'],
+      [at(12, 57), 'sensor', 'auto', '김현수 님 센서 연결이 끊겼어요', '3구역 · 배터리 76%', [['센서', 'IVS-P10-0142'], ['끊긴 시간', '42초'], ['배터리', '76%']], ['60초 넘게 수신 없음', '자동 재연결'], null],
+    ];
+    for (const [t, type, status, title, sub, metrics, timeline, rec] of incidents.filter((x) => x[0] <= now)) {
+      await c.query(
+        `insert into alerts (site_id, type, status, title, sub, rec, metrics, worker_ids, timeline, created_at, acked_at, resolved_at)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $10, $10)`,
+        [site, type, status, title, sub, rec, JSON.stringify(metrics), [me], JSON.stringify(timeline.map((x, k) => [hhmmss(t + k * 60_000), x])), new Date(t)],
+      );
+    }
+    // sites still being prepared (shown greyed out on the dashboard's site picker)
+    await c.query(
+      `insert into sites (name, facility, status) values ('인천공항 T2', '수하물 처리 시설', 'preparing'), ('인천항 물류센터', '하역장', 'preparing')`,
+    );
   });
   const n = await q('select count(*)::int as n from readings');
   console.log(`seed: done${demo ? ` (demo, ${n[0].n} readings)` : ''}`);
