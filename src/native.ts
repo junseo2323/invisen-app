@@ -6,6 +6,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 
 const native = Capacitor.isNativePlatform();
 let patternTimers: number[] = [];
+let webVibrating = false;
 
 export const haptics = {
   tick() {
@@ -16,7 +17,7 @@ export const haptics = {
   pattern(ms: number[]) {
     this.stop();
     if (!native) {
-      navigator.vibrate?.(ms);
+      webVibrating = !!navigator.vibrate?.(ms);
       return;
     }
     void Haptics.notification({ type: NotificationType.Error });
@@ -31,7 +32,10 @@ export const haptics = {
   stop() {
     patternTimers.forEach(clearTimeout);
     patternTimers = [];
-    if (!native) navigator.vibrate?.(0);
+    if (!native && webVibrating) {
+      navigator.vibrate?.(0);
+      webVibrating = false;
+    }
   },
 };
 

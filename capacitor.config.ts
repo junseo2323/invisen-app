@@ -1,12 +1,11 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
-// The iOS app is a WKWebView shell around the web app hosted on eney.cloud.
-//   default                      -> loads https://eney.cloud/ (deploy dist/ there)
-//   CAP_SERVER_URL=http://<lan-ip>:5173 npx cap sync ios   -> live-reload from `npm run dev`
-//   CAP_BUNDLED=1 npx cap sync ios                         -> ships dist/ inside the app (offline)
-const bundled = process.env.CAP_BUNDLED === '1';
-const serverUrl = process.env.CAP_SERVER_URL ?? 'https://eney.cloud';
-const host = new URL(serverUrl).hostname;
+// The iOS app is a WKWebView shell around the web app.
+//   default                                               -> ships dist/ inside the app (works offline)
+//   CAP_SERVER_URL=https://<app domain> npx cap sync ios  -> loads the app served by our eney.cloud instance
+//   CAP_SERVER_URL=http://<lan-ip>:5173 npx cap sync ios  -> live-reload from `npm run dev`
+const serverUrl = process.env.CAP_SERVER_URL;
+const host = serverUrl ? new URL(serverUrl).hostname : undefined;
 
 const config: CapacitorConfig = {
   appId: 'com.invisen.worker',
@@ -18,15 +17,15 @@ const config: CapacitorConfig = {
     backgroundColor: '#0b0e12',
     scrollEnabled: true,
   },
-  server: bundled
-    ? undefined
-    : {
+  server: serverUrl
+    ? {
         url: serverUrl,
         cleartext: serverUrl.startsWith('http://'),
-        allowNavigation: [host, `*.${host}`],
-        // Shown from the bundle when eney.cloud can't be reached.
+        allowNavigation: [host!, `*.${host}`],
+        // Shown from the bundle when the server can't be reached.
         errorPath: 'offline.html',
-      },
+      }
+    : undefined,
   plugins: {
     StatusBar: { style: 'DARK', overlaysWebView: true },
   },
