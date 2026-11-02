@@ -50,6 +50,8 @@ export interface Me {
   shift: { name: string | null; start: string | null; end: string | null }; // 'HH:MM'
   manager: { name: string; title: string; phone: string } | null;
   sensor: SensorInfo | null;
+  /** Demo / review account: the app uses the simulated sensor. */
+  demo: boolean;
 }
 
 export interface Status {

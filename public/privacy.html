@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0e12">
+<title>개인정보 처리방침 · invisen</title>
+<style>
+  :root { color-scheme: dark; --bg: #0b0e12; --raised: #13171c; --line: #2c333b; --ink: #e3e7eb; --muted: #a9b1bb; --signal: #2bd8f0; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 16px/1.7 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
+  main { max-width: 680px; margin: 0 auto; padding: calc(24px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
+  a { color: var(--signal); }
+  .back { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: 15px; }
+  h1 { margin: 16px 0 4px; font-size: 26px; line-height: 1.35; letter-spacing: -0.01em; }
+  .meta { margin: 0 0 32px; color: var(--muted); font-size: 14px; }
+  h2 { margin: 36px 0 8px; font-size: 18px; line-height: 1.4; }
+  p, li { color: var(--ink); }
+  ul { padding-left: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 8px; border-top: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; width: 34%; }
+  .box { background: var(--raised); padding: 16px; margin: 12px 0; }
+  .todo { color: #ffbe1a; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="./index.html#more">← invisen 으로 돌아가기</a>
+  <h1>개인정보 처리방침</h1>
+  <p class="meta">invisen 작업자 앱 · 시행일 <span class="todo">[2026년 ○월 ○일]</span></p>
+
+  <p><span class="todo">[회사명]</span>(이하 “회사”)은 현장 작업자의 미세먼지 노출을 측정하고 위험 상황에 대응하기 위해 invisen 작업자 앱(이하 “앱”)을 운영하며, 「개인정보 보호법」에 따라 이용자의 개인정보를 아래와 같이 처리합니다.</p>
+
+  <h2>1. 처리하는 개인정보와 목적</h2>
+  <table>
+    <tr><th>등록 정보</th><td>이름, 휴대폰 번호, 사번, 소속(협력사·팀), 근무 현장·구역, 근무조. 회사(관리자)가 등록하며, 로그인과 작업자 확인에 씁니다.</td></tr>
+    <tr><th>측정 정보</th><td>착용 센서가 잰 미세먼지(PM10·PM2.5), 일산화탄소, 온도·습도 값과 측정 시각, 근무 구역. 실시간 상태 표시, 누적 노출량 계산, 주의·위험 알림에 씁니다.</td></tr>
+    <tr><th>위치 정보</th><td>SOS 긴급 호출을 보낼 때만 기기의 현재 위치(GPS)를 한 번 보냅니다. 평소에는 위치를 수집하지 않습니다.</td></tr>
+    <tr><th>기기 정보</th><td>푸시 알림을 받기 위한 기기 토큰, 연결한 센서의 일련번호와 배터리 잔량.</td></tr>
+    <tr><th>활동 기록</th><td>알림 확인, 구역 이동, 센서 연결, SOS·교대 요청 기록. 사고 대응과 노출 관리에 씁니다.</td></tr>
+  </table>
+  <p>앱은 광고나 추적을 하지 않으며, 위 목적 외에는 개인정보를 쓰지 않습니다.</p>
+
+  <h2>2. 보관 기간</h2>
+  <p>개인정보는 근무 기간 동안 보관하고, 퇴사 또는 계약 종료 후 <span class="todo">[보관 기간 — 예: 1년]</span> 뒤 지체 없이 파기합니다. 다만 산업안전보건 관련 법령 등에서 보존을 정한 기록은 그 기간 동안 보관합니다. <span class="todo">[법무 검토 후 확정]</span></p>
+
+  <h2>3. 제3자 제공과 처리 위탁</h2>
+  <p>회사는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만 위험·SOS 상황에서는 같은 현장의 관리자(반장)와 관제실에 알립니다.</p>
+  <div class="box">
+    <strong>처리 위탁</strong>
+    <ul>
+      <li>서버 운영(데이터 보관): <span class="todo">[클라우드 사업자명 — 예: eney.cloud]</span></li>
+      <li>푸시 알림 발송: Apple Inc. (Apple Push Notification service)</li>
+    </ul>
+  </div>
+
+  <h2>4. 이용자의 권리</h2>
+  <p>이용자는 언제든지 자신의 개인정보 열람·정정·삭제·처리정지를 요구할 수 있습니다. 아래 문의처나 현장 관리자에게 요청하면 지체 없이 처리합니다. 앱의 위치·블루투스·알림 권한은 기기 설정에서 언제든지 끌 수 있습니다(끄면 해당 기능이 동작하지 않습니다).</p>
+
+  <h2>5. 안전성 확보 조치</h2>
+  <ul>
+    <li>모든 통신은 암호화(HTTPS)합니다.</li>
+    <li>로그인은 관리자가 발급한 일회용 등록 코드로만 할 수 있습니다.</li>
+    <li>서버 접근은 권한 있는 관리자로 제한하고, 데이터베이스는 외부에 열지 않습니다.</li>
+  </ul>
+
+  <h2>6. 개인정보 보호책임자</h2>
+  <table>
+    <tr><th>책임자</th><td><span class="todo">[이름 · 직책]</span></td></tr>
+    <tr><th>연락처</th><td><span class="todo">[전화번호]</span></td></tr>
+    <tr><th>이메일</th><td><span class="todo">[이메일]</span></td></tr>
+  </table>
+  <p>개인정보 침해에 대한 신고·상담은 개인정보침해신고센터(국번 없이 118, privacy.kisa.or.kr)에도 할 수 있습니다.</p>
+
+  <h2>7. 변경</h2>
+  <p>이 방침이 바뀌면 시행 7일 전부터 앱 공지로 알립니다.</p>
+</main>
+</body>
+</html>

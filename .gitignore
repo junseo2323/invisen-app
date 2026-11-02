@@ -13,3 +13,7 @@ server/dist/
 server/.env
 design/imported/
 dist-demo/
+ios/App/build/
+ios/App/fastlane/report.xml
+ios/App/fastlane/README.md
+*.p8

@@ -27,6 +27,7 @@ const me: T.Me = {
   shift: { name: '주간 A조', start: '07:00', end: '15:00' },
   manager: { name: '박정민', title: '반장', phone: '' },
   sensor: null,
+  demo: true,
 };
 
 const events: T.LogEvent[] = [

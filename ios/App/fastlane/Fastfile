@@ -1,0 +1,52 @@
+# TestFlight upload. Run by the GitHub Actions workflow "iOS TestFlight" (or locally on a Mac
+# with the same environment variables) from ios/App after `npm run ios:release`.
+#
+# Needs: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH (App Store Connect API key .p8, role Admin so
+#        Xcode can create the distribution certificate and profile itself), APPLE_TEAM_ID.
+# Optional: CHANGELOG ("What to Test" text for testers).
+default_platform(:ios)
+
+platform :ios do
+  desc 'Build the app with the bundled web app and upload it to TestFlight'
+  lane :beta do
+    key_id = ENV.fetch('ASC_KEY_ID')
+    issuer_id = ENV.fetch('ASC_ISSUER_ID')
+    key_path = ENV.fetch('ASC_KEY_PATH')
+    team_id = ENV.fetch('APPLE_TEAM_ID')
+
+    api_key = app_store_connect_api_key(key_id: key_id, issuer_id: issuer_id, key_filepath: key_path)
+
+    project = Xcodeproj::Project.open('App.xcodeproj')
+    release = project.targets.find { |t| t.name == 'App' }.build_configurations.find { |c| c.name == 'Release' }
+    bundle_id = release.build_settings['PRODUCT_BUNDLE_IDENTIFIER']
+    UI.message("bundle id: #{bundle_id}, version: #{release.build_settings['MARKETING_VERSION']}")
+
+    # next build number = latest on TestFlight + 1 (passed to xcodebuild, nothing to commit)
+    build = latest_testflight_build_number(api_key: api_key, app_identifier: bundle_id, initial_build_number: 0) + 1
+    UI.message("build number: #{build}")
+
+    # cloud signing: Xcode creates/updates certificates and profiles with the API key
+    auth = "-allowProvisioningUpdates -authenticationKeyPath #{key_path} " \
+           "-authenticationKeyID #{key_id} -authenticationKeyIssuerID #{issuer_id}"
+
+    build_app(
+      project: 'App.xcodeproj',
+      scheme: 'App',
+      configuration: 'Release',
+      clean: true,
+      output_directory: 'build',
+      export_method: 'app-store',
+      export_team_id: team_id,
+      export_options: { signingStyle: 'automatic', teamID: team_id },
+      xcargs: "#{auth} DEVELOPMENT_TEAM=#{team_id} CODE_SIGN_STYLE=Automatic CURRENT_PROJECT_VERSION=#{build}",
+      export_xcargs: auth
+    )
+
+    changelog = ENV['CHANGELOG'].to_s.strip
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true,
+      changelog: changelog.empty? ? nil : changelog
+    )
+  end
+end

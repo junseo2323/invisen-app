@@ -1,11 +1,18 @@
 // Simulated sensor for the browser and the iOS simulator (no Bluetooth there).
 // ?sim=caution / ?sim=danger in the URL (or localStorage 'invisen.sim') picks a scenario.
 import type { SensorDriver, SensorReading } from './types';
+import { app } from '../store';
 
-const DEVICES = [
+const SAMPLE = [
   { deviceId: 'sim-0142', id: 'IVS-P10-0142', rssi: -48, battery: 92 },
   { deviceId: 'sim-0157', id: 'IVS-P10-0157', rssi: -81, battery: 64 },
 ];
+// demo / review accounts get their own sensors on the server (created with the review login)
+const DEMO = [
+  { deviceId: 'sim-demo-1', id: 'IVS-DEMO-0001', rssi: -48, battery: 90 },
+  { deviceId: 'sim-demo-2', id: 'IVS-DEMO-0002', rssi: -81, battery: 70 },
+];
+const devices = () => (app.state.me?.demo ? DEMO : SAMPLE);
 
 type Scenario = 'safe' | 'caution' | 'danger';
 let override: Scenario | null = null;
@@ -40,7 +47,7 @@ export const simDriver: SensorDriver = {
     return true;
   },
   async scan(onFound, ms = 1500) {
-    for (const d of DEVICES) {
+    for (const d of devices()) {
       await new Promise((r) => setTimeout(r, ms / 3));
       onFound({ ...d });
     }
@@ -48,7 +55,7 @@ export const simDriver: SensorDriver = {
   async stopScan() {},
   async connect(deviceId, h) {
     await new Promise((r) => setTimeout(r, 600));
-    const dev = DEVICES.find((d) => d.deviceId === deviceId) ?? DEVICES[0];
+    const dev = devices().find((d) => d.deviceId === deviceId) ?? devices()[0];
     onDisconnect = h.onDisconnect;
     h.onBattery(dev.battery);
     const emit = () => {

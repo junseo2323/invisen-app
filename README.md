@@ -107,6 +107,8 @@ APNs 키(.p8) 발급 → 서버 `/etc/invisen/api.env` 에 입력. SOS 를 무�
 `src/sensor/protocol.ts` 의 서비스 UUID 와 패킷 해석은 **임시값**입니다. 센서 제조사 GATT 사양을 받으면 이 파일만 바꾸면 됩니다.
 나머지(업로드, 알림, 화면)는 `parseMeasurement()` 결과만 씁니다.
 
+TestFlight 업로드 준비와 순서: **[docs/TESTFLIGHT.md](docs/TESTFLIGHT.md)** (도메인, Apple 설정, GitHub Actions 'iOS TestFlight').
+
 ## 서버 (eney.cloud 인스턴스)
 
 Ubuntu 22.04 에 SSH 로 접속해서 한 번 실행합니다. 여러 번 실행해도 안전합니다.
@@ -152,7 +154,7 @@ sudo invisen-admin seed --me "이름:010XXXXXXXX"
 - 관리자 대시보드에서: `POST /api/admin/invites` `{ "phone": "010…" }` 또는 `{ "workerId": 3 }` (반장 계정 세션 필요, 같은 현장 작업자만)
 - 대시보드가 생기기 전 / 첫 반장 계정: `sudo invisen-admin invite 010XXXXXXXX`
 
-관리: `sudo invisen-admin status | logs | restart | invite | psql | backup`
+관리: `sudo invisen-admin status | logs | restart | invite | demo | psql | backup`
 
 ## CI/CD
 

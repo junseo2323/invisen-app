@@ -30,6 +30,9 @@ export const config = {
   devLoginCode: production ? undefined : process.env.DEV_LOGIN_CODE || undefined,
   inviteTtlHours: 72,
   inviteMaxAttempts: 5,
+  /** Fixed login for App Store review (both or neither). Remove to disable. */
+  reviewPhone: (process.env.REVIEW_PHONE ?? '').replace(/\D/g, '') || undefined,
+  reviewCode: /^\d{6}$/.test(process.env.REVIEW_CODE ?? '') ? process.env.REVIEW_CODE : undefined,
   sessionDays: Number(str('SESSION_DAYS', '30')),
   /** Site time zone offset (Korea has no DST). */
   tzOffsetMin: Number(str('SITE_TZ_OFFSET_MIN', '540')),

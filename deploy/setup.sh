@@ -160,6 +160,9 @@ APNS_TOPIC=com.invisen.worker
 APNS_PRODUCTION=false
 # 관제실 알림용 웹훅 (Dooray/Slack 호환)
 ALERT_WEBHOOK_URL=
+# App Store 심사용 고정 로그인 (외부 테스트·심사 때만, 끝나면 비우기): 휴대폰 번호 + 6자리
+REVIEW_PHONE=
+REVIEW_CODE=
 CONF
 fi
 chmod 600 /etc/invisen/*.env
@@ -243,6 +246,10 @@ case "${1:-help}" in
   psql)     "${COMPOSE[@]}" exec db psql -U invisen invisen;;
   backup)   /usr/local/bin/invisen-backup;;
   invite)   shift; "${COMPOSE[@]}" exec api node dist/src/invite.js "$@";;
+  demo)     # demo <휴대폰> on|off : 가상 센서 계정으로 전환 (실제 센서 사양 전 테스트용)
+            [[ -n "${2:-}" && "${3:-}" =~ ^(on|off)$ ]] || { echo "사용법: invisen-admin demo 010XXXXXXXX on|off"; exit 1; }
+            printf '%s\n' "update workers set is_demo = (:'state' = 'on') where phone = regexp_replace(:'phone', '\\D', '', 'g') returning name, phone, is_demo;" \
+              | "${COMPOSE[@]}" exec -T db psql -U invisen invisen -v phone="$2" -v state="$3";;
   *) cat <<'HELP'
 사용법: sudo invisen-admin <명령>
   status                 컨테이너 / 자동 배포 상태
@@ -250,6 +257,7 @@ case "${1:-help}" in
   restart                API 재시작 (/etc/invisen/api.env 를 바꾼 뒤)
   seed --me "이름:010…"  샘플 현장·구역·센서 + 내 계정 만들기 (DB 가 비어 있을 때만, 등록 코드 출력)
   invite 010… [시간]     작업자 로그인용 등록 코드 발급 (기본 72시간, 한 번만 사용)
+  demo 010… on|off       가상 센서로 쓰는 계정으로 전환 (실제 센서 사양 전 테스트용)
   psql                   DB 콘솔
   backup                 지금 DB 백업
 HELP

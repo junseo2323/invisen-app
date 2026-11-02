@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { one, q } from '../db.js';
 import { HttpError, parse, sha256, normalizePhone, createSession, requireAuth, bearer } from '../http.js';
 import { checkInvite } from '../invites.js';
+import { ensureReviewWorker, isReviewLogin } from '../review.js';
 import { loadMe } from '../queries.js';
 import type { LoginResponse } from '../api-types.js';
 
@@ -28,6 +29,10 @@ export async function authRoutes(app: FastifyInstance) {
     },
     async (req): Promise<LoginResponse> => {
       const { phone, code } = parse(loginSchema, req.body);
+      if (isReviewLogin(phone, code)) {
+        const id = await ensureReviewWorker();
+        return { token: await createSession(id), me: await loadMe(id) };
+      }
       const worker = await one<{ id: number }>('select id from workers where phone = $1 and active', [phone]);
       // unknown numbers get the same answer as a wrong code (no account probing)
       if (!worker) throw new HttpError(400, 'invalid_code', WRONG);

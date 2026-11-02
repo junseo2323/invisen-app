@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 
 process.env.DATABASE_URL = process.env.DATABASE_URL_TEST ?? 'postgres://invisen:invisen@localhost:5432/invisen_test';
 process.env.NODE_ENV = 'test';
+process.env.REVIEW_PHONE = '010-9999-0000';
+process.env.REVIEW_CODE = '246810';
 
 const { pool } = await import('../src/db.js');
 const { migrate } = await import('../src/migrate.js');
@@ -92,6 +94,16 @@ test('managers issue invite codes for their own site only', async () => {
   assert.equal((await call('POST', '/api/auth/login', { phone: '01000000002', code: inv.body.code }, false)).status, 200);
 });
 
+test('review login creates a demo account that stays out of team views', async () => {
+  const r = await call('POST', '/api/auth/login', { phone: '01099990000', code: '246810' }, false);
+  assert.equal(r.status, 200);
+  assert.equal(r.body.me.demo, true);
+  assert.equal(r.body.me.name, '심사용 계정');
+  const again = await call('POST', '/api/auth/login', { phone: '01099990000', code: '246810' }, false);
+  assert.equal(again.body.me.id, r.body.me.id, 'same account every time');
+  assert.equal((await call('POST', '/api/auth/login', { phone: '01099990000', code: '111111' }, false)).status, 400);
+});
+
 test('auth is required', async () => {
   assert.equal((await call('GET', '/api/me', undefined, false)).status, 401);
 });
@@ -140,7 +152,7 @@ test('status, exposure, site', async () => {
   assert.equal(ex.alerts.danger, 1);
   assert.equal(ex.peak.value, 130);
   const site = (await call('GET', '/api/site')).body;
-  assert.equal(site.team.length, 1);
+  assert.equal(site.team.length, 1, 'demo account is not in the team');
   assert.equal(site.team[0].distanceM, 5); // (3%, 4%) of a 100 m map
 });
 

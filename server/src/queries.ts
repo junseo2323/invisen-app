@@ -6,6 +6,7 @@ import type { Sample } from './exposure.js';
 const hm = (t: string | null) => (t ? t.slice(0, 5) : null);
 
 interface WorkerRow {
+  is_demo: boolean;
   id: number;
   employee_no: string;
   name: string;
@@ -31,7 +32,7 @@ export function sensorInfo(r: { id: string; battery: number | null; firmware: st
 export async function loadMe(workerId: number): Promise<Me> {
   const w = await one<WorkerRow>(
     `select w.id, w.employee_no, w.name, w.company, w.team, w.site_id, s.name as site_name, s.control_room_phone,
-            w.shift_name, w.shift_start::text, w.shift_end::text,
+            w.shift_name, w.shift_start::text, w.shift_end::text, w.is_demo,
             (select array_agg(z.name order by z.name) from zones z where z.id = any(w.assigned_zone_ids)) as zones,
             m.name as manager_name, m.phone as manager_phone, m.role as manager_role
        from workers w
@@ -56,6 +57,7 @@ export async function loadMe(workerId: number): Promise<Me> {
     shift: { name: w.shift_name, start: hm(w.shift_start), end: hm(w.shift_end) },
     manager: w.manager_name ? { name: w.manager_name, title: '반장', phone: w.manager_phone ?? '' } : null,
     sensor: sensor ? sensorInfo(sensor) : null,
+    demo: w.is_demo,
   };
 }
 

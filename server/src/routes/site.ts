@@ -16,7 +16,7 @@ export async function siteRoutes(app: FastifyInstance) {
     const team = await q<{ id: number; name: string; zone: string | null; map_x: number | null; map_y: number | null; alert_level: Level }>(
       `select w.id, w.name, z.name as zone, w.map_x, w.map_y, w.alert_level
          from workers w left join zones z on z.id = w.current_zone_id
-        where w.site_id = $1 and w.active and w.id <> $2 and w.role = 'worker'`,
+        where w.site_id = $1 and w.active and w.id <> $2 and w.role = 'worker' and not w.is_demo`,
       [req.worker.siteId, req.worker.id],
     );
     const zoneNow = await q<{ name: string; lim: number; avg: number }>(
@@ -29,7 +29,7 @@ export async function siteRoutes(app: FastifyInstance) {
     const working = await one<{ n: number; avg: number | null }>(
       `select count(distinct r.worker_id)::int as n, avg(r.pm10)::real as avg
          from readings r join workers w on w.id = r.worker_id
-        where w.site_id = $1 and r.ts > now() - interval '10 minutes'`,
+        where w.site_id = $1 and not w.is_demo and r.ts > now() - interval '10 minutes'`,
       [req.worker.siteId],
     );
     const notices = await q<{ id: number; title: string; detail: string | null }>(

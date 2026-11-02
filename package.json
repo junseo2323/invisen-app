@@ -1,7 +1,7 @@
 {
   "name": "invisen-app",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "design:import": "node scripts/import-design.mjs",
@@ -10,7 +10,9 @@
     "preview": "vite preview --host",
     "ios:sync": "npm run build && cap sync ios",
     "ios:open": "cap open ios",
-    "build:demo": "tsc --noEmit && vite build --mode demo && node scripts/inline-demo.mjs"
+    "build:demo": "tsc --noEmit && vite build --mode demo && node scripts/inline-demo.mjs",
+    "ios:release": "node scripts/ios-release.mjs",
+    "ios:project": "ruby scripts/ios-project.rb"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.3.0",
