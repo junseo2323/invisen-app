@@ -31,10 +31,10 @@ main() {
 export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a
 
 # ---------------------------------------------------------------------------
-log "1/10 패키지 업데이트, 기본 도구 설치"
+log "1/9 패키지 업데이트, 기본 도구 설치"
 apt-get update -y
 apt-get -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold upgrade -y
-apt-get install -y ca-certificates curl git gnupg openssl ufw fail2ban unattended-upgrades nginx rsync
+apt-get install -y ca-certificates curl git gnupg openssl ufw unattended-upgrades nginx rsync
 timedatectl set-timezone Asia/Seoul || true
 
 if ! command -v node >/dev/null || [[ "$(node -v | cut -d. -f1)" != "v22" ]]; then
@@ -57,7 +57,7 @@ mkdir -p /etc/docker
 systemctl enable --now docker
 
 # ---------------------------------------------------------------------------
-log "2/10 자동 보안 업데이트"
+log "2/9 자동 보안 업데이트"
 cat >/etc/apt/apt.conf.d/20auto-upgrades <<'CONF'
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -66,7 +66,7 @@ CONF
 systemctl enable --now unattended-upgrades
 
 # ---------------------------------------------------------------------------
-log "3/10 SSH 잠금 (키 로그인만, root 비밀번호 로그인 금지)"
+log "3/9 SSH: 키 로그인만 (지금 접속한 계정의 키 로그인은 그대로 유지)"
 # sshd 는 처음 읽은 값을 쓰고 drop-in 은 이름순으로 읽으므로 00- 으로 둬서
 # 50-cloud-init.conf 의 PasswordAuthentication yes 보다 먼저 적용되게 한다.
 has_keys=0
@@ -106,39 +106,26 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-log "4/10 방화벽 (ufw): SSH, HTTP, HTTPS 만 허용"
+log "4/9 방화벽 (ufw): SSH, HTTP, HTTPS 만 허용"
 ufw --force reset >/dev/null
 ufw default deny incoming
 ufw default allow outgoing
 if [[ -n "$SSH_ALLOW_FROM" ]]; then
   ufw allow from "$SSH_ALLOW_FROM" to any port 22 proto tcp comment 'ssh (admin)'
 else
-  ufw limit 22/tcp comment 'ssh (rate limited)'
+  ufw allow 22/tcp comment 'ssh'
 fi
 ufw allow 80/tcp comment 'http'
 ufw allow 443/tcp comment 'https'
 ufw --force enable
 # (API 는 127.0.0.1:3000 에만, DB 는 컨테이너 내부망에만 열리므로 외부에 노출되지 않음)
 
-log "5/10 무차별 대입 차단 (fail2ban)"
-# 지금 SSH 로 접속해 있는 관리자 IP 는 차단 대상에서 뺀다
-# (설정 전에 키 문제로 실패한 기록 때문에 본인이 막히는 것 방지).
-admin_ips="$(ss -Htn state established '( sport = :22 )' 2>/dev/null | awk '{print $4}' | sed -E 's/^\[?(::ffff:)?//; s/\]?:[0-9]+$//' | sort -u | tr '\n' ' ')"
-cat >/etc/fail2ban/jail.d/invisen.local <<CONF
-[DEFAULT]
-ignoreip = 127.0.0.1/8 ::1 $admin_ips
-bantime = 1h
-findtime = 10m
-maxretry = 5
-backend = systemd
+# 자동 차단 기능은 쓰지 않는다 (예전 버전이 설치했다면 끈다). SSH 는 eney.cloud 방화벽에서 내 IP 로만 연다.
+if systemctl list-unit-files fail2ban.service >/dev/null 2>&1; then
+  systemctl disable --now fail2ban >/dev/null 2>&1 || true
+fi
 
-[sshd]
-enabled = true
-CONF
-systemctl enable fail2ban
-systemctl restart fail2ban
-
-log "6/10 커널 네트워크 보안 설정"
+log "5/9 커널 네트워크 보안 설정"
 cat >/etc/sysctl.d/90-invisen.conf <<'CONF'
 net.ipv4.tcp_syncookies = 1
 net.ipv4.conf.all.rp_filter = 1
@@ -155,7 +142,7 @@ CONF
 sysctl --system >/dev/null
 
 # ---------------------------------------------------------------------------
-log "7/10 비밀값 (/etc/invisen, root 만 읽기)"
+log "6/9 비밀값 (/etc/invisen, root 만 읽기)"
 install -d -m 700 /etc/invisen /var/lib/invisen /var/backups/invisen
 if [[ ! -f /etc/invisen/compose.env ]]; then
   echo "POSTGRES_PASSWORD=$(openssl rand -hex 24)" >/etc/invisen/compose.env
@@ -178,7 +165,7 @@ fi
 chmod 600 /etc/invisen/*.env
 
 # ---------------------------------------------------------------------------
-log "8/10 앱 · API · DB 배포"
+log "7/9 앱 · API · DB 배포"
 id "$APP_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir "$APP_HOME" --shell /usr/sbin/nologin "$APP_USER"
 mkdir -p "$WEB_ROOT/releases" /var/www/letsencrypt
 
@@ -332,13 +319,13 @@ systemctl daemon-reload
 systemctl enable --now invisen-deploy.timer invisen-backup.timer
 
 # ---------------------------------------------------------------------------
-log "9/10 웹 서버 (nginx) 설정"
+log "8/9 웹 서버 (nginx) 설정"
 CERT_DIR="/etc/letsencrypt/live/${DOMAIN:-none}"
 grep -q '^\s*server_tokens off' /etc/nginx/nginx.conf || sed -i 's/^\(\s*\)# server_tokens off;/\1server_tokens off;/' /etc/nginx/nginx.conf
 write_nginx
 
 # ---------------------------------------------------------------------------
-log "10/10 HTTPS"
+log "9/9 HTTPS"
 if [[ -n "$DOMAIN" && -n "$EMAIL" ]]; then
   apt-get install -y certbot
   if [[ ! -f "$CERT_DIR/fullchain.pem" ]]; then

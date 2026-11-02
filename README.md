@@ -111,6 +111,14 @@ APNs 키(.p8) 발급 → 서버 `/etc/invisen/api.env` 에 입력. SOS 를 무�
 
 Ubuntu 22.04 에 SSH 로 접속해서 한 번 실행합니다. 여러 번 실행해도 안전합니다.
 
+새 서버 순서 (eney.cloud — 키는 root 계정에 들어 있음):
+
+1. eney.cloud 방화벽 정책: 인바운드 내 IP`/32` 전체 허용(22 포함), 80·443 은 `0.0.0.0/0`. 내 IP: `curl -4 ifconfig.me`
+2. 접속: `ssh -o IdentitiesOnly=yes -i ~/Downloads/my-key.pem root@<공인 IP>`
+3. 웹 콘솔(VNC) 비상용 root 비밀번호 설정: `passwd` (SSH 는 계속 키로만 열림. SSH 가 막혀도 콘솔로 들어갈 수 있게)
+4. 아래 설치 명령 실행 (5~10분)
+5. 끝나면 창을 닫기 전에 새 터미널에서 2번으로 다시 접속되는지 확인
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/junseo2323/invisen-app/main/deploy/setup.sh | sudo bash
 ```
@@ -123,7 +131,7 @@ curl -fsSL https://raw.githubusercontent.com/junseo2323/invisen-app/main/deploy/
 
 | 영역 | 내용 |
 |---|---|
-| 보안 | 자동 보안 업데이트, SSH 키 로그인만, ufw(22·80·443), fail2ban, 커널 네트워크 설정 |
+| 보안 | 자동 보안 업데이트, SSH 키 로그인만(실행한 계정의 키 로그인은 유지), ufw(22·80·443), 커널 네트워크 설정. 자동 차단(fail2ban 등)은 쓰지 않음 — SSH 는 eney.cloud 방화벽에서 내 IP 로만 |
 | 구성 | nginx(웹앱 + `/api` 프록시, 보안 헤더) → API 컨테이너(127.0.0.1:3000) → PostgreSQL 컨테이너(내부망 전용) |
 | 비밀값 | `/etc/invisen/compose.env`(DB 비밀번호), `/etc/invisen/api.env`(등록 코드 비밀, APNs·웹훅) — 처음 실행 때 무작위 생성, root 만 읽기 |
 | HTTPS | Let's Encrypt(webroot), HTTP→HTTPS, HTTP/2, HSTS, 자동 갱신 |
@@ -162,7 +170,6 @@ push ─▶ CI (웹 빌드 · API 테스트(PostgreSQL) · Docker 이미지 · c
 
 - 수동 배포/되돌리기: Actions › Deploy › Run workflow 에 커밋 SHA·태그를 넣기
 - 저장소 변수 `PRODUCTION_URL`(예: `https://app.example.com`)을 넣으면 Deploy 가 서버 반영까지 기다려 확인합니다
-- 승인 후 배포를 원하면: Settings › Environments › production › Required reviewers
 - 저장소를 비공개로 바꾸면 서버가 코드를 받을 수 있게 deploy key 설정이 추가로 필요합니다
 
 ## 아직 안 된 것
