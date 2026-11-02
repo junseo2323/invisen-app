@@ -105,8 +105,12 @@ ufw allow 443/tcp comment 'https'
 ufw --force enable
 
 log "5/8 무차별 대입 차단 (fail2ban)"
-cat >/etc/fail2ban/jail.d/invisen.local <<'EOF'
+# 지금 SSH 로 접속해 있는 관리자 IP 는 차단 대상에서 뺀다
+# (설정 전에 키 문제로 실패한 기록 때문에 본인이 막히는 것 방지).
+admin_ips="$(ss -Htn state established '( sport = :22 )' 2>/dev/null | awk '{print $4}' | sed -E 's/^\[?(::ffff:)?//; s/\]?:[0-9]+$//' | sort -u | tr '\n' ' ')"
+cat >/etc/fail2ban/jail.d/invisen.local <<EOF
 [DEFAULT]
+ignoreip = 127.0.0.1/8 ::1 $admin_ips
 bantime = 1h
 findtime = 10m
 maxretry = 5
