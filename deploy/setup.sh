@@ -6,7 +6,7 @@
 # 옵션 (환경변수, sudo 뒤에 붙여서: curl … | sudo DOMAIN=app.example.com EMAIL=me@example.com bash)
 #   DOMAIN          앱 도메인. 있으면 Let's Encrypt HTTPS + HSTS 를 켭니다.
 #   EMAIL           Let's Encrypt 연락처 (DOMAIN 과 함께).
-#   SSH_ALLOW_FROM  SSH 를 허용할 IP/CIDR (예: 203.0.113.7/32). 비우면 어디서나(속도 제한 적용).
+#   SSH_ALLOW_FROM  SSH 를 허용할 IP/CIDR (예: 203.0.113.7/32). 비우면 ufw 는 어디서나 허용 (eney 방화벽에서 내 IP 만 열기).
 #   REPO_URL, REF   배포할 저장소와 브랜치 (기본: junseo2323/invisen-app, production → 없으면 main)
 #
 # 여러 번 실행해도 안전합니다.
