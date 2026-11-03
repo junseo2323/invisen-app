@@ -115,6 +115,8 @@ TestFlight 업로드 준비와 순서: **[docs/TESTFLIGHT.md](docs/TESTFLIGHT.md
 
 ## 서버 (eney.cloud 인스턴스)
 
+운영 주소: 앱·API `https://app.invisen.kr` · 관리자 대시보드 `https://admin.invisen.kr` (= `https://app.invisen.kr/admin/`)
+
 Ubuntu 22.04 에 SSH 로 접속해서 한 번 실행합니다. 여러 번 실행해도 안전합니다.
 
 새 서버 순서 (eney.cloud — 키는 root 계정에 들어 있음):
@@ -134,6 +136,8 @@ curl -fsSL https://raw.githubusercontent.com/junseo2323/invisen-app/main/deploy/
 ```bash
 curl -fsSL https://raw.githubusercontent.com/junseo2323/invisen-app/main/deploy/setup.sh | sudo DOMAIN=app.example.com EMAIL=me@example.com bash
 ```
+
+관리자 대시보드를 별도 주소로 열려면 `ADMIN_DOMAIN=admin.example.com` 을 더 붙입니다 (그 이름도 같은 서버 IP 로 A 레코드 필요). 같은 인증서에 들어가고 `/` 는 `/admin/` 으로 넘어갑니다.
 
 | 영역 | 내용 |
 |---|---|

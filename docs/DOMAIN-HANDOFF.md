@@ -4,9 +4,20 @@
 목표: 사용자가 산 도메인을 invisen 서버(server2, `203.240.226.48`)에 연결하고 HTTPS 를 켠 뒤,
 앱 API 주소와 관리자 대시보드가 `https://<도메인>` 으로 동작하는 것까지 확인한다.
 
-## 지금 상태 (2026-11-03 기준)
+## 지금 상태 (2026-11-03 완료)
 
-- 서버: eney.cloud 인스턴스 server2, Ubuntu 22.04, 공인 IP `203.240.226.48`. HTTP 로만 열려 있음.
+- **연결 끝.** 도메인 `invisen.kr`(가비아 DNS) → `app.invisen.kr`, `admin.invisen.kr` A 레코드 → `203.240.226.48`.
+  - 앱·API: `https://app.invisen.kr/` · `https://app.invisen.kr/api/health`
+  - 관리자 대시보드: `https://admin.invisen.kr/` (→ `/admin/`, `https://app.invisen.kr/admin/` 도 그대로 열림)
+  - 인증서: Let's Encrypt 한 장에 두 이름 (certbot 자동 갱신). 서버 실행값 `DOMAIN=app.invisen.kr ADMIN_DOMAIN=admin.invisen.kr`
+  - GitHub 저장소 변수 `API_URL`, `PRODUCTION_URL` = `https://app.invisen.kr`
+- eney 웹 콘솔(VNC)로 명령을 칠 때: 브라우저 자동 입력은 **Shift 가 안 먹는다** (`| @ : $ & ( ) _ " > {}` 등이 깨짐, Ctrl 조합도 안 됨).
+  Shift 없는 문자만으로 쓴다. 예: `curl --proto-default https -fsSL -o /root/setup.sh raw.githubusercontent.com/…/setup.sh`
+  (`https:` 와 파이프 없이), 이메일의 `@` 는 `sed -i '<줄>c EMAIL=me\x40example.com' /root/setup.sh` 로 넣는다.
+
+아래는 연결 전(처음) 기준 설명이다.
+
+- 서버: eney.cloud 인스턴스 server2, Ubuntu 22.04, 공인 IP `203.240.226.48`.
   - 앱 웹: `http://203.240.226.48/` · API: `/api/health` · 관리자 대시보드: `/admin/` (admin / admin)
   - 설치·보안·nginx·자동 배포는 `deploy/setup.sh` 가 한다. 여러 번 실행해도 안전하고, 비밀값(`/etc/invisen/*.env`)·DB 는 그대로 둔다.
   - 자동 배포: `main` 이 CI 를 통과하면 `production` 브랜치로 옮겨지고 서버가 1분 안에 받아 간다.

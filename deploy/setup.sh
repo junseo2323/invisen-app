@@ -6,6 +6,7 @@
 # 옵션 (환경변수, sudo 뒤에 붙여서: curl … | sudo DOMAIN=app.example.com EMAIL=me@example.com bash)
 #   DOMAIN          앱 도메인. 있으면 Let's Encrypt HTTPS + HSTS 를 켭니다.
 #   EMAIL           Let's Encrypt 연락처 (DOMAIN 과 함께).
+#   ADMIN_DOMAIN    관리자 대시보드 전용 도메인 (예: admin.example.com). DOMAIN 과 같은 인증서에 넣고 / 를 /admin/ 으로 보냅니다.
 #   SSH_ALLOW_FROM  SSH 를 허용할 IP/CIDR (예: 203.0.113.7/32). 비우면 ufw 는 어디서나 허용 (eney 방화벽에서 내 IP 만 열기).
 #   REPO_URL, REF   배포할 저장소와 브랜치 (기본: junseo2323/invisen-app, production → 없으면 main)
 #
@@ -18,6 +19,7 @@ REPO_URL="${REPO_URL:-https://github.com/junseo2323/invisen-app.git}"
 REF="${REF:-production}"
 DOMAIN="${DOMAIN:-}"
 EMAIL="${EMAIL:-}"
+ADMIN_DOMAIN="${ADMIN_DOMAIN:-}"
 SSH_ALLOW_FROM="${SSH_ALLOW_FROM:-}"
 APP_USER="invisen"
 APP_HOME="/opt/invisen"
@@ -25,6 +27,14 @@ WEB_ROOT="/var/www/invisen"
 
 log() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m[주의] %s\033[0m\n' "$*"; }
+
+# 지금 인증서가 이 이름을 포함하는지 (이름이 비어 있으면 참)
+cert_covers() {
+  [[ -z "$1" ]] && return 0
+  [[ -f "$CERT_DIR/fullchain.pem" ]] || return 1
+  openssl x509 -in "$CERT_DIR/fullchain.pem" -noout -text 2>/dev/null \
+    | grep -A1 'Subject Alternative Name' | tail -n 1 | tr ',' '\n' | sed 's/^ *DNS://' | grep -qxF "$1"
+}
 
 main() {
 [[ $EUID -eq 0 ]] || { echo "sudo 로 실행하세요." >&2; exit 1; }
@@ -345,8 +355,11 @@ write_nginx
 log "9/9 HTTPS"
 if [[ -n "$DOMAIN" && -n "$EMAIL" ]]; then
   apt-get install -y certbot
-  if [[ ! -f "$CERT_DIR/fullchain.pem" ]]; then
-    if certbot certonly --webroot -w /var/www/letsencrypt -d "$DOMAIN" -m "$EMAIL" --agree-tos --non-interactive; then
+  # 처음이거나, ADMIN_DOMAIN 이 새로 붙어 지금 인증서에 없으면 (같은 인증서에 이름을 더해) 다시 받는다
+  local names=(-d "$DOMAIN")
+  [[ -n "$ADMIN_DOMAIN" ]] && names+=(-d "$ADMIN_DOMAIN")
+  if [[ ! -f "$CERT_DIR/fullchain.pem" ]] || ! cert_covers "$ADMIN_DOMAIN"; then
+    if certbot certonly --webroot -w /var/www/letsencrypt --cert-name "$DOMAIN" --expand "${names[@]}" -m "$EMAIL" --agree-tos --non-interactive; then
       write_nginx
     else
       warn "인증서 발급 실패. 도메인 DNS 가 이 서버의 공인 IP 를 가리키는지, 80 포트가 열려 있는지 확인 후 다시 실행하세요."
@@ -366,6 +379,11 @@ local scheme=http
 [[ -n "$DOMAIN" && -f "$CERT_DIR/fullchain.pem" ]] && scheme=https
 echo "  앱:         $scheme://${DOMAIN:-<공인 IP>}/"
 echo "  API 상태:   $scheme://${DOMAIN:-<공인 IP>}/api/health"
+if [[ -n "$ADMIN_DOMAIN" ]] && cert_covers "$ADMIN_DOMAIN" && [[ $scheme == https ]]; then
+  echo "  관리자:     https://$ADMIN_DOMAIN/"
+else
+  echo "  관리자:     $scheme://${DOMAIN:-<공인 IP>}/admin/"
+fi
 echo "  자동 배포:  production 브랜치를 1분마다 확인 (systemctl list-timers 'invisen-*')"
 echo "  관리:       sudo invisen-admin help"
 echo
@@ -377,10 +395,11 @@ echo "  eney.cloud 콘솔의 [네트워크 › 방화벽 정책] 에서 22(내 I
 
 # nginx 설정 전체를 여기서 관리한다 (certbot 은 인증서만 발급, 설정 파일은 건드리지 않음).
 write_nginx() {
-  local v6_80="" v6_443="" hsts="" app_block tls_server=""
+  local v6_80="" v6_443="" v6_443_admin="" hsts="" app_block tls_server="" admin_server=""
   if [[ -s /proc/net/if_inet6 ]]; then
     v6_80="listen [::]:80 default_server;"
     v6_443="listen [::]:443 ssl http2 default_server;"
+    v6_443_admin="listen [::]:443 ssl http2;"
   fi
   local have_cert=0
   [[ -n "$DOMAIN" && -f "$CERT_DIR/fullchain.pem" ]] && have_cert=1
@@ -452,6 +471,23 @@ CONF
     ssl_session_timeout 1d;
     include snippets/invisen-app.conf;
 }"
+    # 관리자 대시보드 전용 주소: 같은 사이트를 열되 / 는 /admin/ 으로 (대시보드는 /admin/ 아래 상대 경로로 빌드됨)
+    if [[ -n "$ADMIN_DOMAIN" ]] && cert_covers "$ADMIN_DOMAIN"; then
+      admin_server="server {
+    listen 443 ssl http2;
+    $v6_443_admin
+    server_name $ADMIN_DOMAIN;
+    server_tokens off;
+    ssl_certificate $CERT_DIR/fullchain.pem;
+    ssl_certificate_key $CERT_DIR/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache shared:invisen:10m;
+    ssl_session_timeout 1d;
+    location = / { return 302 /admin/; }
+    include snippets/invisen-app.conf;
+}"
+    fi
   else
     app_block="include snippets/invisen-app.conf;"
   fi
@@ -470,6 +506,8 @@ server {
 }
 
 $tls_server
+
+$admin_server
 CONF
   rm -f /etc/nginx/sites-enabled/default
   ln -sfn /etc/nginx/sites-available/invisen /etc/nginx/sites-enabled/invisen
