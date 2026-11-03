@@ -25,10 +25,13 @@ interface WorkerRow {
   manager_role: string | null;
 }
 
-export function sensorInfo(r: { id: string; battery: number | null; firmware: string | null; calibrated_on: string | Date | null; last_seen_at: Date | null }): SensorInfo {
+export function sensorInfo(r: { id: string; battery: number | null; firmware: string | null; calibrated_on: string | Date | null; last_seen_at: Date | null; is_test?: boolean }): SensorInfo {
   const cal = r.calibrated_on instanceof Date ? r.calibrated_on.toISOString().slice(0, 10) : r.calibrated_on;
-  return { id: r.id, battery: r.battery, firmware: r.firmware, calibratedOn: cal, lastSeenAt: r.last_seen_at?.toISOString() ?? null };
+  return { id: r.id, battery: r.battery, firmware: r.firmware, calibratedOn: cal, lastSeenAt: r.last_seen_at?.toISOString() ?? null, test: !!r.is_test };
 }
+
+/** The sensor of worker $1: their own (sensors.worker_id) or the shared test sensor they picked (workers.test_sensor_id). */
+export const WORKER_SENSOR = `from sensors where worker_id = $1 or id = (select test_sensor_id from workers where id = $1)`;
 
 export async function loadMe(workerId: number): Promise<Me> {
   const w = await one<WorkerRow>(
@@ -43,8 +46,8 @@ export async function loadMe(workerId: number): Promise<Me> {
     [workerId],
   );
   if (!w) throw new Error(`worker ${workerId} not found`);
-  const sensor = await one<{ id: string; battery: number | null; firmware: string | null; calibrated_on: string | null; last_seen_at: Date | null }>(
-    `select id, battery, firmware, calibrated_on::text, last_seen_at from sensors where worker_id = $1`,
+  const sensor = await one<{ id: string; battery: number | null; firmware: string | null; calibrated_on: string | null; last_seen_at: Date | null; is_test: boolean }>(
+    `select id, battery, firmware, calibrated_on::text, last_seen_at, is_test ${WORKER_SENSOR} limit 1`,
     [workerId],
   );
   return {

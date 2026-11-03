@@ -37,6 +37,14 @@ export interface SensorInfo {
   firmware: string | null;
   calibratedOn: string | null; // YYYY-MM-DD
   lastSeenAt: string | null;
+  /** Shared test sensor (IVS-TEST-*): anyone can pick it; the app feeds it simulated readings. */
+  test?: boolean;
+}
+
+/** Test sensors listed on the login sensor screen without Bluetooth. */
+export interface TestSensor {
+  id: string;
+  battery: number | null;
 }
 
 export interface Me {

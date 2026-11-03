@@ -4,7 +4,7 @@ import { one, q, tx } from '../db.js';
 import { HttpError, parse, requireAuth } from '../http.js';
 import { isEscalation, levelOf, type Level } from '../exposure.js';
 import { managersOf, postWebhook, pushToWorkers } from '../notify.js';
-import { sensorInfo } from '../queries.js';
+import { sensorInfo, WORKER_SENSOR } from '../queries.js';
 import { createAlert, siteRules } from '../alerts.js';
 import type { ReadingsResponse, SensorLive } from '../api-types.js';
 
@@ -48,7 +48,10 @@ export async function readingsRoutes(app: FastifyInstance) {
          from workers w left join zones z on z.id = w.current_zone_id where w.id = $1`,
       [workerId],
     );
-    const paired = await one('select 1 from sensors where id = $1 and worker_id = $2', [body.sensorId, workerId]);
+    const paired = await one(
+      'select 1 from sensors s where s.id = $2 and (s.worker_id = $1 or s.id = (select test_sensor_id from workers where id = $1))',
+      [workerId, body.sensorId],
+    );
     if (!w || !paired) throw new HttpError(409, 'sensor_not_paired', '연결된 센서가 아니에요. 센서를 다시 연결해 주세요.');
     const limit = w.lim ?? 100;
 
@@ -124,8 +127,8 @@ export async function readingsRoutes(app: FastifyInstance) {
   });
 
   app.get('/api/sensor/live', async (req): Promise<SensorLive> => {
-    const s = await one<{ id: string; battery: number | null; firmware: string | null; calibrated_on: string | null; last_seen_at: Date | null }>(
-      'select id, battery, firmware, calibrated_on::text, last_seen_at from sensors where worker_id = $1',
+    const s = await one<{ id: string; battery: number | null; firmware: string | null; calibrated_on: string | null; last_seen_at: Date | null; is_test: boolean }>(
+      `select id, battery, firmware, calibrated_on::text, last_seen_at, is_test ${WORKER_SENSOR} limit 1`,
       [req.worker.id],
     );
     const lim = await one<{ lim: number | null }>(

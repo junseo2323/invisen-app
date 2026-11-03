@@ -111,6 +111,14 @@ APNs 키(.p8) 발급 → 서버 `/etc/invisen/api.env` 에 입력. SOS 를 무�
 `src/sensor/protocol.ts` 의 서비스 UUID 와 패킷 해석은 **임시값**입니다. 센서 제조사 GATT 사양을 받으면 이 파일만 바꾸면 됩니다.
 나머지(업로드, 알림, 화면)는 `parseMeasurement()` 결과만 씁니다.
 
+### 테스트용 센서 (실물 센서 전)
+
+`IVS-TEST-0001` ~ `IVS-TEST-0005` (마이그레이션 `006_test_sensors.sql`, `sensors.is_test`).
+- 앱 04 센서 연결 화면에 블루투스 없이 늘 뜹니다 (`GET /api/me/test-sensors`). 실물 센서가 근처에 있으면 그게 위에 옵니다.
+- 여러 작업자가 같은 테스트 센서를 동시에 고를 수 있습니다. 연결은 `sensors.worker_id`(1:1) 대신 `workers.test_sensor_id` 에 둡니다.
+- 앱은 테스트 센서에 가상 측정값(시뮬레이터, `?sim=` 과 같은 값)을 보내고, 측정값·노출량·알림은 실제와 똑같이 쌓입니다.
+- 대시보드 › 센서 에 "테스트용 · N명 사용 중" 으로 보입니다. 끊김 알림은 만들지 않습니다.
+
 TestFlight 업로드 준비와 순서: **[docs/TESTFLIGHT.md](docs/TESTFLIGHT.md)** (도메인, Apple 설정, GitHub Actions 'iOS TestFlight').
 
 ## 서버 (eney.cloud 인스턴스)

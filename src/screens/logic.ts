@@ -3,7 +3,7 @@
 import { Screen } from '../dc';
 import { api, ApiError, setToken } from '../api';
 import { app } from '../store';
-import { sensor, type FoundSensor } from '../sensor';
+import { sensor, TEST_DEVICE, type FoundSensor } from '../sensor';
 import { haptics, getPosition, locationPermission, notificationPermission, requestLocation, requestNotifications, scanQr, type Perm } from '../native';
 import { history, reconnectSensor, refreshStatus, startMonitor, stopMonitor } from '../monitor';
 import type { Exposure, Level, LogDay, SensorLive, Site as SiteData } from '../../server/src/api-types';
@@ -186,10 +186,10 @@ export class LoginProfile extends Screen {
 }
 
 // ---- 04 센서 연결 ---------------------------------------------------------------------
-type SensorPick = { found: FoundSensor[]; picked: string | null; scanning: boolean; busy: boolean; error: string; wanted: string | null };
+type SensorPick = { found: FoundSensor[]; picked: string | null; touched: boolean; scanning: boolean; busy: boolean; error: string; wanted: string | null };
 
 export class LoginSensor extends Screen<SensorPick> {
-  state: SensorPick = { found: [], picked: null, scanning: false, busy: false, error: '', wanted: null };
+  state: SensorPick = { found: [], picked: null, touched: false, scanning: false, busy: false, error: '', wanted: null };
 
   mounted() {
     void this.scan();
@@ -200,17 +200,30 @@ export class LoginSensor extends Screen<SensorPick> {
 
   private async scan() {
     this.setState({ found: [], scanning: true, error: '' });
+    const add = (s: FoundSensor) => {
+      if (this.state.found.some((f) => f.deviceId === s.deviceId || f.id === s.id)) return;
+      // nearby real sensors first (strongest signal), test sensors (no signal) after them
+      const found = [...this.state.found, s].sort((a, b) => (b.rssi ?? -999) - (a.rssi ?? -999));
+      // QR-scanned sensor, else what the worker tapped, else the sensor they already use, else the nearest
+      const mine = app.state.me?.sensor?.id;
+      const has = (id: string | null | undefined) => !!id && found.some((f) => f.id === id);
+      const picked = has(this.state.wanted)
+        ? this.state.wanted
+        : this.state.touched && this.state.picked
+          ? this.state.picked
+          : has(mine) ? mine! : (this.state.picked ?? found[0].id);
+      this.setState({ found, picked });
+    };
+    // test sensors: listed by the server, shown without Bluetooth, and anyone can pick them
+    const tests = await api.testSensors().catch(() => []);
+    for (const t of tests) add({ deviceId: TEST_DEVICE + t.id, id: t.id, rssi: null, battery: t.battery, test: true });
+    // in the browser the simulator's sample sensors aren't registered on a real server, so skip them there
+    if (tests.length && sensor.kind === 'sim' && !app.state.me?.demo) return this.setState({ scanning: false });
     try {
-      await sensor.scan((s) => {
-        if (this.state.found.some((f) => f.deviceId === s.deviceId)) return;
-        const found = [...this.state.found, s].sort((a, b) => (b.rssi ?? -999) - (a.rssi ?? -999));
-        const mine = app.state.me?.sensor?.id;
-        const picked = this.state.picked ?? found.find((f) => f.id === this.state.wanted || f.id === mine)?.id ?? found[0].id;
-        this.setState({ found, picked: this.state.wanted && found.some((f) => f.id === this.state.wanted) ? this.state.wanted : picked });
-      });
+      await sensor.scan(add);
       this.setState({ scanning: false });
     } catch {
-      this.setState({ scanning: false, error: '블루투스를 켜고 앱에 블루투스 권한을 허용해 주세요.' });
+      this.setState({ scanning: false, error: tests.length ? '' : '블루투스를 켜고 앱에 블루투스 권한을 허용해 주세요.' });
     }
   }
 
@@ -232,7 +245,7 @@ export class LoginSensor extends Screen<SensorPick> {
   renderVals() {
     const st = this.state;
     const meta = (s: FoundSensor) => {
-      const near = s.rssi == null ? '' : s.rssi > -60 ? '가까워요' : s.rssi > -75 ? '조금 떨어져 있어요' : '멀어요';
+      const near = s.test ? '테스트용' : s.rssi == null ? '' : s.rssi > -60 ? '가까워요' : s.rssi > -75 ? '조금 떨어져 있어요' : '멀어요';
       return [near, s.battery != null ? `배터리 ${s.battery}%` : ''].filter(Boolean).join(' · ') || '찾았어요';
     };
     const sensors = st.found.map((s) => {
@@ -246,7 +259,7 @@ export class LoginSensor extends Screen<SensorPick> {
         boxBg: selected ? '#2bd8f0' : 'transparent',
         boxBd: selected ? '#2bd8f0' : '#5f6975',
         checkColor: selected ? '#0b0e12' : 'transparent',
-        pick: () => this.setState({ picked: s.id }),
+        pick: () => this.setState({ picked: s.id, touched: true }),
       };
     });
     const disabled = !st.picked || st.busy;

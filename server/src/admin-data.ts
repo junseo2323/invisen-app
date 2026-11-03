@@ -52,7 +52,7 @@ export async function siteWorkers(siteId: number, opts: { includeInactive?: bool
             (select i.expires_at from invites i where i.worker_id = w.id and i.used_at is null and i.revoked_at is null and i.expires_at > now()) as invite_exp
        from workers w
        left join zones z on z.id = w.current_zone_id
-       left join sensors s on s.worker_id = w.id
+       left join sensors s on s.worker_id = w.id or s.id = w.test_sensor_id
       where w.site_id = $1 and w.role = 'worker' and not w.is_demo ${opts.includeInactive ? '' : 'and w.active'}
       order by w.name`,
     [siteId],

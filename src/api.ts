@@ -48,6 +48,7 @@ const httpApi = {
   site: () => req<T.Site>('GET', '/api/site'),
   sensorLive: () => req<T.SensorLive>('GET', '/api/sensor/live'),
   pairSensor: (sensorId: string) => req<T.SensorInfo>('PUT', '/api/me/sensor', { sensorId }),
+  testSensors: () => req<T.TestSensor[]>('GET', '/api/me/test-sensors'),
   pushToken: (token: string) => req<void>('PUT', '/api/me/push-token', { token, platform: 'ios' }),
   postReadings: (body: T.ReadingsRequest) => req<T.ReadingsResponse>('POST', '/api/readings', body),
   sos: (body: T.SosRequest) => req<T.SosResponse>('POST', '/api/sos', body),

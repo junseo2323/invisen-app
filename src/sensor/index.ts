@@ -9,6 +9,10 @@ import type { SensorDriver } from './types';
 const nativeBle = Capacitor.isNativePlatform() && import.meta.env.VITE_SENSOR !== 'sim';
 const pick = (): SensorDriver => (nativeBle && !app.state.me?.demo ? bleDriver : simDriver);
 
+/** deviceId of a shared test sensor (IVS-TEST-*, listed by the server): always simulated. */
+export const TEST_DEVICE = 'test:';
+export const isTestDevice = (deviceId: string | null | undefined) => !!deviceId?.startsWith(TEST_DEVICE);
+
 export const sensor: SensorDriver = {
   get kind() {
     return pick().kind;
@@ -16,7 +20,7 @@ export const sensor: SensorDriver = {
   ensureReady: () => pick().ensureReady(),
   scan: (onFound, ms) => pick().scan(onFound, ms),
   stopScan: () => pick().stopScan(),
-  connect: (deviceId, handlers) => pick().connect(deviceId, handlers),
+  connect: (deviceId, handlers) => (isTestDevice(deviceId) ? simDriver : pick()).connect(deviceId, handlers),
   disconnect: async () => {
     await bleDriver.disconnect();
     await simDriver.disconnect();

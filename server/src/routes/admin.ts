@@ -247,6 +247,7 @@ export async function adminRoutes(app: FastifyInstance) {
       if (!active) {
         await q('delete from sessions where worker_id = $1', [id]);
         await q('update sensors set worker_id = null where worker_id = $1', [id]);
+        await q('update workers set test_sensor_id = null where id = $1', [id]);
       }
       return { id, active };
     });
@@ -595,8 +596,9 @@ export async function adminRoutes(app: FastifyInstance) {
     r.get('/api/admin/sites/:siteId/sensors', async (req) => {
       const { siteId } = parse(siteParam, req.params);
       await siteOr404(siteId);
-      const rows = await q<{ id: string; maker: string | null; model: string | null; items: string | null; battery: number | null; calibrated_on: string | null; last_seen_at: Date | null; worker: string | null; worker_id: number | null; zone: string | null }>(
-        `select s.id, s.maker, s.model, s.items, s.battery, s.calibrated_on::text, s.last_seen_at, w.name as worker, w.id as worker_id, z.name as zone
+      const rows = await q<{ id: string; maker: string | null; model: string | null; items: string | null; battery: number | null; calibrated_on: string | null; last_seen_at: Date | null; worker: string | null; worker_id: number | null; zone: string | null; is_test: boolean; testers: number }>(
+        `select s.id, s.maker, s.model, s.items, s.battery, s.calibrated_on::text, s.last_seen_at, w.name as worker, w.id as worker_id, z.name as zone,
+                s.is_test, (select count(*)::int from workers t where t.test_sensor_id = s.id and t.active) as testers
            from sensors s left join workers w on w.id = s.worker_id left join zones z on z.id = w.current_zone_id
           where s.site_id = $1 and s.id not like 'IVS-DEMO-%' order by s.id`,
         [siteId],
@@ -605,12 +607,14 @@ export async function adminRoutes(app: FastifyInstance) {
       const calDue = (d: string | null) => !d || now - Date.parse(d) > 60 * DAY;
       const list = rows.map((s) => {
         const seen = s.last_seen_at?.getTime() ?? null;
-        const kind = !s.worker_id ? 'free' : seen && now - seen < 2 * 60_000 ? 'on' : 'off';
+        const live = !!seen && now - seen < 2 * 60_000;
+        // test sensors are shared (workers.test_sensor_id): never "끊김", just in use or free
+        const kind = s.is_test ? (s.testers && live ? 'on' : 'free') : !s.worker_id ? 'free' : live ? 'on' : 'off';
         return {
           id: s.id,
           maker: [s.maker, s.model].filter(Boolean).join(' · ') || '–',
           items: s.items ?? 'PM10 · PM2.5 · CO · 온습도',
-          who: s.worker ?? '미배정',
+          who: s.is_test ? (s.testers ? `테스트용 · ${s.testers}명 사용 중` : '테스트용 · 누구나 선택') : (s.worker ?? '미배정'),
           workerId: s.worker_id,
           battery: s.battery,
           last: !seen ? '–' : now - seen < 60_000 ? '방금' : hm(seen),

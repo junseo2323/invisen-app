@@ -4,6 +4,8 @@ export interface FoundSensor {
   id: string;
   rssi: number | null;
   battery: number | null;
+  /** Shared test sensor from the server (no Bluetooth): runs on the simulator. */
+  test?: boolean;
 }
 
 export interface SensorReading {

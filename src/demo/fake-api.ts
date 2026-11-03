@@ -132,6 +132,9 @@ export const demoApi = {
   async sensorLive(): Promise<T.SensorLive> {
     return wait({ sensor: me.sensor, latest: null, history: [], limits: { pm10: 100, pm25: 50, co: 30 } });
   },
+  async testSensors(): Promise<T.TestSensor[]> {
+    return wait([]);
+  },
   async pairSensor(sensorId: string): Promise<T.SensorInfo> {
     me.sensor = { ...sensor, id: sensorId };
     log({ type: 'sensor', level: null, title: '센서 연결', detail: sensorId });

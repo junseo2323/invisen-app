@@ -139,6 +139,32 @@ test('status, exposure, site', async () => {
   assert.equal(site.team[0].distanceM, 5); // (3%, 4%) of a 100 m map
 });
 
+test('test sensors: always listed, any number of workers can share one', async () => {
+  const list = (await call('GET', '/api/me/test-sensors')).body;
+  assert.deepEqual(list.map((s: { id: string }) => s.id), ['IVS-TEST-0001', 'IVS-TEST-0002', 'IVS-TEST-0003', 'IVS-TEST-0004', 'IVS-TEST-0005']);
+  // worker 2 moves from the real sensor to a test sensor: the real one is freed
+  const picked = await call('PUT', '/api/me/sensor', { sensorId: 'IVS-TEST-0001' });
+  assert.equal(picked.status, 200);
+  assert.equal(picked.body.test, true);
+  assert.equal((await call('GET', '/api/me')).body.sensor.id, 'IVS-TEST-0001');
+  assert.equal((await pool.query(`select worker_id from sensors where id = 'IVS-P10-0142'`)).rows[0].worker_id, null);
+  // worker 3 (on IVS-P10-0157) picks the same test sensor: no "in use" error, both can upload
+  const { code } = await issueInvite(3, null);
+  const mine = token;
+  token = (await call('POST', '/api/auth/login', { phone: '01000000002', code }, false)).body.token;
+  assert.equal((await call('PUT', '/api/me/sensor', { sensorId: 'IVS-TEST-0001' })).status, 200);
+  assert.equal((await call('POST', '/api/readings', { sensorId: 'IVS-TEST-0001', readings: [{ ts: new Date().toISOString(), pm10: 20 }] })).body.accepted, 1);
+  assert.equal((await call('GET', '/api/me/status')).body.sensor.id, 'IVS-TEST-0001');
+  token = mine;
+  const r = { ts: new Date(Date.now() - 1000).toISOString(), pm10: 20 };
+  assert.equal((await call('POST', '/api/readings', { sensorId: 'IVS-TEST-0001', readings: [r] })).body.accepted, 1);
+  assert.equal((await call('GET', '/api/sensor/live')).body.sensor.id, 'IVS-TEST-0001');
+  // back to a real sensor clears the test pairing
+  assert.equal((await call('PUT', '/api/me/sensor', { sensorId: 'IVS-P10-0142' })).status, 200);
+  assert.equal((await call('GET', '/api/me')).body.sensor.id, 'IVS-P10-0142');
+  assert.equal((await pool.query('select test_sensor_id from workers where id = 2')).rows[0].test_sensor_id, null);
+});
+
 test('sos and cancel', async () => {
   const sos = await call('POST', '/api/sos', { lat: 37.46, lng: 126.44, accuracy: 12 });
   assert.equal(sos.status, 200);

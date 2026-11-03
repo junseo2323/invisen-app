@@ -2,13 +2,13 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { one, q, tx } from '../db.js';
 import { HttpError, parse, requireAuth } from '../http.js';
-import { loadMe, samples, sensorInfo, tz } from '../queries.js';
+import { loadMe, samples, sensorInfo, tz, WORKER_SENSOR } from '../queries.js';
 import {
   buckets, dayStart, exposurePercent, hhmm, levelOf, localParts, measuredMs, peak,
   timeWeightedAverage, WEEKDAYS, zoneDurations, atLocalTime,
 } from '../exposure.js';
 import { managersOf, pushToWorkers } from '../notify.js';
-import type { Exposure, LogDay, LogEvent, SensorInfo, Status } from '../api-types.js';
+import type { Exposure, LogDay, LogEvent, SensorInfo, Status, TestSensor } from '../api-types.js';
 
 const DAY = 86_400_000;
 const round = (n: number) => Math.round(n);
@@ -71,7 +71,7 @@ export async function meRoutes(app: FastifyInstance) {
       [req.worker.id],
     );
     const sensor = await one<{ id: string; battery: number | null; last_seen_at: Date | null }>(
-      'select id, battery, last_seen_at from sensors where worker_id = $1',
+      `select id, battery, last_seen_at ${WORKER_SENSOR} limit 1`,
       [req.worker.id],
     );
     const limit = c.zone_limit ?? 100;
@@ -169,21 +169,38 @@ export async function meRoutes(app: FastifyInstance) {
   });
 
   // ---- sensor pairing ----
+  // Test sensors (sensors.is_test) are shown on the login sensor screen without Bluetooth and
+  // any number of workers can pick the same one, so their pairing lives on workers.test_sensor_id.
+  app.get('/api/me/test-sensors', async (): Promise<TestSensor[]> =>
+    q<{ id: string; battery: number | null }>('select id, battery from sensors where is_test order by id'),
+  );
+
   app.put('/api/me/sensor', async (req): Promise<SensorInfo> => {
     const { sensorId } = parse(z.object({ sensorId: z.string().regex(/^[A-Z0-9-]{4,32}$/) }), req.body);
+    const me = req.worker.id;
     return tx(async (c) => {
-      const s = (await c.query<{ id: string; worker_id: number | null; battery: number | null; firmware: string | null; calibrated_on: string | null; last_seen_at: Date | null }>(
-        'select id, worker_id, battery, firmware, calibrated_on::text, last_seen_at from sensors where id = $1 for update',
+      const s = (await c.query<{ id: string; worker_id: number | null; battery: number | null; firmware: string | null; calibrated_on: string | null; last_seen_at: Date | null; is_test: boolean }>(
+        'select id, worker_id, battery, firmware, calibrated_on::text, last_seen_at, is_test from sensors where id = $1 for update',
         [sensorId],
       )).rows[0];
       if (!s) throw new HttpError(404, 'sensor_not_found', '등록되지 않은 센서예요. 관리자에게 문의해 주세요.');
-      if (s.worker_id && s.worker_id !== req.worker.id) {
+      const cur = (await c.query<{ test_sensor_id: string | null }>('select test_sensor_id from workers where id = $1', [me])).rows[0];
+      if (s.is_test) {
+        if (cur?.test_sensor_id !== sensorId) {
+          await c.query('update sensors set worker_id = null where worker_id = $1', [me]);
+          await c.query('update workers set test_sensor_id = $2 where id = $1', [me, sensorId]);
+          await c.query(`insert into events (worker_id, type, title, detail) values ($1, 'sensor', '센서 연결', $2)`, [me, sensorId]);
+        }
+        return sensorInfo(s);
+      }
+      if (s.worker_id && s.worker_id !== me) {
         throw new HttpError(409, 'sensor_in_use', '다른 작업자가 쓰고 있는 센서예요.');
       }
-      if (s.worker_id !== req.worker.id) {
-        await c.query('update sensors set worker_id = null where worker_id = $1', [req.worker.id]);
-        await c.query('update sensors set worker_id = $1 where id = $2', [req.worker.id, sensorId]);
-        await c.query(`insert into events (worker_id, type, title, detail) values ($1, 'sensor', '센서 연결', $2)`, [req.worker.id, sensorId]);
+      if (cur?.test_sensor_id) await c.query('update workers set test_sensor_id = null where id = $1', [me]);
+      if (s.worker_id !== me) {
+        await c.query('update sensors set worker_id = null where worker_id = $1', [me]);
+        await c.query('update sensors set worker_id = $1 where id = $2', [me, sensorId]);
+        await c.query(`insert into events (worker_id, type, title, detail) values ($1, 'sensor', '센서 연결', $2)`, [me, sensorId]);
       }
       return sensorInfo(s);
     });
@@ -191,6 +208,7 @@ export async function meRoutes(app: FastifyInstance) {
 
   app.delete('/api/me/sensor', async (req, reply) => {
     await q('update sensors set worker_id = null where worker_id = $1', [req.worker.id]);
+    await q('update workers set test_sensor_id = null where id = $1', [req.worker.id]);
     return reply.code(204).send();
   });
 

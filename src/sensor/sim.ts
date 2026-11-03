@@ -57,7 +57,8 @@ export const simDriver: SensorDriver = {
     await new Promise((r) => setTimeout(r, 600));
     const dev = devices().find((d) => d.deviceId === deviceId) ?? devices()[0];
     onDisconnect = h.onDisconnect;
-    h.onBattery(dev.battery);
+    // test sensors (deviceId 'test:IVS-TEST-…') report the battery the server has for them
+    h.onBattery(deviceId.startsWith('test:') ? (app.state.me?.sensor?.battery ?? dev.battery) : dev.battery);
     const emit = () => {
       const base = { safe: 38, caution: 86, danger: 164 }[scenario()];
       const t = Date.now();
